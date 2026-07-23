@@ -1,0 +1,2 @@
+- [Astral Forge reading system](astroboros-reading.md) — 78-pair archetype lookup, renamed functions, mythic hero journey, threshold names Impact/Wealth/Legacy
+- [Astral Forge auth setup](astroboros-auth.md) — Clerk + wouter, API server on port 8080 proxied via Vite, saved_charts Postgres table

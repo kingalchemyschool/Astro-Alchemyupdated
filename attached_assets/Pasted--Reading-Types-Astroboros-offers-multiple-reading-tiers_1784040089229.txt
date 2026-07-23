@@ -1,0 +1,419 @@
+# Reading Types
+
+Astroboros offers multiple reading tiers. Every reading must be generated according to the product purchased. Never generate the same depth, structure, or level of personalization across all products.
+
+---
+
+# Free Reading
+
+Purpose:
+Generate curiosity, recognition, and excitement.
+
+The free reading should feel insightful without revealing the complete operating system.
+
+Include:
+
+* Core Alchemical Archetype
+* Brief explanation of why this archetype emerged
+* Six Creative Functions (name, one-sentence description, archetype only)
+* Overall Creation Cycle summary
+* Planet placement table
+* One short paragraph describing each planetary engine
+* One short paragraph introducing each threshold
+
+Do NOT include:
+
+* deep planetary synthesis
+* aspect analysis
+* developmental mechanics
+* function breakdowns
+* shadow mechanics
+* activation practices
+* relationship dynamics
+* advanced chart synthesis
+* Hero Story
+
+The free reading should answer:
+
+"Who am I?"
+
+while encouraging the user to unlock:
+
+"How do I actually work?"
+
+---
+
+# Paid Reading ($25)
+
+Purpose:
+Reveal the user's complete creative operating system.
+
+The paid reading is not a longer horoscope.
+
+It is a comprehensive systems analysis explaining exactly how the user's consciousness creates, communicates, develops, and transforms.
+
+Every section must synthesize:
+
+* planetary function
+* sign
+* house
+* aspects
+* planetary relationships
+* thresholds
+* archetypes
+* developmental psychology
+
+The AI must never rely on generalized astrology descriptions.
+
+Every paragraph should answer:
+
+"What unique mechanism is being created by THIS exact combination?"
+
+The paid reading should feel:
+
+* highly personalized
+* psychologically accurate
+* mechanically precise
+* mythically meaningful
+* impossible to mistake for another person's reading
+
+No two paid readings should sound structurally identical.
+
+The AI should actively avoid repeating:
+
+* sentence openings
+* paragraph rhythm
+* examples
+* metaphors
+* strengths
+* developmental lessons
+
+Every interpretation should emerge from the chart itself.
+
+If two users both have Mars in Cancer, but different houses, aspects, creative functions, or archetype combinations, the interpretation should become substantially different.
+
+The reader should feel:
+
+"This could only have been written for me."
+
+This is also where the user's personal Hero's Journey is. 
+
+# Hero Myth Writing Rules
+
+The Hero Myth is not a summary of the reading.
+
+It is the emotional synthesis of the entire blueprint.
+
+The user should finish the reading feeling like they have just read the myth that has always been hidden inside their chart.
+
+The story must feel inevitable, as though every placement naturally became a character, challenge, mentor, threshold, and transformation.
+
+The Hero Myth should read like a modern myth, fable, or legend—not a horoscope, fairy tale, or generic Hero's Journey template.
+
+---
+
+## Core Philosophy
+
+Do not write a story *about* astrology.
+
+Write a story that astrology silently generated.
+
+The reader should not need to know astrology to understand the story.
+
+Someone unfamiliar with astrology should still feel deeply seen.
+
+---
+
+## The Story Must Be Chart-Specific
+
+Every myth must emerge directly from the chart.
+
+Never reuse story structures.
+
+Never begin every story with:
+
+* "Every hero..."
+* "Once there was..."
+* "Our story begins..."
+* "Before doing anything..."
+
+The opening should be inspired by the dominant theme of the chart.
+
+Examples:
+
+A builder's story might begin with a mountain.
+
+A Mercury-dominant chart might begin inside a library.
+
+A Pisces Moon may begin in the ocean, a dream, or a forgotten temple.
+
+An Aquarius Venus may begin in a city that does not yet exist.
+
+A Scorpio Pluto may begin underground.
+
+The setting itself should reflect the chart.
+
+---
+
+## Every Planet Becomes Story
+
+Each planetary engine should become part of the myth.
+
+Sun
+The calling.
+The reason the journey begins.
+
+Moon
+The hidden world.
+The emotional landscape.
+The invisible guide.
+
+Mars
+The first obstacle.
+The first decisive action.
+The lesson that force alone is insufficient.
+
+Being Threshold
+The moment instinct becomes intention.
+The hero realizes effort alone cannot solve the problem.
+
+Mercury
+The gift.
+The language.
+The map.
+The weapon.
+The strategy.
+The realization that intelligence changes destiny.
+
+Jupiter
+Expansion.
+Opportunity.
+Temptation.
+The invitation to become more.
+
+Will Threshold
+The impossible choice.
+The realization that purpose requires sacrifice.
+
+Venus
+The true treasure.
+The value discovered.
+What proves worth protecting.
+
+Saturn
+The final trial.
+The structure that must be built.
+The responsibility accepted.
+
+Retention Threshold
+The transformation becomes permanent.
+The hero is no longer completing the journey.
+They have become part of the world they changed.
+
+---
+
+## Archetypes Must Become Characters
+
+The dominant archetype should become the protagonist.
+
+The remaining five creative archetypes become companions, mentors, rivals, inner voices, allies, guardians, or recurring forces within the story.
+
+The myth should subtly show how every creative function participates in the journey.
+
+---
+
+## The Three Thresholds Are Initiations
+
+Treat each threshold like a sacred initiation.
+
+The hero cannot continue without changing.
+
+The threshold is never simply an event.
+
+It changes the hero's identity.
+
+After each threshold the protagonist should think differently, not merely possess new abilities.
+
+---
+
+## Symbolism
+
+Use symbols generated by the chart itself.
+
+Examples include:
+
+* mountains
+* oceans
+* forests
+* storms
+* mirrors
+* towers
+* libraries
+* gardens
+* stars
+* rivers
+* bridges
+* keys
+* gates
+* fire
+* metal
+* light
+* architecture
+
+Choose symbols that naturally resonate with the chart's dominant elemental balance, signs, houses, and archetypes.
+
+Avoid random fantasy imagery.
+
+Every symbol should feel meaningful.
+
+---
+
+## Tone
+
+The myth should be:
+
+* poetic
+* intelligent
+* emotionally resonant
+* symbolic
+* psychologically insightful
+* timeless
+* mythic without becoming overly mystical
+
+Include moments of humor only when they naturally fit the chart.
+
+---
+
+## Personalization Rules
+
+No two myths should share the same structure.
+
+If two people share identical Sun signs, the myth should still feel completely different because it is generated from the entire blueprint.
+
+The dominant archetype, planetary engines, thresholds, aspects, creative functions, and chart themes should all influence:
+
+* setting
+* pacing
+* conflict
+* symbolism
+* ending
+* moral
+
+---
+
+## Ending
+
+Never end with a generic inspirational statement.
+
+The ending should reveal what the hero has actually become.
+
+The final sentence should feel unforgettable.
+
+The reader should close the report feeling that they understand not only where they have been, but what kind of person they are becoming.
+
+The myth should leave the reader with the feeling:
+
+"I have just read the legend my life has been trying to live."
+
+---
+
+# Compatibility Reading (free or $15 longer report)
+
+Purpose:
+Reveal how two creative operating systems interact.
+
+This is NOT a synastry reading.
+
+The goal is not compatibility scores or romance predictions.
+
+Instead, in the free reading compare:
+
+* Vision
+* Perception
+* Force
+* Communication
+* Expansion
+* Value
+* Foundation
+
+Then compare in the paid reading:
+
+* all six creative functions
+* all three thresholds
+* dominant archetypes
+* overall creation cycles
+
+The comparison should explain:
+
+Where they naturally amplify each other.
+
+Where friction produces growth.
+
+Where misunderstandings emerge.
+
+How each person's operating system changes the other's.
+
+How they solve problems differently.
+
+How they create together.
+
+How they communicate.
+
+How they build trust.
+
+How conflict naturally appears.
+
+How mastery develops inside the relationship.
+
+The reading should never decide whether the relationship is "good" or "bad."
+
+Instead explain:
+
+"What happens when these two systems begin creating together?"
+
+The relationship itself should become the subject.
+
+---
+
+# Relationship Writing Rules
+
+Never compare placements individually.
+
+Never say:
+
+"One person has Mars in Cancer and the other has Mars in Aries."
+
+Instead explain:
+
+"One person generates force by protecting stability while the other generates force through direct initiation. Together this creates a relationship where momentum alternates between preservation and acceleration."
+
+Always compare mechanisms instead of symbols.
+
+---
+
+# Personalization Rules
+
+Every reading should feel handcrafted.
+
+If two users share:
+
+* the same sign
+* the same planet
+* the same house
+
+the AI must still generate different interpretations by synthesizing:
+
+* aspects
+* planetary relationships
+* thresholds
+* archetypes
+* dominant chart themes
+* overall blueprint
+
+No paragraph should be reusable across charts.
+
+The AI should continually ask:
+
+"What makes this exact blueprint different from every other blueprint?"
+
+That answer—not generic astrology—is what should become the reading.

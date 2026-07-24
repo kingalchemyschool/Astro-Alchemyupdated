@@ -33,17 +33,17 @@ export default function DailyForgePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fetchedRef = useRef(false);
-  // null = "match natal chart zodiac"; set explicitly on user toggle
-  const [transitZodiac, setTransitZodiac] = useState<"tropical" | "sidereal" | null>(null);
 
   const today = todayDateString();
-  // Effective zodiac: user override → natal chart default → tropical fallback
-  const activeZodiac = transitZodiac ?? reading?.chart.zodiac ?? "tropical";
+  // The reading's chart is regenerated in the active system on toggle, so this
+  // is THE single source of truth for the zodiac displayed, transits computed,
+  // and zodiac reported to the server. No separate transit-only state.
+  const activeZodiac: "tropical" | "sidereal" = reading?.chart.zodiac ?? "tropical";
 
   // Try to restore a cached report from localStorage
   useEffect(() => {
     if (!reading) return; // wait until chart is loaded — fingerprint requires it
-    const zodiac = transitZodiac ?? reading.chart.zodiac;
+    const zodiac = reading.chart.zodiac;
     const chartKey = chartFingerprint(reading.chart);
     try {
       const raw = localStorage.getItem(FORGE_REPORT_CACHE_KEY);
@@ -60,7 +60,7 @@ export default function DailyForgePage() {
     } catch {
       // ignore
     }
-  }, [today, reading, transitZodiac]);
+  }, [today, reading]);
 
   // Fetch report when we have a chart and a token
   useEffect(() => {
@@ -69,12 +69,16 @@ export default function DailyForgePage() {
     fetchReport();
   }, [forgePremium, reading]);
 
-  async function fetchReport(zodiacOverride?: "tropical" | "sidereal") {
+  async function fetchReport() {
     if (!reading) return;
     setLoading(true);
     setError(null);
 
-    const zodiac = zodiacOverride ?? transitZodiac ?? reading.chart.zodiac;
+    // Single source of truth: the natal chart's zodiac is the active zodiac
+    // for everything (transit computation, request body, cache key). The
+    // chart was regenerated to match when the user toggled, so the natal
+    // positions and transit positions are guaranteed to be in the same system.
+    const zodiac = reading.chart.zodiac;
 
     try {
       const token = localStorage.getItem(FORGE_TOKEN_KEY);
@@ -84,7 +88,7 @@ export default function DailyForgePage() {
         return;
       }
 
-      const transitData = computeTransits(reading.chart, zodiac);
+      const transitData = computeTransits(reading.chart);
 
       const natalPositions: Record<string, any> = {};
       for (const [key, pos] of Object.entries(reading.chart.positions)) {
@@ -110,6 +114,7 @@ export default function DailyForgePage() {
 
       const body = {
         token,
+        zodiac, // explicit so server can cross-check that everything is consistent
         natal: {
           name: reading.chart.input.name,
           positions: natalPositions,
@@ -117,12 +122,13 @@ export default function DailyForgePage() {
             signIndex: reading.chart.ascendant.signIndex,
             degree: reading.chart.ascendant.degree,
           },
-          zodiac: reading.chart.zodiac,
+          zodiac,
         },
         transits: {
           date: transitData.date,
           positions: transitPositions,
           aspects: transitData.aspects,
+          zodiac,
         },
       };
 
@@ -161,23 +167,28 @@ export default function DailyForgePage() {
     await fetchReport();
   }
 
-  /** Toggle between sidereal and tropical transit calculation. */
+  /** Toggle between sidereal and tropical — regenerates the entire chart+reading
+   *  in the new system (in-memory only), so natal positions and the subsequent
+   *  transit computation are guaranteed to be in the same system. The persisted
+   *  birth input in localStorage keeps the user's original preferred zodiac. */
   function handleToggleZodiac() {
-    const current = transitZodiac ?? reading?.chart.zodiac ?? "tropical";
-    const next = current === "sidereal" ? "tropical" : "sidereal";
-    setTransitZodiac(next);
+    if (!reading) return;
+    const current = reading.chart.zodiac;
+    const next: "tropical" | "sidereal" = current === "sidereal" ? "tropical" : "sidereal";
+    generate(reading.input, next); // rebuilds the chart+reading in new system
     localStorage.removeItem(FORGE_REPORT_CACHE_KEY);
     setReport(null);
     setCached(false);
     setError(null);
     fetchedRef.current = false;
-    fetchReport(next);
+    // The useEffect watching `reading` will trigger fetchReport once the
+    // chart has been regenerated in the new system.
   }
 
-  /** Switch to a different saved chart — clears the cached report and re-fetches. */
+  /** Switch to a different saved chart — clears the cached report and re-fetches
+   *  in the new chart's stored zodiac. */
   function handleSwitchChart(input: BirthInput) {
     generate(input);
-    setTransitZodiac(null); // reset to chart's zodiac when switching charts
     localStorage.removeItem(FORGE_REPORT_CACHE_KEY);
     setReport(null);
     setCached(false);

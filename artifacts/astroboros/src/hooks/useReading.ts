@@ -189,9 +189,20 @@ export function useReading() {
     void Promise.all(checks);
   }, []);
 
-  const generate = useCallback((input: BirthInput) => {
-    const result = generateReading(computeChart(input));
+  const generate = useCallback((input: BirthInput, overrideZodiac?: "tropical" | "sidereal") => {
+    // When overrideZodiac differs from the user-stored input.zodiac, compute
+    // the chart in the override zodiac WITHOUT updating localStorage — so on
+    // reload the user gets back their original saved chart, and the in-memory
+    // chart can be temporarily shown in another system (e.g. for the Daily
+    // Forge Sidereal/Tropical toggle) without losing their preferred mode.
+    const effectiveInput: BirthInput =
+      overrideZodiac && overrideZodiac !== input.zodiac
+        ? { ...input, zodiac: overrideZodiac }
+        : input;
+    const result = generateReading(computeChart(effectiveInput));
     setReading(result);
+    // Persist the user's literal birth input (with their preferred zodiac).
+    // The override is a transient view of the same chart in another system.
     localStorage.setItem(READING_KEY, JSON.stringify(input));
     return result;
   }, []);

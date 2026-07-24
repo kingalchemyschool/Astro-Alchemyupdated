@@ -759,6 +759,29 @@ router.post("/daily-forge/report", forgeLimiter, async (req: any, res) => {
   }
 
   const zodiac = body.natal.zodiac === "sidereal" ? "sidereal" : "tropical";
+
+  // ── Consistency guard ───────────────────────────────────────────────────────
+  // Reject any request where the client mixes zodiac systems across the natal
+  // chart, the transit chart, and the explicit zodiac tag. A mixed-zodiac
+  // request would produce a report that names some planets in one system and
+  // some in another, which is incoherent and must never reach the generator.
+  const transitsZodiacRaw = (body as { transits?: { zodiac?: string } }).transits?.zodiac;
+  const topZodiacRaw = (body as { zodiac?: string }).zodiac;
+  const transitsZodiac = transitsZodiacRaw === "sidereal" ? "sidereal"
+    : transitsZodiacRaw === "tropical" ? "tropical" : null;
+  const topZodiac = topZodiacRaw === "sidereal" ? "sidereal"
+    : topZodiacRaw === "tropical" ? "tropical" : null;
+
+  const mismatches: string[] = [];
+  if (topZodiac && topZodiac !== zodiac) mismatches.push("zodiac");
+  if (transitsZodiac && transitsZodiac !== zodiac) mismatches.push("transits.zodiac");
+  if (mismatches.length) {
+    logger.warn({ mismatches, zodiac, topZodiac, transitsZodiac }, "Mixed-zodiac Daily Forge request rejected");
+    return res.status(400).json({
+      error: `Inconsistent zodiac across request (${mismatches.join(", ")} must match natal.zodiac=${zodiac}). Please reload the page.`,
+    });
+  }
+
   const key = cacheKey(tokenJti, date, zodiac, body.natal);
   const cached = reportCache.get(key);
   if (cached && cached.date === date) {

@@ -211,14 +211,14 @@ const MOON_PROCESSING: Record<string, { style: string; lens: string }> = {
 const PLANET_FUNCTION_NAME: Record<PlanetKey, string> = {
   sun:     "Essence",
   moon:    "Perception",
-  mercury: "Communication",
+  mercury: "Expression",
   venus:   "Value",
   mars:    "Impact",
   jupiter: "Expansion",
   saturn:  "Foundation",
-  uranus:  "Innovation",      // octave activator of Mercury / Communication
+  uranus:  "Genius",          // octave activator of Mercury / Expression
   neptune: "Dissolution",     // octave activator of Venus / Value
-  pluto:   "Transformation",  // octave activator of Mars / Impact
+  pluto:   "Regeneration",    // outer octave of Mars / Impact
 };
 
 // How each aspect type activates a function
@@ -256,7 +256,7 @@ const PLANET_DOMAIN_SHORT: Record<PlanetKey, string> = {
   saturn:  "discipline & limitation",
   uranus:  "innovation & disruption",
   neptune: "vision & dissolution",
-  pluto:   "transformation & depth",
+  pluto:   "regeneration & depth",
 };
 
 // Short aspect verb — what the transit planet does to the natal planet
@@ -416,6 +416,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
 
   const houseLabel = houseOrd(nHouse);
   const nFuncName  = PLANET_FUNCTION_NAME[nPlanet];
+  const tFuncName  = PLANET_FUNCTION_NAME[tPlanet];
 
   // ── CELESTIAL FIELD ──────────────────────────────────────────────────────
   const celestialField = activeAspects.map(aspect => {
@@ -478,10 +479,10 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
 
   // ── CELESTIAL STATE ──────────────────────────────────────────────────────
   const celestialStateTemplates = [
-    `Today's primary planetary contact is a ${aspectType} between transiting ${tName} at ${formatDeg(tPos)} and your natal ${nName} at ${formatDeg(nPos)} in your ${houseLabel} House. A ${aspectType} means ${aspectInfo.mechanism} — and in practical terms, this produces ${aspectInfo.experiential}. The ${houseLabel} House governs ${nHouseMeaning.full}, which means the area of ${nHouseMeaning.short.toLowerCase()} is where this lands most directly. ${tName} is currently in ${tSign}, a sign characterized by ${tSignInfo.brief}. That quality shapes how this contact plays out — bringing ${tSignInfo.operative} to the way this interaction unfolds. With an orb of ${top.orb}°, this aspect is tight and active throughout the day.`,
-    `The sky today puts a ${aspectType} between ${tName} and your natal ${nName} — a configuration that means ${aspectInfo.mechanism}. Your natal ${nName} sits in your ${houseLabel} House at ${formatDeg(nPos)}, a house concerned with ${nHouseMeaning.full}. Transiting ${tName} at ${formatDeg(tPos)} is ${aspectType === "conjunction" ? "merging with" : aspectType === "opposition" ? "pulling from across" : aspectType === "square" ? "pressing against" : aspectType === "trine" ? "flowing into" : "opening a path to"} that natal point. What this produces is ${aspectInfo.experiential}. The ${tSignInfo.brief} quality of ${tSign} is the character through which this contact expresses itself today.`,
-    `A ${aspectType} between transiting ${tName} and your natal ${nName} is the main planetary condition today. The ${aspectType} is how these two are interacting: it means ${aspectInfo.mechanism}. Your natal ${nName} in the ${houseLabel} House (${nHouseMeaning.full}) is the specific point in your chart being engaged. Transiting ${tName} at ${formatDeg(tPos)} in ${tSign} — a ${tSignInfo.brief} sign — is bringing ${tSignInfo.operative} to the area of ${nHouseMeaning.short.toLowerCase()} in your life. Orb: ${top.orb}°. The contact is precise and active.`,
-    `Today, ${tName} in ${tSign} forms a ${aspectType} with your natal ${nName} in your ${houseLabel} House. A ${aspectType} produces ${aspectInfo.experiential} — the two planets involved do not operate independently under this configuration. What that means concretely: the area of ${nHouseMeaning.full} — which is what your ${houseLabel} House governs — is under direct pressure. ${tName} at ${formatDeg(tPos)} is bringing its current quality (${tSignInfo.brief}, via ${tSign}) into contact with your natal ${nName} at ${formatDeg(nPos)}. The ${top.orb}° orb keeps this interaction tight and personally relevant throughout today.`,
+    `Today's primary planetary contact is a ${aspectType} between transiting ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) at ${formatDeg(nPos)} in your ${houseLabel} House. A ${aspectType} means ${aspectInfo.mechanism} — and in practical terms, this produces ${aspectInfo.experiential}. The ${houseLabel} House governs ${nHouseMeaning.full}, placing your ${nFuncName} function in this arena — which is exactly where today's contact lands. ${tName} is currently in ${tSign}, a sign characterized by ${tSignInfo.brief}, bringing ${tSignInfo.operative} to the way this interaction unfolds. With an orb of ${top.orb}°, this aspect is tight and active throughout the day.`,
+    `The sky today puts a ${aspectType} between ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) — a configuration that means ${aspectInfo.mechanism}. Your natal ${nName} sits in your ${houseLabel} House at ${formatDeg(nPos)}, a house concerned with ${nHouseMeaning.full}: this is the arena through which your ${nFuncName} function operates, and it is the territory today's contact is pressing directly into. Transiting ${tName} at ${formatDeg(tPos)} is ${aspectType === "conjunction" ? "merging with" : aspectType === "opposition" ? "pulling from across" : aspectType === "square" ? "pressing against" : aspectType === "trine" ? "flowing into" : "opening a path to"} that natal point. What this produces is ${aspectInfo.experiential}. The ${tSignInfo.brief} quality of ${tSign} is the character through which this contact expresses itself today.`,
+    `A ${aspectType} between transiting ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) is the main planetary condition today. The ${aspectType} is how these two functions are interacting: it means ${aspectInfo.mechanism}. Your natal ${nName} in the ${houseLabel} House governs ${nHouseMeaning.full} — that is the specific arena through which your ${nFuncName} function moves, and the precise territory this contact is engaging. Transiting ${tName} at ${formatDeg(tPos)} in ${tSign} — a ${tSignInfo.brief} sign — is bringing ${tSignInfo.operative} to that domain. Orb: ${top.orb}°. The contact is precise and active.`,
+    `Today, ${tName} (${tFuncName}) in ${tSign} forms a ${aspectType} with your natal ${nName} (${nFuncName}) in your ${houseLabel} House. A ${aspectType} produces ${aspectInfo.experiential} — the two functions do not operate independently under this configuration. Your ${nFuncName} function is placed in the ${houseLabel} House, which governs ${nHouseMeaning.full}: that is where this contact's pressure is applied. ${tName} at ${formatDeg(tPos)} is bringing its current ${tSignInfo.brief} quality into direct relation with your natal ${nName} at ${formatDeg(nPos)}. The ${top.orb}° orb keeps this interaction tight and personally relevant throughout today.`,
   ];
 
   // Supporting aspect paragraphs (one per secondary aspect)

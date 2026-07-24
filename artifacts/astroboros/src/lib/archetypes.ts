@@ -525,7 +525,7 @@ function functionReading(
   const houseDiff = Math.abs(pa.house - pb.house);
   const houseAddendum =
     houseDiff >= 4 || (pa.house <= 3 && pb.house >= 9) || (pa.house >= 9 && pb.house <= 3)
-      ? ` ${pA} runs through ${HOUSE_THROUGH[pa.house - 1]}, while ${pB} runs through ${HOUSE_THROUGH[pb.house - 1]}. The function produces its fullest output when both are engaged at once — when the work involves ${HOUSE_WORK[pa.house - 1]} and carries directly into ${HOUSE_WORK[pb.house - 1]}.`
+      ? ` ${pA} — as your ${PLANET_META[fn.pair[0]].fn} function — runs through ${HOUSE_THROUGH[pa.house - 1]}, which means this side of the function is most productive when the work involves ${HOUSE_WORK[pa.house - 1]}. ${pB} — as the ${PLANET_META[fn.pair[1]].fn} dimension — runs through ${HOUSE_THROUGH[pb.house - 1]}, grounding that end of the function in the arena of ${HOUSE_WORK[pb.house - 1]}. The function produces its fullest output when both territories are engaged simultaneously.`
       : "";
   const s2 = `Your ${pA} ${colorA}. ${pB} approaches this work differently. In ${sb.name} it ${colorB}. ${interaction}${houseAddendum}`;
 

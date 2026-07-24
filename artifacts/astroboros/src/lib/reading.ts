@@ -24,7 +24,7 @@ type Element = "fire" | "earth" | "air" | "water";
 type Modality = "cardinal" | "fixed" | "mutable";
 
 const ELEMENT_FLOW: Record<Element, string> = {
-  fire:  "Energy arrives as ignition — the impulse to move, create, and initiate is immediate and instinctive. This function generates heat before it generates light, and that forward momentum is where its power lives.",
+  fire:  "The impulse to move, create, and initiate is immediate and instinctive — this function generates heat before it generates light, and that forward momentum is where its power lives.",
   earth: "Energy arrives as tangible reality — this function trusts what can be measured, built, and held. It works through contact with material conditions, and its influence deepens through sustained, grounded application.",
   air:   "Energy arrives as connection — between concepts, between people, between what is known and what could be. This function moves through language and relationship, and its depth is expressed through the quality of what it links.",
   water: "Energy arrives as felt impression — sensed before it is named, known before it is understood. This function moves through emotional intelligence and instinctive resonance rather than surface reasoning.",
@@ -47,7 +47,7 @@ const ROLE: Partial<Record<PlanetKey, string>> = {
   sun:     "This is where your creative system begins. Everything in the chart flows from this point — the sign it occupies is not just a quality you carry but the fundamental medium through which all creative energy passes before it reaches anything else.",
   moon:    "Receiving the Essence your Sun establishes, this function converts it into felt reality — what registers as true, what the body knows before the mind names it, what shapes your perception of everything that enters the system.",
   mars:    "With perception formed, this function delivers the first actual movement — the translation of interior awareness into outward force. It determines how energy crosses from intention into action, and how you meet the resistance that action inevitably produces.",
-  mercury: "Force must become communicable to be useful. This function encodes what Mars initiates into signal — language, pattern, analysis, the transmissible form that allows what you have moved toward to be understood, directed, and built upon.",
+  mercury: "Force must find expression to reach beyond its source. This function gives what Mars initiates the form through which it can be understood, shared, and built upon — the language, pattern, and authored signal that turns interior movement into something that exists in the world.",
   jupiter: "Signal now seeks reach. This function takes what Mercury has articulated and extends its range — multiplying possibility, enlarging the field of what is available to work with, and bringing the philosophical dimension that asks what this is all actually for.",
   venus:   "Expansion creates abundance, but abundance requires selection. This function discerns what within Jupiter's expanded field is genuinely worth keeping — what has real value, what deserves sustained investment, what the system should retain and build on.",
   saturn:  "Value must be given form to endure. This function provides the architecture, discipline, and structural integrity that allows what Venus has recognized as worth keeping to survive time — to become something durable rather than merely something that once mattered.",
@@ -55,9 +55,9 @@ const ROLE: Partial<Record<PlanetKey, string>> = {
 
 // Role descriptions for the outer planets as standalone functions.
 const OUTER_ROLE: Partial<Record<PlanetKey, string>> = {
-  pluto:   "As Mars's higher octave, this function carries the force of Force to its evolutionary extreme. Where Mars initiates movement, Pluto drives transformation — the kind that requires the complete dismantling of what no longer serves before the new configuration can take shape. Its placement shows the arena of your life where this regenerative pressure is most consistently active, where your capacity for depth and total renewal is most concentrated, and where the quality of your presence carries the most evolutionary weight.",
-  uranus:  "As Mercury's higher octave, this function carries intelligence past its ordinary boundaries. Where Mercury communicates within established frameworks, Uranus reorganizes the frameworks themselves — through sudden insight, pattern-breaking perception, and the kind of original synthesis that arrives as recognition rather than construction. Its placement shows where you naturally see what others miss, where innovation is not a style but a necessity, and where the creative system is most regularly interrupted and renewed.",
-  neptune: "As Venus's higher octave, this function carries value past individual discernment into collective resonance. Where Venus selects what is personally worth keeping, Neptune draws the value function toward what carries meaning beyond the personal — ideal forms, collective imagination, the transcendent dimension of what is worth creating. Its placement shows where your creative system is most permeable to inspiration that exceeds ordinary definition, and where the work is most likely to carry significance that outlasts its immediate moment.",
+  pluto:   "Pluto is the outer octave of Mars — where Mars initiates movement, Pluto drives regeneration at an evolutionary scale, the kind that requires the complete dismantling of what no longer serves before the new configuration can take shape. Its placement shows the arena of your life where this regenerative pressure is most consistently active, where your capacity for depth and total renewal is most concentrated, and where the quality of your presence carries the most evolutionary weight.",
+  uranus:  "Uranus is the outer octave of Mercury — where Mercury works within existing frameworks to communicate and connect, Uranus reorganizes the frameworks themselves through sudden insight, pattern-breaking perception, and the kind of original synthesis that arrives as recognition rather than construction. Its placement shows where you naturally see what others miss, where innovation is not a style but a necessity, and where the creative system is most regularly interrupted and renewed.",
+  neptune: "Neptune is the outer octave of Venus — where Venus selects what is personally worth keeping, Neptune draws discernment toward what carries meaning beyond the personal: ideal forms, collective imagination, the transcendent dimension of what is worth creating. Its placement shows where your creative system is most permeable to inspiration that exceeds ordinary definition, and where the work is most likely to carry significance that outlasts its immediate moment.",
 };
 
 // ── Aspect synthesis factories ──────────────────────────────────────────────
@@ -87,11 +87,11 @@ const ASPECT_PAIR_TEXT: Partial<Record<PlanetKey, Record<AspectType, AspectDesc>
     opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places Force in direct dialogue with ${fn.toLowerCase()} — action cannot proceed without awareness of what ${n} requires, and ${n} cannot operate without the pressure Mars generates. That polarity matures into complementary precision at both ends.`,
   },
   mercury: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} merges Intelligence and ${fn.toLowerCase()} at source — thought and ${n}'s function are running as a single process, each shaping the other before either externalises as language, pattern, or signal.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} opens a productive channel between Intelligence and ${fn.toLowerCase()} — Mercury draws on ${n}'s resources when precision requires it, without being overwritten or redirected by them.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} creates productive tension between Intelligence and ${fn.toLowerCase()} — what Mercury understands and what ${n} demands are in friction, forcing each into greater precision and preventing either from settling into its easier, less tested form.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} lets Intelligence and ${fn.toLowerCase()} move together with structural ease — what Mercury synthesises, ${n} can readily receive and apply, which reduces the loss between understanding something and having it actually function in the world.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places Intelligence in full dialogue with ${fn.toLowerCase()} — what Mercury articulates, ${n} qualifies; what ${n} requires, Mercury must speak to. That mutual pressure has been producing increasingly complementary precision on both sides.`,
+    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} merges Expression and ${fn.toLowerCase()} at source — how you give form to what you know and what ${n} does are running as a single process, each shaping the quality of the other before either reaches the world as language, pattern, or authored signal.`,
+    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} opens a productive channel between Expression and ${fn.toLowerCase()} — Mercury can draw on ${n}'s resources when the work of articulation requires it, without ${n} overriding how that expression finds its form.`,
+    square:      (n, fn, orb) => `The ${orb}° square to ${n} creates productive tension between Expression and ${fn.toLowerCase()} — how you give form to understanding and what ${n} demands are in friction, forcing each into greater precision and preventing either from settling into its easier, less tested version.`,
+    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} lets Expression and ${fn.toLowerCase()} move together with structural ease — what Mercury articulates, ${n} can readily receive and apply, which reduces the loss between finding the right form for something and having it actually land in the world.`,
+    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places Expression in full dialogue with ${fn.toLowerCase()} — how you give form to what you know is qualified by what ${n} requires, and what ${n} produces must be speakable through Mercury's register. That mutual pressure has been producing increasingly complementary precision on both sides.`,
   },
   jupiter: {
     conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} fuses Expansion directly with ${fn.toLowerCase()} — what Jupiter multiplies is immediately shaped by ${n}'s function, and what ${n} produces is immediately extended by Jupiter's scale. The two are structurally inseparable.`,
@@ -145,7 +145,7 @@ function richAspectParagraph(chart: NatalChart, key: PlanetKey): string | null {
   const meta = PLANET_META[key];
 
   if (!list.length) {
-    return `${meta.name} holds no exact major aspects in this chart, which means the ${meta.fn.toLowerCase()} function operates without direct planetary conditioning from the rest of the system. This is not a weakness — it is a particular quality of self-containment. The function answers to its own interior standard, develops on its own terms, and is not continuously reshaped by external planetary pressure. The developmental work is learning to recognize what this function is producing independent of the friction that aspects would otherwise provide, and to trust that signal even when the rest of the system is not confirming it.`;
+    return `${meta.name} holds no exact major aspects in this chart — it operates without direct planetary conditioning from the rest of the system. This is not a weakness; it is a particular quality of self-containment. ${meta.name} answers to its own interior standard, develops on its own terms, and is not continuously reshaped by external planetary pressure. The developmental work is learning to recognize what ${meta.name} is producing independent of the friction that aspects would otherwise provide, and to trust that signal even when the rest of the chart is not confirming it.`;
   }
 
   // Group aspects for a more coherent synthesis
@@ -155,14 +155,29 @@ function richAspectParagraph(chart: NatalChart, key: PlanetKey): string | null {
   const lines = list.slice(0, 5).map((asp) => {
     const otherKey = asp.a === key ? asp.b : asp.a;
     const otherMeta = PLANET_META[otherKey];
+    const otherPos = chart.positions[otherKey];
+    const thisPos = chart.positions[key];
+    const otherSign = SIGNS[otherPos.signIndex].name;
+    const otherHouseOrd = ORDINALS[otherPos.house - 1];
+    const thisSign = SIGNS[thisPos.signIndex].name;
+    const thisHouseOrd = ORDINALS[thisPos.house - 1];
+
     const factory = ASPECT_PAIR_TEXT[key]?.[asp.type];
-    if (factory) return factory(otherMeta.name, otherMeta.fn, String(asp.orb));
-    return `The ${asp.orb}° ${ASPECT_WORD[asp.type]} with ${otherMeta.name} connects ${meta.fn.toLowerCase()} and ${otherMeta.fn.toLowerCase()} — the two functions condition each other, and neither operates entirely independently of the other in this chart.`;
+    const baseText = factory
+      ? factory(otherMeta.name, otherMeta.fn, String(asp.orb))
+      : `The ${asp.orb}° ${ASPECT_WORD[asp.type]} with ${otherMeta.name} draws ${meta.name} in ${thisSign} into direct relationship with ${otherMeta.name} in ${otherSign} — neither operates without awareness of the other, and that mutual conditioning has been shaping both over time.`;
+
+    // Add sign + house placement context to ground the aspect in actual positions
+    const placementCtx = otherPos.house !== thisPos.house
+      ? ` ${meta.name} sits in ${thisSign} in the ${thisHouseOrd} house; ${otherMeta.name} sits in ${otherSign} in the ${otherHouseOrd} house. The contact between them runs between those two arenas — what happens in one is felt in the other, and the most productive engagement with this aspect involves holding both territories in view simultaneously.`
+      : ` Both ${meta.name} in ${thisSign} and ${otherMeta.name} in ${otherSign} share the ${thisHouseOrd} house — this concentrates the entire contact into a single arena of life, where its effects are immediate and impossible to compartmentalize.`;
+
+    return baseText + placementCtx;
   });
 
   let synthesis: string;
   if (harmoniousAspects.length > 0 && tensionAspects.length > 0) {
-    synthesis = `What this produces, in total, is a ${meta.fn.toLowerCase()} function that is simultaneously supported by ${harmoniousAspects.map(a => {
+    synthesis = `In total, ${meta.name} is simultaneously supported by ${harmoniousAspects.map(a => {
       const ok = a.a === key ? a.b : a.a;
       return PLANET_META[ok].name;
     }).join(" and ")} and tested by ${tensionAspects.map(a => {
@@ -170,12 +185,12 @@ function richAspectParagraph(chart: NatalChart, key: PlanetKey): string | null {
       return PLANET_META[ok].name;
     }).join(" and ")} — a configuration that, over time, produces the kind of capability that has been built under real conditions rather than assumed.`;
   } else if (harmoniousAspects.length > 0) {
-    synthesis = `Taken together, these connections give the ${meta.fn.toLowerCase()} function a network of structural support — each planet contributes something that deepens or extends what ${meta.name} can do, and that support is woven into how this function operates at its foundation.`;
+    synthesis = `Taken together, these connections give ${meta.name} a network of structural support — each planet contributes something that deepens or extends what ${meta.name} can do, and that support is woven into how this planet operates at its foundation.`;
   } else {
-    synthesis = `Taken together, these connections mean the ${meta.fn.toLowerCase()} function has been consistently tested rather than smoothly supported — which is the precise condition through which its most durable and precise form is eventually developed.`;
+    synthesis = `Taken together, these connections mean ${meta.name} has been consistently tested rather than smoothly supported — which is the precise condition through which its most durable and precise form is eventually developed.`;
   }
 
-  const intro = `${meta.name}'s ${meta.fn.toLowerCase()} function is woven into the larger system through ${list.length === 1 ? "one major aspect" : `${list.length} major aspects`} — each one a living relationship that continuously shapes how this energy moves and what it can do.`;
+  const intro = `${meta.name} is woven into the larger system through ${list.length === 1 ? "one major aspect" : `${list.length} major aspects`} — each one a living relationship that continuously shapes how this energy moves and what it can do.`;
 
   return `${intro} ${lines.join(" ")} ${synthesis}`;
 }
@@ -195,18 +210,18 @@ function planetSection(chart: NatalChart, key: PlanetKey): ReportSection {
   const el = sign.element as Element;
   const mod = sign.modality as Modality;
   const retroNote = pos.retrograde
-    ? ` Moving retrograde, this function turns inward before it externalises — it refines through reflection first, which means the outward expression often lags behind a considerable interior depth.`
+    ? ` Moving retrograde, ${meta.name} turns inward before it externalises — refining through reflection first, which means the outward expression often lags behind a considerable interior depth.`
     : "";
 
   // p0 — FREE: role in system → placement → what sign brings → retrograde
   const p0 =
-    `${meta.glyph} ${meta.name} — your function of ${meta.fn} — sits in ${sign.name} in the ${houseOrd} house, ${HOUSE_DOMAIN[hi]}. ` +
+    `${meta.glyph} ${meta.name} — governing ${meta.fn.toLowerCase()} in your alchemy — sits in ${sign.name} in the ${houseOrd} house, ${HOUSE_DOMAIN[hi]}. ` +
     `${ROLE[key] ?? ""} ` +
     `In ${sign.name}, that energy arrives ${sign.element === "fire" ? "as ignition" : sign.element === "earth" ? "as grounded, material contact" : sign.element === "air" ? "as connection and concept" : "as felt impression"} — ${SIGN_QUALITY[pos.signIndex]}.` +
     `${retroNote}`;
 
   // p1 — PAID: how element/modality/house shape this function in practice
-  const houseSpecific = PLANET_HOUSE[key]?.[hi] ?? `In the ${houseOrd} house, this function finds its expression through ${HOUSE_THROUGH[hi]}.`;
+  const houseSpecific = PLANET_HOUSE[key]?.[hi] ?? `In the ${houseOrd} house, ${meta.name} finds its expression through ${HOUSE_THROUGH[hi]}.`;
   const p1 =
     `${ELEMENT_FLOW[el]} ${MODALITY_DECISION[mod]} ` +
     `${houseSpecific} ` +
@@ -225,7 +240,7 @@ function planetSection(chart: NatalChart, key: PlanetKey): ReportSection {
     const oHouse = ORDINALS[oPos.house - 1];
     const oMeta = PLANET_META[meta.octave];
     paragraphs.push(
-      `${oMeta.glyph} ${oMeta.name} — this function's higher octave — occupies ${oSign.name} in the ${oHouse} house. ` +
+      `${oMeta.glyph} ${oMeta.name} — the outer octave planet — occupies ${oSign.name} in the ${oHouse} house. ` +
       `${OUTER_ROLE[meta.octave] ?? ""} ` +
       `Its full reading appears below as its own section.`
     );
@@ -252,7 +267,7 @@ function outerPlanetSection(chart: NatalChart, key: "pluto" | "uranus" | "neptun
   const hi = pos.house - 1;
   const houseOrd = ORDINALS[hi];
   const retroNote = pos.retrograde
-    ? ` Moving retrograde at your birth, this function internalises its pressure even more deeply — the evolutionary or disruptive or dissolving quality operates primarily through interior work before it surfaces in external events.`
+    ? ` Moving retrograde at your birth, ${meta.name} internalises its pressure even more deeply — the evolutionary or disruptive or dissolving quality operates primarily through interior work before it surfaces in external events.`
     : "";
 
   // The inner planet this outer planet extends
@@ -266,7 +281,7 @@ function outerPlanetSection(chart: NatalChart, key: "pluto" | "uranus" | "neptun
 
   // p0: octave relationship + sign + house
   const p0 =
-    `${meta.glyph} ${meta.name} — ${meta.fn}, and the higher octave of your ${innerMeta.fn} function — occupies ${sign.name} in the ${houseOrd} house, ${HOUSE_DOMAIN[hi]}. ` +
+    `${meta.glyph} ${meta.name} — governing ${meta.fn.toLowerCase()}, the outer octave of ${innerMeta.name} — occupies ${sign.name} in the ${houseOrd} house, ${HOUSE_DOMAIN[hi]}. ` +
     `${generationalNote}` +
     `${retroNote}`;
 
@@ -302,7 +317,7 @@ function outerPlanetSection(chart: NatalChart, key: "pluto" | "uranus" | "neptun
     kind: "planet",
     order: 0,
     title: titleMap[key],
-    subtitle: `${sign.name} — ${houseOrd} House · ${innerMeta.name}'s Higher Octave`,
+    subtitle: `${sign.name} — ${houseOrd} House · Outer Octave of ${innerMeta.name}`,
     glyph: glyphMap[key],
     planetKeys: [key],
     paragraphs,
@@ -383,12 +398,12 @@ export function generateReading(chart: NatalChart): Reading {
   add(planetSection(chart, "sun"));
   add(planetSection(chart, "moon"));
   add(planetSection(chart, "mars"));
-  add(outerPlanetSection(chart, "pluto"));   // Mars's higher octave
+  add(outerPlanetSection(chart, "pluto"));   // outer octave of Mars
   add(planetSection(chart, "mercury"));
-  add(outerPlanetSection(chart, "uranus"));  // Mercury's higher octave
+  add(outerPlanetSection(chart, "uranus"));  // outer octave of Mercury
   add(planetSection(chart, "jupiter"));
   add(planetSection(chart, "venus"));
-  add(outerPlanetSection(chart, "neptune")); // Venus's higher octave
+  add(outerPlanetSection(chart, "neptune")); // outer octave of Venus
   add(planetSection(chart, "saturn"));
 
   const heroJourney = generateHeroJourney(chart, primary);

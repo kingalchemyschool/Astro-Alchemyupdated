@@ -39,7 +39,7 @@ export const PLANET_META: Record<PlanetKey, PlanetInfo> = {
   sun: { name: "Sun", glyph: "☉", fn: "Essence", point: 0 },
   moon: { name: "Moon", glyph: "☽", fn: "Perception", point: 1 },
   mars: { name: "Mars", glyph: "♂", fn: "Force", point: 2, octave: "pluto" },
-  mercury: { name: "Mercury", glyph: "☿", fn: "Genius", point: 4, octave: "uranus" },
+  mercury: { name: "Mercury", glyph: "☿", fn: "Expression", point: 4, octave: "uranus" },
   jupiter: { name: "Jupiter", glyph: "♃", fn: "Expansion", point: 5 },
   venus: { name: "Venus", glyph: "♀", fn: "Value", point: 7, octave: "neptune" },
   saturn: { name: "Saturn", glyph: "♄", fn: "Foundation", point: 8 },

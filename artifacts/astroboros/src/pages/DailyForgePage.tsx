@@ -33,13 +33,17 @@ export default function DailyForgePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fetchedRef = useRef(false);
+  // null = "match natal chart zodiac"; set explicitly on user toggle
+  const [transitZodiac, setTransitZodiac] = useState<"tropical" | "sidereal" | null>(null);
 
   const today = todayDateString();
+  // Effective zodiac: user override → natal chart default → tropical fallback
+  const activeZodiac = transitZodiac ?? reading?.chart.zodiac ?? "tropical";
 
   // Try to restore a cached report from localStorage
   useEffect(() => {
     if (!reading) return; // wait until chart is loaded — fingerprint requires it
-    const zodiac = reading.chart.zodiac;
+    const zodiac = transitZodiac ?? reading.chart.zodiac;
     const chartKey = chartFingerprint(reading.chart);
     try {
       const raw = localStorage.getItem(FORGE_REPORT_CACHE_KEY);
@@ -56,7 +60,7 @@ export default function DailyForgePage() {
     } catch {
       // ignore
     }
-  }, [today, reading]);
+  }, [today, reading, transitZodiac]);
 
   // Fetch report when we have a chart and a token
   useEffect(() => {
@@ -65,10 +69,12 @@ export default function DailyForgePage() {
     fetchReport();
   }, [forgePremium, reading]);
 
-  async function fetchReport() {
+  async function fetchReport(zodiacOverride?: "tropical" | "sidereal") {
     if (!reading) return;
     setLoading(true);
     setError(null);
+
+    const zodiac = zodiacOverride ?? transitZodiac ?? reading.chart.zodiac;
 
     try {
       const token = localStorage.getItem(FORGE_TOKEN_KEY);
@@ -78,7 +84,7 @@ export default function DailyForgePage() {
         return;
       }
 
-      const transitData = computeTransits(reading.chart);
+      const transitData = computeTransits(reading.chart, zodiac);
 
       const natalPositions: Record<string, any> = {};
       for (const [key, pos] of Object.entries(reading.chart.positions)) {
@@ -139,7 +145,7 @@ export default function DailyForgePage() {
       setReport(fetched);
       setCached(data.cached === true);
 
-      localStorage.setItem(FORGE_REPORT_CACHE_KEY, JSON.stringify({ date: today, zodiac: reading.chart.zodiac, chartKey: chartFingerprint(reading.chart), report: fetched }));
+      localStorage.setItem(FORGE_REPORT_CACHE_KEY, JSON.stringify({ date: today, zodiac, chartKey: chartFingerprint(reading.chart), report: fetched }));
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
@@ -155,9 +161,23 @@ export default function DailyForgePage() {
     await fetchReport();
   }
 
+  /** Toggle between sidereal and tropical transit calculation. */
+  function handleToggleZodiac() {
+    const current = transitZodiac ?? reading?.chart.zodiac ?? "tropical";
+    const next = current === "sidereal" ? "tropical" : "sidereal";
+    setTransitZodiac(next);
+    localStorage.removeItem(FORGE_REPORT_CACHE_KEY);
+    setReport(null);
+    setCached(false);
+    setError(null);
+    fetchedRef.current = false;
+    fetchReport(next);
+  }
+
   /** Switch to a different saved chart — clears the cached report and re-fetches. */
   function handleSwitchChart(input: BirthInput) {
     generate(input);
+    setTransitZodiac(null); // reset to chart's zodiac when switching charts
     localStorage.removeItem(FORGE_REPORT_CACHE_KEY);
     setReport(null);
     setCached(false);
@@ -273,7 +293,7 @@ export default function DailyForgePage() {
           <ChartSwitcher reading={reading} onSwitch={handleSwitchChart} />
         </div>
 
-        <ForgeReport report={report} cached={cached} zodiac={reading?.chart.zodiac} />
+        <ForgeReport report={report} cached={cached} zodiac={activeZodiac} onToggleZodiac={handleToggleZodiac} />
       </PageShell>
     );
   }

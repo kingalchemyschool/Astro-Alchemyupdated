@@ -25,9 +25,10 @@ interface Props {
   report: ForgeReport;
   cached?: boolean;
   zodiac?: "tropical" | "sidereal";
+  onToggleZodiac?: () => void;
 }
 
-export default function ForgeReport({ report, cached, zodiac = "tropical" }: Props) {
+export default function ForgeReport({ report, cached, zodiac = "tropical", onToggleZodiac }: Props) {
   const { primaryTransit: pt } = report;
 
   const dateLabel = new Date(report.date + "T12:00:00").toLocaleDateString("en-US", {
@@ -60,13 +61,17 @@ export default function ForgeReport({ report, cached, zodiac = "tropical" }: Pro
             <h1 className="font-serif text-2xl font-semibold text-[#E8E4D8]">{dateLabel}</h1>
           </div>
           <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-            <span className={`rounded-full border px-3 py-1 text-[10px] font-mono tracking-widest uppercase ${
-              zodiac === "sidereal"
-                ? "border-amber-500/40 bg-amber-500/10 text-amber-400"
-                : "border-[#8B9EE8]/30 bg-[#3B4B8C]/10 text-[#8B9EE8]"
-            }`}>
-              {zodiac === "sidereal" ? "Sidereal · Lahiri" : "Tropical"}
-            </span>
+            <button
+              onClick={onToggleZodiac}
+              title={`Switch to ${zodiac === "sidereal" ? "tropical" : "sidereal"} transits`}
+              className={`rounded-full border px-3 py-1 text-[10px] font-mono tracking-widest uppercase transition-colors cursor-pointer ${
+                zodiac === "sidereal"
+                  ? "border-amber-500/40 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20"
+                  : "border-[#8B9EE8]/30 bg-[#3B4B8C]/10 text-[#8B9EE8] hover:bg-[#3B4B8C]/20"
+              }`}
+            >
+              {zodiac === "sidereal" ? "⇄ Sidereal · Lahiri" : "⇄ Tropical"}
+            </button>
             {cached && (
               <span className="rounded-full border border-[#3B4B8C]/40 bg-[#3B4B8C]/10 px-3 py-1 text-[10px] font-mono tracking-widest uppercase text-[#6B7A99]">
                 Cached

@@ -69,8 +69,12 @@ export function todayDateString(): string {
 }
 
 /** Compute today's transit chart against the user's natal chart.
- *  Uses the user's birth location so house assignments are meaningful. */
-export function computeTransits(natal: NatalChart): TransitData {
+ *  Uses the user's birth location so house assignments are meaningful.
+ *  Pass zodiacOverride to compute transits in a different zodiac than the natal chart. */
+export function computeTransits(
+  natal: NatalChart,
+  zodiacOverride?: "tropical" | "sidereal",
+): TransitData {
   const today = todayDateString();
   const transitInput: BirthInput = {
     date: today,
@@ -80,7 +84,7 @@ export function computeTransits(natal: NatalChart): TransitData {
     lon: natal.input.lon,
     tz: natal.input.tz,
     tzName: natal.input.tzName,
-    zodiac: natal.zodiac,
+    zodiac: zodiacOverride ?? natal.zodiac,
   };
 
   const transitChart = computeChart(transitInput);

@@ -86,7 +86,7 @@ Analyze each planetary function in this exact order:
 1. Sun — Creative Vision
 2. Moon — Perception
 3. Mars — Impact
-4. Mercury — Communication
+4. Mercury — Expression
 5. Jupiter — Expansion
 6. Venus — Value
 7. Saturn — Foundation
@@ -95,14 +95,14 @@ For each function include:
 
 ### [PLANET] — [FUNCTION NAME]
 
-**[Person A name]:** Planet sign placement + house placement. Explain the person's natural expression of this function, how the sign modifies the energy, how the house determines where it manifests.
+**[Person A name]:** Planet sign placement + house placement. Explain the person's natural expression of this function, how the sign modifies the energy, and specifically how the house arena shapes where and how that function manifests in daily life — not just which house, but what that house's territory means for this planet's function.
 
 **[Person B name]:** Planet sign placement + house placement. Same structure.
 
-**Interaction:** Include the primary synastry aspect. Explain the astrological mechanics, the psychological expression, and the creative consequence. Do not simply define the aspect.
+**Interaction:** Include the primary synastry aspect. Explain the astrological mechanics, the psychological expression, and the creative consequence. Do not simply define the aspect. Always name what the two planet functions are doing to each other — not just what aspect type connects them.
 
 Bad: "Squares create tension."
-Better: "This square occurs because both individuals initiate from different elemental motivations. The friction is not caused by lack of alignment, but by two strong methods attempting to direct the same creative resource."
+Better: "This square puts Person A's Expression function in direct friction with Person B's Force function — neither can initiate or communicate without encountering the resistance the other generates, and that friction has been steadily making both more precise."
 
 **Creation Pattern:** How does this show up when these two people build, work, create, or make decisions together? Include natural advantages, possible friction, and how the energy behaves under pressure.
 
@@ -134,7 +134,7 @@ For each: What Creates Friction | How It Appears | What It Is Teaching The Colla
 Explain how this partnership moves through the creative process using these stages:
 
 **Ignition** — How ideas begin.
-**Translation** — How ideas become understood.
+**Expression** — How ideas find form and become understood.
 **Execution** — How energy becomes action.
 **Expansion** — How growth occurs.
 **Preservation** — How longevity is created.
@@ -162,6 +162,8 @@ WRITING RULES:
 7. Make recommendations practical and measurable.
 8. Maintain the Astral Forge vocabulary: Blueprint, Laboratory, Creation, Refinement, Function, Alchemy, Handoff, Threshold.
 9. The final report should feel like a personalized strategic blueprint, not an automated reading.
+10. When describing any house placement, always explain how that specific house arena actively shapes what the planet's function produces — not just where it is located.
+11. When describing any aspect between two planets, always name what each planet's function is doing to the other — how they interact at the level of function, not just aspect type.
 
 Transform astrological data into a precise map of how two people create together.`;
 

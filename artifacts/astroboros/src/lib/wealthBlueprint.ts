@@ -564,7 +564,7 @@ function consciousnessTitle(sunEl: El, moonEl: El): string {
 }
 
 function impactFormula(_marsEl: El, _mercEl: El): string {
-  return "Force → Translation → Innovation → Consequence";
+  return "Force → Expression → Genius → Consequence";
 }
 function wealthFormula(_jupEl: El): string {
   return "Opportunity → Refinement → Meaning → Value";
@@ -1076,10 +1076,10 @@ function generateSynthesis(chart: NatalChart) {
   };
 
   const translation: import("../types/astro").WealthRelation = {
-    title: "Innovation",
-    subtitle: "How intelligence becomes evolutionary insight",
+    title: "Genius",
+    subtitle: "How expression becomes breakthrough insight",
     planets: `${glyph("mercury")} Mercury · ${glyph("uranus")} Uranus`,
-    formula: "Information → Pattern → Breakthrough",
+    formula: "Expression → Pattern Recognition → Breakthrough",
     paragraphs: [
       TRANSLATION_SYNTHESIS_INTRO[mercEl],
       `In ${signName(chart, "mercury")}, intelligence translates through ${MERCURY_TRANSLATE[mercSi]}.`,
@@ -1204,8 +1204,8 @@ export function generateWealthBlueprint(chart: NatalChart): WealthBlueprint {
     ? `${glyph("mercury")} Mercury retrograde develops ideas through reflection before expression — insight matures internally before it enters language.`
     : "";
   const mercSection = [
-    `${glyph("mercury")} Mercury is the translation mechanism of the Impact system — it converts force and transformational capacity into something others can receive and act on. Its sign reveals how this person's intelligence organizes what needs to be communicated; without effective translation, impact is experienced at its source but never reaches the system it was meant to change.`,
-    `In ${signName(chart, "mercury")}, your mind translates ${MERCURY_TRANSLATE[mercSi]}.`,
+    `${glyph("mercury")} Mercury is the expression function of the Impact system — it gives force and transformational capacity the form through which others can receive, understand, and act on what has been initiated. Expression is not packaging added after the fact; it is the mechanism that determines whether what has been generated reaches the world or remains locked at its source. Its sign reveals how this intelligence finds its voice — the characteristic register through which what has been set in motion becomes transmissible.`,
+    `In ${signName(chart, "mercury")}, this expression operates through ${MERCURY_TRANSLATE[mercSi]}.`,
     MERCURY_HOUSE[mercH - 1],
     mercAspects ? mercAspects : "",
     mercRetroText,
@@ -1217,7 +1217,7 @@ export function generateWealthBlueprint(chart: NatalChart): WealthBlueprint {
     ? `${glyph("uranus")} Uranus retrograde develops innovation internally before it becomes visible — breakthroughs emerge from private synthesis rather than external disruption.`
     : "";
   const uraSection = [
-    `${glyph("uranus")} Uranus directs Impact force toward what is structurally new rather than incrementally better — it recognizes when optimization has reached its limit and a different architecture is required. Its sign and house reveal where impact breaks from what was inherited and begins something that could not have emerged from prior conditions.`,
+    `${glyph("uranus")} Uranus elevates Mercury's expression into the Genius register — it recognizes when existing language and frameworks have reached their limit and an entirely new architecture is required. Where Mercury communicates within established structures, Uranus reorganizes the structures themselves, producing insight that arrives as recognition rather than incremental construction. Its sign and house reveal where expression breaks from what was inherited and begins something that could not have emerged from prior conditions.`,
     `In ${signName(chart, "uranus")}, evolution operates ${URANUS_INNOVATE[uraSi]}.`,
     URANUS_HOUSE[uraH - 1],
     uraAspects ? uraAspects : "",

@@ -3,3 +3,4 @@
 - [Preview authentication](astroboros-preview-auth.md) — Clerk may fail to load on Replit preview hosts; preserve the app’s graceful unauthenticated fallback and test auth on publish
 - [Development API auth fallback](astroboros-dev-api.md) — API startup must allow missing Clerk backend credentials in development while remaining strict in production
 - [Daily Forge calendar and zodiac](astroboros-daily-forge.md) — use the browser’s local date and explicitly pair transit calculations with the active natal zodiac
+- [Daily Forge activation language](astroboros-forge-language.md) — activation cards should explain the lived function and aspect dynamic, not use one-word planet labels

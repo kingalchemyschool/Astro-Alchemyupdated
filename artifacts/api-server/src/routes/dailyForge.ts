@@ -92,8 +92,10 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   return `${sun?.signIndex ?? 0}.${sun?.degree ?? 0}:${moon?.signIndex ?? 0}.${moon?.degree ?? 0}:${asc?.signIndex ?? 0}`;
 }
 
+const REPORT_VERSION = "activation-v2";
+
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
-  return `${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
+  return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
 }
 
 // ─── Vocabulary ───────────────────────────────────────────────────────────────
@@ -245,28 +247,52 @@ const PLANET_GLYPH: Record<PlanetKey, string> = {
   jupiter: "♃", saturn: "♄", uranus: "♅", neptune: "♆", pluto: "♇",
 };
 
-// Short one-phrase domain per planet (for relationship descriptions)
-const PLANET_DOMAIN_SHORT: Record<PlanetKey, string> = {
-  sun:     "essence",
-  moon:    "emotional life",
-  mercury: "thought & communication",
-  venus:   "values & connection",
-  mars:    "drive & assertion",
-  jupiter: "growth & belief",
-  saturn:  "discipline & limitation",
-  uranus:  "innovation & disruption",
-  neptune: "vision & dissolution",
-  pluto:   "regeneration & depth",
+// Human-readable functions for the activation field. These are intentionally
+// more concrete than one-word planet keywords: the report should explain what
+// a transit is asking the person to notice, not just name a category.
+const TRANSIT_FUNCTION: Record<PlanetKey, string> = {
+  sun:     "focus on identity, purpose, and creative expression",
+  moon:    "emotional weather, instinctive responses, and immediate needs",
+  mercury: "conversations, perceptions, and decisions",
+  venus:   "attraction, taste, and the signals that shape connection",
+  mars:    "urgency, effort, boundaries, and assertion",
+  jupiter: "expansion of belief, confidence, and possibility",
+  saturn:  "pressure to define standards, commitments, and structure",
+  uranus:  "disruption, liberation, and a new way of seeing the pattern",
+  neptune: "sensitivity, imagination, and the dissolving of old boundaries",
+  pluto:   "pressure to confront what is buried and change it at the root",
 };
 
-// Short aspect verb — what the transit planet does to the natal planet
-const ASPECT_VERB_SHORT: Record<AspectType, string> = {
-  conjunction: "merges with",
-  trine:       "flows into",
-  sextile:     "opens toward",
-  square:      "presses against",
-  opposition:  "stands across from",
+const NATAL_FUNCTION: Record<PlanetKey, string> = {
+  sun:     "your sense of purpose and way of expressing who you are",
+  moon:    "your emotional baseline, instinctive responses, and need for safety",
+  mercury: "your thinking, language, and way of making meaning",
+  venus:   "your values, desires, and way of creating connection",
+  mars:    "your will, boundaries, and way of taking action",
+  jupiter: "your beliefs, confidence, and capacity for growth",
+  saturn:  "your standards, commitments, and long-term structures",
+  uranus:  "your originality, freedom, and relationship to change",
+  neptune: "your imagination, sensitivity, and ideals",
+  pluto:   "your relationship to power, endings, and deep transformation",
 };
+
+function activationDescription(aspect: TransitAspect): string {
+  const transit = TRANSIT_FUNCTION[aspect.transitPlanet];
+  const natal = NATAL_FUNCTION[aspect.natalPlanet];
+
+  switch (aspect.type) {
+    case "conjunction":
+      return `The current transit brings ${transit} into direct contact with ${natal}. What surfaces wants your full attention rather than a quick reaction.`;
+    case "trine":
+      return `The current transit lets ${transit} move more easily through ${natal}. The ease is real, but it becomes useful when you turn it into deliberate movement.`;
+    case "sextile":
+      return `The current transit opens a practical opportunity to develop ${natal} through ${transit}. The opening becomes real when you take a specific step.`;
+    case "square":
+      return `The current transit puts ${transit} under pressure from ${natal}. The friction shows where a familiar response is ready to become more capable.`;
+    case "opposition":
+      return `The current transit places ${transit} across from ${natal}. The tension reveals what your usual perspective leaves out.`;
+  }
+}
 
 const SIGN_QUALITY: Record<string, { brief: string; operative: string }> = {
   Aries:       { brief: "initiating and direct",             operative: "directness and initiative" },
@@ -433,7 +459,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
       planetaryAspect:       `${sp_tGlyph} ${sp_tName} ${ASPECT_LABEL_CAP[aspect.type]} Natal ${sp_nGlyph} ${sp_nName}`,
       natalPlacement:        `${sp_nSign} ${sp_nPos.degree}° · ${houseOrd(sp_nHouse)} House`,
       houseActivation:       `${houseOrd(sp_nHouse)} House · ${sp_houseInfo.short}`,
-      coreFunctionActivated: `${PLANET_DOMAIN_SHORT[aspect.transitPlanet]} ${ASPECT_VERB_SHORT[aspect.type]} natal ${PLANET_DOMAIN_SHORT[aspect.natalPlanet]}`,
+      coreFunctionActivated: activationDescription(aspect),
     };
   });
 
@@ -473,7 +499,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   const primaryThemeStr = pick(themes[aspectType], seed, 0);
   const todaysTheme = supporting.length > 0
     ? `${primaryThemeStr} Also active: ${supporting.map(a =>
-        `${PLANET_NAMES[a.transitPlanet]} ${ASPECT_LABEL_CAP[a.type]} natal ${PLANET_NAMES[a.natalPlanet]} — ${PLANET_DOMAIN_SHORT[a.transitPlanet]} ${ASPECT_VERB_SHORT[a.type]} natal ${PLANET_DOMAIN_SHORT[a.natalPlanet]}`
+        `${PLANET_NAMES[a.transitPlanet]} ${ASPECT_LABEL_CAP[a.type]} natal ${PLANET_NAMES[a.natalPlanet]} — ${activationDescription(a)}`
       ).join('; ')}.`
     : primaryThemeStr;
 
@@ -513,7 +539,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   // ── BLUEPRINT ACTIVATION ─────────────────────────────────────────────────
   const supportingFunctionCtx = supporting.length > 0
     ? ` Alongside this, ${supporting.map(a =>
-        `transiting ${PLANET_NAMES[a.transitPlanet]} forms a ${a.type} with your natal ${PLANET_NAMES[a.natalPlanet]} — ${PLANET_DOMAIN_SHORT[a.transitPlanet]} ${ASPECT_VERB_SHORT[a.type]} natal ${PLANET_DOMAIN_SHORT[a.natalPlanet]}`
+        `transiting ${PLANET_NAMES[a.transitPlanet]} forms a ${a.type} with your natal ${PLANET_NAMES[a.natalPlanet]} — ${activationDescription(a)}`
       ).join(', and ')}, adding further complexity to today's field.`
     : '';
 
@@ -527,7 +553,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   // ── WHAT IS BEING REFINED ─────────────────────────────────────────────────
   const supportingRefinementCtx = supporting.length > 0
     ? ` In the background, ${supporting.map(a =>
-        `${PLANET_NAMES[a.transitPlanet]}'s ${a.type} to natal ${PLANET_NAMES[a.natalPlanet]} (${PLANET_DOMAIN_SHORT[a.transitPlanet]} ${ASPECT_VERB_SHORT[a.type]} natal ${PLANET_DOMAIN_SHORT[a.natalPlanet]})`
+        `${PLANET_NAMES[a.transitPlanet]}'s ${a.type} to natal ${PLANET_NAMES[a.natalPlanet]} (${activationDescription(a)})`
       ).join(' and ')} adds to the developmental load — shaping the overall field within which today's primary refinement is occurring.`
     : '';
 

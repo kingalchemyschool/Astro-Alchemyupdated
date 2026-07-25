@@ -65,26 +65,34 @@ function separation(a: number, b: number): number {
 }
 
 export function todayDateString(): string {
-  return new Date().toISOString().slice(0, 10);
+  // Use the browser's local calendar day. `toISOString()` converts to UTC,
+  // which can make the forge show yesterday or tomorrow near midnight for
+  // users outside UTC.
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 /** Compute today's transit chart against the user's natal chart.
  *  Uses the user's birth location so house assignments are meaningful.
- *  Pass zodiacOverride to compute transits in a different zodiac than the natal chart. */
+ *  The zodiac system is explicit so transit positions always match the
+ *  currently displayed natal chart. */
 export function computeTransits(
   natal: NatalChart,
-  zodiacOverride?: "tropical" | "sidereal",
+  zodiac: "tropical" | "sidereal" = natal.zodiac,
+  date = todayDateString(),
 ): TransitData {
-  const today = todayDateString();
   const transitInput: BirthInput = {
-    date: today,
+    date,
     time: "12:00",
     place: natal.input.place,
     lat: natal.input.lat,
     lon: natal.input.lon,
     tz: natal.input.tz,
     tzName: natal.input.tzName,
-    zodiac: zodiacOverride ?? natal.zodiac,
+    zodiac,
   };
 
   const transitChart = computeChart(transitInput);
@@ -121,7 +129,7 @@ export function computeTransits(
   aspects.sort((a, b) => b.score - a.score);
 
   return {
-    date: today,
+    date,
     positions: transitChart.positions,
     aspects: aspects.slice(0, 24), // top 24 for API payload
   };

@@ -88,7 +88,10 @@ export default function DailyForgePage() {
         return;
       }
 
-      const transitData = computeTransits(reading.chart);
+      // Keep the transit system explicitly tied to the displayed natal chart.
+      // This prevents a sidereal chart from ever being paired with tropical
+      // transit positions (or vice versa).
+      const transitData = computeTransits(reading.chart, zodiac, today);
 
       const natalPositions: Record<string, any> = {};
       for (const [key, pos] of Object.entries(reading.chart.positions)) {

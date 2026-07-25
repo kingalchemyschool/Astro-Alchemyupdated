@@ -92,7 +92,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   return `${sun?.signIndex ?? 0}.${sun?.degree ?? 0}:${moon?.signIndex ?? 0}.${moon?.degree ?? 0}:${asc?.signIndex ?? 0}`;
 }
 
-const REPORT_VERSION = "activation-v2";
+const REPORT_VERSION = "activation-v3";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -287,8 +287,22 @@ function activationDescription(aspect: TransitAspect): string {
       return `The current transit lets ${transit} move more easily through ${natal}. The ease is real, but it becomes useful when you turn it into deliberate movement.`;
     case "sextile":
       return `The current transit opens a practical opportunity to develop ${natal} through ${transit}. The opening becomes real when you take a specific step.`;
-    case "square":
-      return `The current transit puts ${transit} under pressure from ${natal}. The friction shows where a familiar response is ready to become more capable.`;
+    case "square": {
+      const squareClosings: Partial<Record<PlanetKey, string>> = {
+        sun:     "The pressure is clarifying where your sense of purpose has been running on assumption rather than intention.",
+        moon:    "The tension is where an instinctive pattern is ready to become more conscious and deliberate.",
+        mercury: "The difficulty is sharpening the thinking that still needs more precision.",
+        venus:   "What you value is being tested — the test reveals what you actually prioritize.",
+        mars:    "The resistance is developing the precision of how you direct your will.",
+        jupiter: "The difficulty is the expansion — meeting it at that level is where growth actually happens.",
+        saturn:  "The friction is building a foundation that will hold under real pressure.",
+        uranus:  "The disruption is clearing what the old pattern can no longer support.",
+        neptune: "The tension is dissolving a layer that has been obscuring clearer understanding.",
+        pluto:   "What is being pressured is precisely what requires transformation rather than adjustment.",
+      };
+      const closing = squareClosings[aspect.natalPlanet] ?? "The friction shows where a familiar response is ready to become more capable.";
+      return `The current transit puts ${transit} under pressure from ${natal}. ${closing}`;
+    }
     case "opposition":
       return `The current transit places ${transit} across from ${natal}. The tension reveals what your usual perspective leaves out.`;
   }
@@ -458,7 +472,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     return {
       planetaryAspect:       `${sp_tGlyph} ${sp_tName} ${ASPECT_LABEL_CAP[aspect.type]} Natal ${sp_nGlyph} ${sp_nName}`,
       natalPlacement:        `${sp_nSign} ${sp_nPos.degree}° · ${houseOrd(sp_nHouse)} House`,
-      houseActivation:       `${houseOrd(sp_nHouse)} House · ${sp_houseInfo.short}`,
+      houseActivation:       sp_houseInfo.short,
       coreFunctionActivated: activationDescription(aspect),
     };
   });
@@ -499,8 +513,8 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   const primaryThemeStr = pick(themes[aspectType], seed, 0);
   const todaysTheme = supporting.length > 0
     ? `${primaryThemeStr} Also active: ${supporting.map(a =>
-        `${PLANET_NAMES[a.transitPlanet]} ${ASPECT_LABEL_CAP[a.type]} natal ${PLANET_NAMES[a.natalPlanet]} — ${activationDescription(a)}`
-      ).join('; ')}.`
+        `${PLANET_NAMES[a.transitPlanet]} ${ASPECT_LABEL_CAP[a.type]} natal ${PLANET_NAMES[a.natalPlanet]}`
+      ).join(', ')}.`
     : primaryThemeStr;
 
   // ── CELESTIAL STATE ──────────────────────────────────────────────────────

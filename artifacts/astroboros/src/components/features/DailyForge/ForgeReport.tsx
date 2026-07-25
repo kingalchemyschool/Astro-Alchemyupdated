@@ -41,7 +41,7 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
     : [{
         planetaryAspect: `${pt.transitPlanet} ${ASPECT_LABEL[pt.aspect] ?? pt.aspect} Natal ${pt.natalPlanet}`,
         natalPlacement: `${houseOrd(pt.house)} House`,
-        houseActivation: `${houseOrd(pt.house)} House · ${HOUSE_SHORT[pt.house] ?? ""}`,
+        houseActivation: HOUSE_SHORT[pt.house] ?? "",
         coreFunctionActivated: `${pt.orb}° orb`,
       }];
 

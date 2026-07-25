@@ -1,4 +1,4 @@
-import { Activity, ArrowDown, ArrowRight, Boxes, Check, Compass, DraftingCompass, Layers3, Orbit, Package, Radar, ScanLine, Sparkles } from "lucide-react";
+import { Activity, ArrowRight, Boxes, Check, Compass, DraftingCompass, Layers3, Orbit, Package, Radar, ScanLine, Sparkles } from "lucide-react";
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
 import heroImg from "@/assets/hero-blueprint.png";
@@ -102,6 +102,107 @@ const DAILY_FORGE = [
   },
 ];
 
+// ─── Enneagram SVG ───────────────────────────────────────────────────────────
+// 9-point creation enneagram: outer circle + triangle (3-6-9) + hexad (1-4-2-8-5-7)
+// Viewbox 300×300, center 150,150, outer radius 110
+function EnneagramSVG() {
+  // Points 1-9 placed clockwise from top (point 9 at 12 o'clock)
+  const R = 110;
+  const cx = 150;
+  const cy = 150;
+  const pts: [number, number][] = Array.from({ length: 9 }, (_, i) => {
+    const angle = ((i * 40) - 90) * (Math.PI / 180); // 40° apart, starting at top
+    return [cx + R * Math.cos(angle), cy + R * Math.sin(angle)];
+  });
+  // pts[0]=pt9(top), pts[1]=pt1, pts[2]=pt2, pts[3]=pt3, pts[4]=pt4,
+  // pts[5]=pt5, pts[6]=pt6, pts[7]=pt7, pts[8]=pt8
+  const p = (i: number) => `${pts[i][0].toFixed(2)},${pts[i][1].toFixed(2)}`;
+
+  // Triangle: points 9,3,6 → indices 0,3,6
+  const triangle = `M ${p(0)} L ${p(3)} L ${p(6)} Z`;
+  // Hexad: 1→4→2→8→5→7→1 → indices 1,4,2,8,5,7
+  const hexad = `M ${p(1)} L ${p(4)} L ${p(2)} L ${p(8)} L ${p(5)} L ${p(7)} Z`;
+
+  const LABELS = ["9","1","2","3","4","5","6","7","8"];
+  const LABEL_R = 128;
+
+  return (
+    <svg
+      viewBox="0 0 300 300"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full max-w-[340px] drop-shadow-[0_0_40px_rgba(99,102,241,0.25)]"
+      aria-label="Creation enneagram — nine creative forces"
+    >
+      <defs>
+        <radialGradient id="eng-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="hsl(238,70%,65%)" stopOpacity="0.12" />
+          <stop offset="100%" stopColor="hsl(238,70%,65%)" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* Background glow */}
+      <circle cx={cx} cy={cy} r={R + 20} fill="url(#eng-glow)" />
+
+      {/* Outer circle */}
+      <circle cx={cx} cy={cy} r={R} fill="none" stroke="hsl(238,55%,60%)" strokeWidth="0.8" strokeOpacity="0.5" />
+      {/* Inner reference circle */}
+      <circle cx={cx} cy={cy} r={R * 0.38} fill="none" stroke="hsl(238,55%,60%)" strokeWidth="0.5" strokeOpacity="0.2" />
+
+      {/* Triangle 3-6-9 */}
+      <path d={triangle} fill="none" stroke="hsl(45,80%,60%)" strokeWidth="1" strokeOpacity="0.55" />
+
+      {/* Hexad 1-4-2-8-5-7 */}
+      <path d={hexad} fill="none" stroke="hsl(238,70%,68%)" strokeWidth="0.9" strokeOpacity="0.6" />
+
+      {/* Spoke lines from center to each point */}
+      {pts.map(([x, y], i) => (
+        <line
+          key={i}
+          x1={cx} y1={cy}
+          x2={cx + (x - cx) * 0.35} y2={cy + (y - cy) * 0.35}
+          stroke="hsl(238,55%,60%)"
+          strokeWidth="0.5"
+          strokeOpacity="0.2"
+        />
+      ))}
+
+      {/* Point dots */}
+      {pts.map(([x, y], i) => (
+        <circle
+          key={i}
+          cx={x} cy={y} r={i === 0 ? 5 : 3.5}
+          fill={i === 0 ? "hsl(238,70%,68%)" : i === 3 || i === 6 ? "hsl(45,75%,58%)" : "hsl(238,55%,58%)"}
+          fillOpacity={i === 0 ? 1 : 0.85}
+        />
+      ))}
+
+      {/* Point labels */}
+      {LABELS.map((label, i) => {
+        const angle = ((i * 40) - 90) * (Math.PI / 180);
+        const lx = cx + LABEL_R * Math.cos(angle);
+        const ly = cy + LABEL_R * Math.sin(angle);
+        return (
+          <text
+            key={i}
+            x={lx} y={ly}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize="9"
+            fontFamily="monospace"
+            fill={i === 0 ? "hsl(238,70%,75%)" : i === 3 || i === 6 ? "hsl(45,75%,65%)" : "hsl(238,50%,65%)"}
+            fillOpacity="0.8"
+          >
+            {label}
+          </text>
+        );
+      })}
+
+      {/* Center dot */}
+      <circle cx={cx} cy={cy} r="2.5" fill="hsl(238,70%,68%)" fillOpacity="0.7" />
+    </svg>
+  );
+}
+
 function SectionLabel({ children }: { children: string }) {
   return <div className="home-section-label mb-3">{children}</div>;
 }
@@ -117,15 +218,17 @@ export default function Home() {
         </div>
 
         <div className="container relative z-10 py-20 sm:py-24 lg:py-28">
-          <div className="grid items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-4">
+          <div className="grid items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-10">
             <div className="home-reveal max-w-2xl">
               <div className="home-kicker" data-testid="text-home-kicker">Creation architecture · field notes 01</div>
               <h1 className="home-hero-title mt-7 font-serif font-medium text-foreground">
-                Your chart is a <span className="text-gradient-indigo">creative instrument.</span>
+                Your birth chart is not a personality profile. It is a map of the{" "}
+                <span className="text-gradient-indigo">creative forces</span>{" "}
+                you were born with.
               </h1>
               <div className="home-reveal-line mt-8 h-px w-24 bg-primary/55" />
               <p className="home-hero-copy mt-7">
-                Welcome to Astral Forge — a living observatory for translating your natal chart into an actionable blueprint for the work only you can make.
+                Astral Forge translates those planetary positions into a functional system: nine creative functions, six archetypal signatures, and a precise blueprint of where your energy gains momentum, where it stalls, and how to refine it toward mastery.
               </p>
               <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
                 <Link href="/reports/blueprint" className="home-cta home-cta-primary" data-testid="link-free-blueprint-hero">
@@ -141,34 +244,10 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="home-blueprint-wrap home-reveal [animation-delay:180ms]" aria-label="A glimpse of the creation blueprint">
-              <span className="home-orbit-dot" aria-hidden="true" />
-              <span className="absolute left-[14%] top-[22%] h-1 w-1 rounded-full bg-primary shadow-[0_0_14px_hsl(var(--primary)/.8)]" aria-hidden="true" />
-              <span className="absolute bottom-[16%] right-[14%] h-1 w-1 rounded-full bg-accent shadow-[0_0_14px_hsl(var(--accent)/.8)]" aria-hidden="true" />
-              <div className="home-blueprint-card" data-testid="card-hero-blueprint">
-                <div className="relative">
-                  <img src={heroImg} alt="Layered creation architecture blueprint" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
-                  <div className="absolute left-5 top-5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-primary/80">
-                    <Sparkles className="h-3.5 w-3.5" /> Instrument study / 01
-                  </div>
-                </div>
-                <div className="home-blueprint-meta">
-                  <div>
-                    <span className="home-signal">Blueprint signal: stable</span>
-                    <p className="mt-2 font-serif text-lg text-foreground/90">A system waiting to be read.</p>
-                  </div>
-                  <div className="home-metric">
-                    <strong>09</strong>
-                    <span>creative forces</span>
-                  </div>
-                </div>
-              </div>
+            <div className="home-reveal flex items-center justify-center [animation-delay:180ms]" aria-label="Creation enneagram">
+              <EnneagramSVG />
             </div>
           </div>
-          <a href="#system" className="home-scroll-cue mt-10 sm:mt-2" data-testid="link-scroll-system">
-            <ArrowDown className="h-3.5 w-3.5" /> Enter the observatory
-          </a>
         </div>
       </section>
 

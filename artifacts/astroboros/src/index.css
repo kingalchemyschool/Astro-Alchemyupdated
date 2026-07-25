@@ -1,5 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @layer theme, base, clerk, components, utilities;
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
@@ -131,7 +131,7 @@
   --sidebar-accent-foreground: 42 35% 88%;
   --sidebar-ring: 215 65% 72%;
 
-  --app-font-sans: 'Inter', sans-serif;
+  --app-font-sans: 'DM Sans', 'Inter', sans-serif;
   --app-font-serif: 'Fraunces', Georgia, serif;
   --app-font-mono: 'JetBrains Mono', Menlo, monospace;
   --radius: 0.5rem;
@@ -267,9 +267,307 @@
   0%, 100% { opacity: 0.55; }
   50% { opacity: 1; }
 }
+@keyframes blueprint-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-4deg); }
+  50% { transform: translate3d(0, -8px, 0) rotate(-2deg); }
+}
+@keyframes orbit-rotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes signal-pulse {
+  0%, 100% { transform: scale(0.92); opacity: 0.35; }
+  50% { transform: scale(1); opacity: 0.85; }
+}
+@keyframes reveal-line {
+  from { opacity: 0; transform: scaleX(0); transform-origin: left; }
+  to { opacity: 1; transform: scaleX(1); transform-origin: left; }
+}
 .animate-fade-in-up { animation: fade-in-up 0.6s ease-out both; }
 .animate-spin-slow { animation: spin-slow 90s linear infinite; }
 .animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+
+/* Homepage observatory layer */
+.home-shell {
+  position: relative;
+  overflow: clip;
+  isolation: isolate;
+}
+.home-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.18;
+  background-image: linear-gradient(hsl(var(--foreground) / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, black, transparent 42%);
+}
+.home-hero {
+  min-height: min(820px, calc(100dvh - 64px));
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.home-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(600px 380px at 77% 42%, hsl(var(--primary) / 0.11), transparent 68%),
+    radial-gradient(440px 320px at 26% 80%, hsl(var(--accent) / 0.06), transparent 70%);
+}
+.home-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: hsl(var(--accent));
+  font-family: var(--app-font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.home-kicker::before {
+  content: "";
+  width: 2rem;
+  height: 1px;
+  background: hsl(var(--accent) / 0.7);
+}
+.home-hero-title {
+  max-width: 11ch;
+  font-size: clamp(3.9rem, 8vw, 7.8rem);
+  line-height: 0.93;
+  letter-spacing: -0.055em;
+}
+.home-hero-copy {
+  max-width: 37rem;
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  line-height: 1.8;
+  color: hsl(var(--foreground) / 0.68);
+}
+.home-cta {
+  display: inline-flex;
+  min-height: 3.1rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  border-radius: 0.55rem;
+  padding: 0.75rem 1.15rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: transform 220ms ease, border-color 220ms ease, background-color 220ms ease, color 220ms ease;
+}
+.home-cta:hover {
+  transform: translateY(-2px);
+}
+.home-cta-primary {
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  box-shadow: 0 12px 38px hsl(var(--primary) / 0.18);
+}
+.home-cta-primary:hover { background: hsl(var(--primary) / 0.88); }
+.home-cta-secondary {
+  color: hsl(var(--foreground) / 0.82);
+  border: 1px solid hsl(var(--foreground) / 0.16);
+  background: hsl(var(--foreground) / 0.035);
+}
+.home-cta-secondary:hover {
+  color: hsl(var(--primary));
+  border-color: hsl(var(--primary) / 0.55);
+  background: hsl(var(--primary) / 0.07);
+}
+.home-blueprint-wrap {
+  position: relative;
+  min-height: 32rem;
+  display: grid;
+  place-items: center;
+}
+.home-blueprint-wrap::before,
+.home-blueprint-wrap::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 1px solid hsl(var(--primary) / 0.13);
+  border-radius: 999px;
+  pointer-events: none;
+}
+.home-blueprint-wrap::before {
+  width: min(39rem, 95vw);
+  height: min(39rem, 95vw);
+  animation: orbit-rotate 75s linear infinite;
+}
+.home-blueprint-wrap::after {
+  width: min(29rem, 75vw);
+  height: min(29rem, 75vw);
+  border-style: dashed;
+  border-color: hsl(var(--accent) / 0.18);
+  animation: orbit-rotate 52s linear infinite reverse;
+}
+.home-orbit-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: hsl(var(--accent));
+  box-shadow: 0 0 18px hsl(var(--accent) / 0.8);
+  animation: signal-pulse 3.8s ease-in-out infinite;
+}
+.home-blueprint-card {
+  position: relative;
+  z-index: 1;
+  width: min(31rem, 90vw);
+  overflow: hidden;
+  border: 1px solid hsl(var(--primary) / 0.32);
+  border-radius: 1rem;
+  background: hsl(var(--card) / 0.77);
+  box-shadow: 0 34px 100px hsl(225 60% 3% / 0.72), 0 0 60px hsl(var(--primary) / 0.1);
+  transform: rotate(-3deg);
+  animation: blueprint-drift 9s ease-in-out infinite;
+  transition: transform 420ms ease, border-color 320ms ease;
+}
+.home-blueprint-card:hover {
+  transform: rotate(0deg) translateY(-7px);
+  border-color: hsl(var(--primary) / 0.62);
+}
+.home-blueprint-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.45;
+  object-fit: cover;
+  opacity: 0.92;
+  mix-blend-mode: screen;
+}
+.home-blueprint-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem 1rem;
+  border-top: 1px solid hsl(var(--foreground) / 0.1);
+  background: linear-gradient(90deg, hsl(var(--primary) / 0.08), transparent);
+}
+.home-signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: hsl(var(--accent));
+  font-family: var(--app-font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.home-signal::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: hsl(var(--accent));
+  box-shadow: 0 0 10px hsl(var(--accent) / 0.8);
+}
+.home-metric {
+  border-left: 1px solid hsl(var(--foreground) / 0.13);
+  padding-left: 1rem;
+}
+.home-metric strong {
+  display: block;
+  color: hsl(var(--foreground));
+  font-family: var(--app-font-mono);
+  font-size: 1rem;
+  font-weight: 500;
+}
+.home-metric span {
+  display: block;
+  margin-top: 0.2rem;
+  color: hsl(var(--muted-foreground));
+  font-family: var(--app-font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.home-reveal {
+  animation: fade-in-up 700ms cubic-bezier(.2,.8,.2,1) both;
+}
+.home-reveal-line {
+  animation: reveal-line 900ms 240ms ease-out both;
+}
+.home-section-label {
+  color: hsl(var(--accent));
+  font-family: var(--app-font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+}
+.home-info-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 260ms ease, border-color 260ms ease, background-color 260ms ease;
+}
+.home-info-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: hsl(var(--card-accent, var(--primary)) / 0.75);
+  opacity: 0.7;
+}
+.home-info-card:hover {
+  transform: translateX(4px);
+  border-color: hsl(var(--card-accent, var(--primary)) / 0.46);
+  background-color: hsl(var(--card-accent, var(--primary)) / 0.07);
+}
+.home-report-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 260ms ease, border-color 260ms ease, background-color 260ms ease;
+}
+.home-report-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(125deg, hsl(var(--primary) / 0.06), transparent 38%);
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+.home-report-card:hover {
+  transform: translateY(-6px);
+  background-color: hsl(var(--card) / 0.86);
+}
+.home-report-card:hover::after { opacity: 1; }
+.home-scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: hsl(var(--muted-foreground) / 0.8);
+  font-family: var(--app-font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.home-scroll-cue svg { color: hsl(var(--accent)); }
+@media (max-width: 767px) {
+  .home-hero { min-height: auto; }
+  .home-hero-title { font-size: clamp(3.5rem, 17vw, 5.7rem); }
+  .home-blueprint-wrap { min-height: 25rem; margin-top: 2rem; }
+  .home-blueprint-wrap::before { width: 23rem; height: 23rem; }
+  .home-blueprint-wrap::after { width: 18rem; height: 18rem; }
+  .home-blueprint-card { width: min(26rem, 88vw); }
+  .home-metric { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 
 /* Elevation system */
 @layer utilities {

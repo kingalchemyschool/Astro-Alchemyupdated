@@ -129,7 +129,7 @@ export function computeTransits(
 
 /** Return the sign name for a given sign index */
 export function signName(index: number): string {
-  return SIGNS[index] ?? "Unknown";
+  return SIGNS[index]?.name ?? "Unknown";
 }
 
 /** House ordinal label */

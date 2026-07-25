@@ -50,7 +50,7 @@ export default function ChartSwitcher({ reading, onSwitch }: Props) {
 
   function handleActivate(chart: SavedChart) {
     setSwitching(chart.id);
-    onSwitch(chart.birthInput as BirthInput);
+    onSwitch(chart.birthInput as unknown as BirthInput);
     setOpen(false);
     setSwitching(null);
   }

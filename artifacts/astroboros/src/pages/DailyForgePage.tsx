@@ -175,7 +175,7 @@ export default function DailyForgePage() {
     if (!reading) return;
     const current = reading.chart.zodiac;
     const next: "tropical" | "sidereal" = current === "sidereal" ? "tropical" : "sidereal";
-    generate(reading.input, next); // rebuilds the chart+reading in new system
+    generate(reading.chart.input, next); // rebuilds the chart+reading in new system
     localStorage.removeItem(FORGE_REPORT_CACHE_KEY);
     setReport(null);
     setCached(false);

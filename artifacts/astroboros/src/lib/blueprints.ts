@@ -14,8 +14,22 @@ export async function saveBlueprint(
   input: BirthInput,
   isPremium: boolean
 ): Promise<string> {
-  const { data, error } = await supabase
-    .from("blueprints")
+  const table = (supabase as unknown as {
+    from: (name: string) => {
+      insert: (row: Record<string, unknown>) => {
+        select: (columns: string) => {
+          single: () => Promise<{ data: { id: string } | null; error: Error | null }>;
+        };
+      };
+      select: (columns: string) => {
+        eq: (column: string, value: string) => {
+          maybeSingle: () => Promise<{ data: SavedBlueprint | null; error: Error | null }>;
+        };
+      };
+    };
+  }).from("blueprints");
+
+  const { data, error } = await table
     .insert({
       name: input.name?.trim() || "Untitled Blueprint",
       birth_input: input,
@@ -25,17 +39,24 @@ export async function saveBlueprint(
     .single();
 
   if (error) throw error;
-  return data.id as string;
+  if (!data) throw new Error("Blueprint was saved without an id.");
+  return data.id;
 }
 
 // Load a shared blueprint by id. Returns null when not found.
 export async function loadBlueprint(id: string): Promise<SavedBlueprint | null> {
-  const { data, error } = await supabase
-    .from("blueprints")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
+  const table = (supabase as unknown as {
+    from: (name: string) => {
+      select: (columns: string) => {
+        eq: (column: string, value: string) => {
+          maybeSingle: () => Promise<{ data: SavedBlueprint | null; error: Error | null }>;
+        };
+      };
+    };
+  }).from("blueprints");
+
+  const { data, error } = await table.select("*").eq("id", id).maybeSingle();
 
   if (error) throw error;
-  return (data as SavedBlueprint) ?? null;
+  return data ?? null;
 }

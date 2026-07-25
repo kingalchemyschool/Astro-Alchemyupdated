@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "Astroboros"
+title = "AstroAlchemy"
 version = "1.0.0"
 id = "artifacts/astroboros"
 router = "path"

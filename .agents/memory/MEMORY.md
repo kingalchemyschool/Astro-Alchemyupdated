@@ -1,3 +1,4 @@
 - [Astral Forge reading system](astroboros-reading.md) — 78-pair archetype lookup, renamed functions, mythic hero journey, threshold names Impact/Wealth/Legacy
 - [Astral Forge auth setup](astroboros-auth.md) — Clerk + wouter, API server on port 8080 proxied via Vite, saved_charts Postgres table
 - [Preview authentication](astroboros-preview-auth.md) — Clerk may fail to load on Replit preview hosts; preserve the app’s graceful unauthenticated fallback and test auth on publish
+- [Development API auth fallback](astroboros-dev-api.md) — API startup must allow missing Clerk backend credentials in development while remaining strict in production

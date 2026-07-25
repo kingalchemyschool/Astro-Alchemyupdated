@@ -151,14 +151,18 @@ app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
 // Clerk auth middleware — resolves publishable key from request host
-app.use(
-  clerkMiddleware((req) => ({
-    publishableKey: publishableKeyFromHost(
-      getClerkProxyHost(req) ?? "",
-      process.env.CLERK_PUBLISHABLE_KEY,
-    ),
-  })),
-);
+if (process.env.CLERK_SECRET_KEY) {
+  app.use(
+    clerkMiddleware((req) => ({
+      publishableKey: publishableKeyFromHost(
+        getClerkProxyHost(req) ?? "",
+        process.env.CLERK_PUBLISHABLE_KEY,
+      ),
+    })),
+  );
+} else if (process.env.NODE_ENV !== "production") {
+  logger.warn("CLERK_SECRET_KEY not set — running without Clerk authentication in development");
+}
 
 app.use("/api", router);
 

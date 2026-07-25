@@ -12,7 +12,7 @@
  *
  * ─── Required ────────────────────────────────────────────────────────────────
  *   NODE_ENV            "production" | "development" | "test"
- *   CLERK_SECRET_KEY    Clerk backend secret key (sk_live_… / sk_test_…)
+ *   CLERK_SECRET_KEY    Clerk backend secret key (required in production)
  *   DATABASE_URL        PostgreSQL connection string
  *
  * ─── Required in production only ─────────────────────────────────────────────
@@ -41,9 +41,7 @@ const envSchema = z
         message: 'must be one of "production", "development", or "test"',
       }),
     }),
-    CLERK_SECRET_KEY: z
-      .string({ required_error: "required for Clerk authentication" })
-      .min(1, "must not be empty"),
+    CLERK_SECRET_KEY: z.string().min(1, "must not be empty").optional(),
     DATABASE_URL: z
       .string({ required_error: "required for database access" })
       .min(1, "must not be empty"),
@@ -63,6 +61,16 @@ const envSchema = z
     WEB_REPL_RENEWAL: z.string().optional(),
   })
   .superRefine((env, ctx) => {
+    if (
+      env.NODE_ENV === "production" &&
+      !env.CLERK_SECRET_KEY
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["CLERK_SECRET_KEY"],
+        message: "required for Clerk authentication in production",
+      });
+    }
     if (
       env.NODE_ENV === "production" &&
       !env.STRIPE_WEBHOOK_SECRET

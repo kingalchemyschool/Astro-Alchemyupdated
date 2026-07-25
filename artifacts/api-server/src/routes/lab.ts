@@ -296,13 +296,13 @@ router.post("/lab/generate", labLimiter, async (req, res) => {
       if (text) res.write(text);
     }
 
-    res.end();
+    return res.end();
   } catch (err: any) {
     logger.error({ err: err.message }, "OpenAI lab generation failed");
     if (!res.headersSent) {
-      res.status(502).json({ error: "AI generation failed. Please try again." });
+      return res.status(502).json({ error: "AI generation failed. Please try again." });
     } else {
-      res.end();
+      return res.end();
     }
   }
 });

@@ -1,0 +1,352 @@
+Update AstroAlchemy with the following changes. Preserve existing functionality, routes, visual language, pricing, and authentication unless a change below requires otherwise.
+
+## Daily Forge
+
+- Fix transit accuracy for both tropical and sidereal modes. Do not use a fixed noon chart for daily transits; calculate the transit time from the user’s current time in the chart’s timezone. Keep natal and transit zodiac systems strictly matched.
+- Verify every displayed planetary degree, sign, minute, and aspect in both systems. Specifically, the sidereal Scorpio Moon should show its actual current position—for example, 15°37′ when that is the correct live position—not an inaccurate value such as 25°.
+- Pass and display degrees with minutes, not only rounded whole degrees.
+- In the Celestial Field, display:
+  - Transiting planet, exact sign and degree
+  - Aspect type and orb
+  - Natal planet, exact sign and degree
+  - Natal house
+  - What that house governs in everyday life
+- Do not let the Moon dominate the Daily Forge simply because it moves quickly. Use the Moon as emotional context, but prioritize meaningful personal, social, and outer-planet transits. Only use 2-3 moon transits and three other planets transits if available.
+- Select one primary transit. Supporting transits other than the moon should favor Sun, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, and Pluto.
+- Do not repeat the same aspects in Today’s Theme, Celestial State, Blueprint Activation, and Alchemical Process. Each section must introduce new information.
+- Give more personal detail and relatable action. Right now all of the reports read like an ad-libs.
+- Remove the entire “Blueprint Activation” section from the Daily Forge interface and report payload.
+- Replace the generic “Also active: Sun Opposition natal Neptune, Moon Trine natal Saturn” style of copy with three distinct, chart-specific supporting transit paragraphs in Active Transits.
+- Each transit interpretation must explain:
+  - What each planet represents
+  - The exact aspect mechanics
+  - The transit sign
+  - The natal sign
+  - Both relevant house areas where available
+  - How those life areas interact in a real person’s day
+- Rewrite the Alchemical Process so it is longer, more personal, and capability-focused. Do not re-list transits there. It should explain what the person is practicing under pressure, where autopilot may appear, and what deliberate action would look like in the actual house area.
+- Avoid generic phrases such as “friction creates growth,” “the tension is developing you,” or “the transit puts pressure on…” unless followed by a concrete explanation of exactly what is under pressure and how it shows up.
+
+## Blueprint and all report writing
+
+- Make all report prose sound like a thoughtful astrologer writing a cohesive interpretation, not a fill-in-the-blank template.
+- In place of the thresholds on the blueprint report, impact at point 3, wealth at point 6, and actualization at point 9. Do not going into detail of these in the free reading. Go into detail during the full reading but then point them to the wealth blueprint for a full reading on creating conscious wealth.&#x20;
+- You are refining the blueprint interpretation system.
+
+  Do not create a new framework.\
+  Do not alter the architecture.\
+  Do not reinterpret the system as personality analysis.
+
+  Your role is to refine the language, depth, clarity, and precision of the existing blueprint.
+
+  Astral Forge is a diagnostic architecture system. The natal chart contains a pre-existing creative blueprint. The purpose of the reading is to reveal how that blueprint functions, where its mechanisms operate, how the functions interact, and how the system can be refined.
+
+  The planets represent functional mechanisms within the blueprint.
+
+  The Enneagram points represent stages in the refinement cycle.
+
+  The threshold points are synthesis points created by the combination of the surrounding planetary functions. They are not individual planets.
+
+  The reading should describe:
+  - the inherent mechanism already present
+  - how that mechanism operates
+  - how it expresses through the person's chart
+  - strengths of the system
+  - areas requiring refinement
+  - how the functions interact as a complete architecture
+  Do not use language implying the person creates their blueprint.\
+  Use language such as:
+  - encoded
+  - inherent
+  - operating pattern
+  - architecture
+  - refinement
+  - expression
+  - development
+  - embodiment
+  Avoid:
+  - personality traits
+  - generic astrology descriptions
+  - manifestation language
+  - implying the chart determines fate
+  ━━━━━━━━━━━━━━━━━━
+
+  THE ASTRAL FORGE ARCHITECTURE
+
+  POINT 0 — ☉ SUN
+
+  FUNCTION: ACTUALIZATION
+
+  The Sun represents the essential blueprint encoded within the individual.
+
+  It is the originating pattern: the fundamental essence seeking fuller expression through experience and refinement.
+
+  The Sun is not simply purpose or vision.
+
+  It represents:
+  - core essence
+  - identity structure
+  - creative signal
+  - the fundamental pattern being refined
+  Question:\
+  What essence is being refined?
+
+  ━━━━━━━━━━━━━━━━━━
+
+  POINT 1 — ☽ MOON
+
+  FUNCTION: RECEPTION
+
+  The Moon represents how the blueprint receives and integrates experience.
+
+  It governs:
+  - perception
+  - memory
+  - emotional processing
+  - adaptation
+  - environmental feedback
+  The Moon shows how external experience modifies and develops the original essence.
+
+  Question:\
+  How does experience refine the blueprint?
+
+  ━━━━━━━━━━━━━━━━━━
+
+  POINT 2 — ♂ MARS + ♇ PLUTO
+
+  FUNCTION: INITIATION + TRANSFORMATION
+
+  Mars represents the mechanism of activation and directed force.
+
+  Pluto represents deep transformation, regeneration, and irreversible change.
+
+  Together they describe how the blueprint mobilizes energy and creates movement.
+
+  Question:\
+  How does this blueprint express force?
+
+  ━━━━━━━━━━━━━━━━━━
+
+  POINT 3 — IMPACT THRESHOLD
+
+  FUNCTION: IMPACT
+
+  SYNTHESIS OF:\
+  Point 2 + Point 4
+
+  Mars + Pluto\
+  and\
+  Mercury + Uranus
+
+  Impact is the point where intelligence and force converge.
+
+  It is not Mars alone.
+
+  Impact reveals the external consequence produced when:
+  - strategy meets execution
+  - innovation meets action
+  - thought becomes applied force
+  Question:\
+  What effect does this blueprint naturally create?
+
+  ━━━━━━━━━━━━━━━━━━
+
+  POINT 4 — ☿ MERCURY + ♅ URANUS
+
+  FUNCTION: TRANSLATION + INNOVATION
+
+  Mercury represents the translation mechanism:
+  - organizing information
+  - forming understanding
+  - creating language and systems
+  Uranus represents higher-order innovation:
+  - originality
+  - breakthroughs
+  - unconventional solutions
+  Together they describe the intelligence structure of the blueprint.
+
+  Question:\
+  How does this blueprint interpret and innovate?
+
+  ━━━━━━━━━━━━━━━━━━
+
+  POINT 5 — ♃ JUPITER
+
+  FUNCTION: EXPANSION
+
+  Jupiter represents the expansion potential of the blueprint.
+
+  It governs:
+  - growth
+  - learning
+  - opportunity
+  - increased capability
+  - broader influence
+  Question:\
+  Where does this blueprint expand?
+
+  ━━━━━━━━━━━━━━━━━━
+
+  POINT 6 — WEALTH THRESHOLD
+
+  FUNCTION: WEALTH
+
+  SYNTHESIS OF:\
+  Point 5 + Point 7
+
+  Jupiter\
+  and\
+  Venus + Neptune
+
+  Wealth represents accumulated value generated through the expression of the blueprint.
+
+  Wealth is not limited to money.
+
+  It includes:
+  - resources
+  - knowledge
+  - skills
+  - relationships
+  - reputation
+  - opportunities
+  - creative output
+  - accumulated advantages
+  Jupiter expands.\
+  Venus determines value.\
+  Neptune connects value to meaning and resonance.
+
+  Question:\
+  What value does this blueprint accumulate?
+
+  ━━━━━━━━━━━━━━━━━━
+
+  POINT 7 — ♀ VENUS + ♆ NEPTUNE
+
+  FUNCTION: CULTIVATION + RESONANCE
+
+  Venus represents refinement, attraction, preference, and value.
+
+  Neptune represents symbolic meaning, inspiration, and collective resonance.
+
+  Together they describe what the blueprint naturally cultivates.
+
+  Question:\
+  What is this blueprint designed to develop?
+
+  ━━━━━━━━━━━━━━━━━━
+
+  POINT 8 — ♄ SATURN
+
+  FUNCTION: CONSOLIDATION
+
+  Saturn represents the structure required for longevity.
+
+  It governs:
+  - systems
+  - boundaries
+  - mastery
+  - discipline
+  - permanence
+  Saturn shows how the blueprint stabilizes and preserves what has value.
+
+  Question:\
+  What allows this blueprint to endure?
+
+  ━━━━━━━━━━━━━━━━━━
+
+  POINT 9 — ACTUALIZATION THRESHOLD
+
+  FUNCTION: ACTUALIZATION
+
+  SYNTHESIS OF:\
+  Point 8 + Point 0
+
+  Saturn + Sun
+
+  Point 9 represents the refined expression of the original essence after passing through the full architecture.
+
+  Point 0 is the essence encoded within the blueprint.
+
+  Point 9 is that essence expressed through development, structure, and experience.
+
+  Question:\
+  What does this blueprint become when fully refined?
+
+  ━━━━━━━━━━━━━━━━━━
+
+  THE COMPLETE REFINEMENT CYCLE:
+
+  Sun:\
+  Essence
+
+  Moon:\
+  Experience
+
+  Mars + Pluto:\
+  Force
+
+  Impact:\
+  External consequence
+
+  Mercury + Uranus:\
+  Intelligence
+
+  Jupiter:\
+  Expansion
+
+  Wealth:\
+  Accumulated value
+
+  Venus + Neptune:\
+  Cultivated value
+
+  Saturn:\
+  Structure
+
+  Actualization:\
+  Refined essence
+
+  The final interpretation should present the natal chart as an existing architecture being understood and refined, not a system being created. Keep the blueprint report architecture, just make these structural changes.
+- You are refining the Astral Forge Threshold Calculation System. The thresholds are not separate planetary placements. They are derived synthesis points that reveal how multiple planetary functions combine within the existing blueprint. Astral Forge does not create a blueprint. It interprets and refines the blueprint already encoded within the natal chart. The purpose of the thresholds is to identify the transformation that occurs when planetary functions interact. Each threshold should answer: "How does this blueprint transform one function into another?" The app should calculate thresholds by combining the planetary functions that create each synthesis point. Do not calculate thresholds as standalone planets. Do not assign thresholds based on a single placement. Do not interpret thresholds as personality traits. Each threshold is calculated from: 1. The strength of each planetary function 2. The relationship between the planetary functions 3. The sign expression of each planet 4. The house placement of each planet 5. The aspects modifying each planet 6. The interaction between the paired functions ━━━━━━━━━━━━━━━━━━ POINT 3 — IMPACT THRESHOLD PLANETARY INPUTS: ♂ Mars + ♇ Pluto FUNCTION: Magnitude + Direction ☿ Mercury + ♅ Uranus FUNCTION: Translation + Ingenuity PURPOSE: The Impact Threshold reveals how the blueprint converts intelligence and force into external consequence. Mars and Pluto determine: - magnitude of force - intensity of action - depth of transformation - direction of applied energy Mercury and Uranus determine: - translation of information - ability to identify patterns - innovative thinking - creation of unique approaches The Impact Threshold answers: "How does this blueprint turn unique intelligence into meaningful external consequence?" The interpretation should explain: - how force is generated - how force is directed - how intelligence is translated into strategy - how innovation changes the method of execution - what type of impact naturally results CALCULATION: Impact Score = (Mars Function Score + Pluto Modifier) + (Mercury Function Score + Uranus Modifier) Mars Score evaluates: - initiation capacity - drive - execution style Pluto Modifier evaluates: - magnitude - transformational depth - intensity Mercury Score evaluates: - translation ability - communication - organization of information Uranus Modifier evaluates: - ingenuity - originality - breakthrough potential Aspect modifiers determine whether these functions flow together or require refinement. Output: A description of HOW this blueprint creates impact. ━━━━━━━━━━━━━━━━━━ POINT 6 — WEALTH THRESHOLD PLANETARY INPUTS: ♃ Jupiter FUNCTION: Expansion ♀ Venus + ♆ Neptune FUNCTION: Value + Resonance PURPOSE: The Wealth Threshold reveals how the blueprint converts expansion into accumulated value. Jupiter determines: - growth - opportunity - increase - reach Venus determines: - what is valuable - what attracts investment - what can be cultivated Neptune determines: - resonance - collective meaning - inspiration - symbolic value The Wealth Threshold answers: "How does this blueprint transform growth into lasting value?" The interpretation should explain: - how opportunities expand - how value is identified - how resonance increases value - how resources accumulate - what forms of wealth this blueprint naturally develops Wealth includes: - resources - knowledge - skills - relationships - reputation - influence - creative assets CALCULATION: Wealth Score = Jupiter Expansion Score + (Venus Value Score + Neptune Resonance Score) Jupiter Score evaluates: - expansion capacity - growth channels - opportunity generation Venus Score evaluates: - value creation - refinement - attraction Neptune Modifier evaluates: - resonance - collective connection - intangible value Aspect modifiers determine how easily expansion becomes sustainable value. Output: A description of HOW this blueprint generates and accumulates value. ━━━━━━━━━━━━━━━━━━ POINT 9 — ACTUALIZATION THRESHOLD PLANETARY INPUTS: ☉ Sun FUNCTION: Essence ♄ Saturn FUNCTION: Structure PURPOSE: The Actualization Threshold reveals how the blueprint transforms essence into embodied expression. The Sun determines: - original essence - creative signal - core pattern Saturn determines: - structure - discipline - mastery - permanence The Actualization Threshold answers: "How does this blueprint transform inherent essence into enduring expression?" The interpretation should explain: - how essence is expressed - how structure supports expression - how discipline refines identity - how potential becomes embodiment - what mature expression looks like CALCULATION: Actualization Score = Sun Essence Score + Saturn Structure Score Sun Score evaluates: - clarity of essence - creative identity - central pattern Saturn Score evaluates: - ability to build - consistency - longevity - mastery Aspect modifiers determine the relationship between essence and structure. Output: A description of HOW this blueprint becomes fully embodied. ━━━━━━━━━━━━━━━━━━ FINAL THRESHOLD MODEL: IMPACT: Magnitude + Direction + Translation + Ingenuity = How intelligence becomes consequence WEALTH: Expansion + Value + Resonance = How growth becomes accumulated value ACTUALIZATION: Essence + Structure = How potential becomes enduring expression The thresholds should always be written as mechanisms: "How does this blueprint..." not: "Can this blueprint..."
+- Rewrite aspect and house interpretations across Blueprint, Archetype, Wealth, Laboratory/Synastry, and Daily Forge so they are specific and organic. No ad-lib type reports. Ensure they read organically and are easy to understand.
+- Every aspect interpretation must name the planets involved and explain:
+  - Each planet’s function
+  - The signs involved
+  - The houses involved
+  - The real-life territory represented by each house
+  - The actual interaction between those two functions
+  - A practical consequence, pattern, or choice
+- Do not simply say “this creates friction,” “this is harmonious,” or define an aspect in isolation.
+- Avoid repeatedly using the same sentence structure, especially “X is in Y, which means…” and “This friction develops…”
+- Introduce a placement naturally once, then continue the paragraph in normal prose rather than restating all chart data.
+- In synastry/Laboratory reports, include each person’s relevant sign and house placement in planet-pair notes, amplifiers, and refinement points. Explain how both people’s life areas meet—not merely whether their signs are compatible.
+- Keep recommendations specific and observable. Replace vague advice like “communicate better” with clear actions such as defining decision ownership, documenting agreements, setting a shared quality standard, or naming expectations before a project phase.
+
+## Homepage redesign
+
+Redesign the homepage to feel cute, mystical, warm, and astrology-meets-alchemy—not cold, overly technical, or corporate.
+
+- Keep the dark celestial foundation, but add softness through lavender, indigo, moonlight blue, muted gold, glowing stars, orbit lines, and glass-like cards.
+- Create a more magical hero area:
+  - Softer, more inviting headline and body copy
+  - A “Read My Blueprint” primary CTA
+  - A celestial oracle card containing the enneagram
+  - Small floating stars, moon symbols, orbit details, and subtle glow
+- Improve hierarchy and page flow:
+  1. Hero and first CTA
+  2. What the chart reveals
+  3. How the system works
+  4. Daily Forge
+  5. Reports
+  6. Final invitation
+- Make section language warmer and clearer. Use phrases such as “Your cosmic blueprint,” “Meet the parts of you that make the magic,” and “Mystical enough to feel true. Clear enough to use.”
+- Rework report cards into a roomy two-column layout on desktop instead of cramming four narrow cards into one row.
+- Improve spacing, card hierarchy, hover states, visual grouping, and mobile layout.
+- Keep the design elegant and usable; avoid excessive animation, visual clutter, or anything that harms readability.
+
+## Quality bar
+
+- Use proper Unicode typography where appropriate; do not leave broken encoded characters in the UI.
+- Maintain accessibility: readable contrast, meaningful headings, visible focus states, and reduced-motion support.
+- Do not change unrelated business logic.
+- Run typechecking/build verification after changes and fix all errors before finishing.

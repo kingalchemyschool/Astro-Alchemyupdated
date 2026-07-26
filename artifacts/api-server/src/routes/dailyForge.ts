@@ -17,6 +17,7 @@ type AspectType = "conjunction" | "sextile" | "square" | "trine" | "opposition";
 interface PlanetSummary {
   signIndex: number;
   degree: number;
+  minute?: number;
   house: number;
   retrograde?: boolean;
   longitude: number;
@@ -69,7 +70,6 @@ export interface ForgeReport {
   }>;
   todaysTheme: string;
   celestialState: string;
-  blueprintActivation: string;
   whatIsBeingRefined: string;
   forgePrinciple: string;
   journalPrompt: string;
@@ -92,7 +92,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   return `${sun?.signIndex ?? 0}.${sun?.degree ?? 0}:${moon?.signIndex ?? 0}.${moon?.degree ?? 0}:${asc?.signIndex ?? 0}`;
 }
 
-const REPORT_VERSION = "activation-v3";
+const REPORT_VERSION = "activation-v4";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;

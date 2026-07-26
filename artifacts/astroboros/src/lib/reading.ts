@@ -335,7 +335,7 @@ function impactThreshold(chart: NatalChart): ReportSection {
     kind: "threshold",
     order: 0,
     title: "Impact",
-    subtitle: "Being — The Source of Your Impact",
+    subtitle: "Force + Expression → External Reach",
     glyph: "◬",
     planetKeys: [],
     paragraphs: [
@@ -354,7 +354,7 @@ function willThreshold(chart: NatalChart): ReportSection {
     kind: "threshold",
     order: 0,
     title: "Wealth",
-    subtitle: "Will — The Source of Your Wealth",
+    subtitle: "Expansion + Value → Meaningful Worth",
     glyph: "◬",
     planetKeys: [],
     paragraphs: [
@@ -372,8 +372,8 @@ function retentionThreshold(chart: NatalChart): ReportSection {
   return {
     kind: "threshold",
     order: 0,
-    title: "Legacy",
-    subtitle: "Retention — The Foundation of Your Legacy",
+    title: "Actualization",
+    subtitle: "Structure + Essence → Embodied Expression",
     glyph: "♄",
     planetKeys: [],
     paragraphs: [

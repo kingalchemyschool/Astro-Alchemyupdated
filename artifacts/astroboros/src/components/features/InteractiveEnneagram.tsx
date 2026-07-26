@@ -59,9 +59,9 @@ const THRESHOLD_INFO: Record<number, { label: string; description: string }> = {
       "The point in the cycle where force meets direction. Before this threshold, energy generates movement. After it, movement becomes intention — force that has been aimed rather than simply released. This is where the question shifts from \"how hard can I push\" to \"where does this need to land.\"",
   },
   6: {
-    label: "Will Threshold",
+    label: "Wealth Threshold",
     description:
-      "The point in the cycle where expansion meets meaning. Before this threshold, growth multiplies what is available. After it, abundance is filtered through purpose — growth becomes defined not by how much can be added, but by what is actually worth adding. This is where scale stops being the measure and significance takes its place.",
+      "The point in the cycle where expansion meets discernment. Before this threshold, growth multiplies what is available. After it, abundance is filtered through genuine worth — growth becomes defined not by how much can be added, but by what is actually worth keeping. This is where scale stops being the measure and lasting value takes its place.",
   },
 };
 

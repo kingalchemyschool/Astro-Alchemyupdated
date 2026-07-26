@@ -232,7 +232,7 @@ export default function Home() {
               </p>
               <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
                 <Link href="/reports/blueprint" className="home-cta home-cta-primary" data-testid="link-free-blueprint-hero">
-                  Get Your Free Blueprint Preview <ArrowRight className="h-4 w-4" />
+                  Read My Blueprint <ArrowRight className="h-4 w-4" />
                 </Link>
                 <a href="#reports" className="home-cta home-cta-secondary" data-testid="link-explore-reports-hero">
                   Explore reports
@@ -244,8 +244,23 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="home-reveal flex items-center justify-center [animation-delay:180ms]" aria-label="Creation enneagram">
-              <EnneagramSVG />
+            <div className="oracle-card-wrap home-reveal [animation-delay:180ms]">
+              <div className="oracle-card">
+                <div className="oracle-card-header">
+                  <span>Creation Blueprint</span>
+                  <span>✦</span>
+                </div>
+                <div className="px-6 py-4">
+                  <EnneagramSVG />
+                </div>
+                <div className="oracle-card-footer">
+                  <span>9 Creative Forces</span>
+                  <span>☽</span>
+                </div>
+              </div>
+              <span className="oracle-star oracle-star-1" aria-hidden="true">✦</span>
+              <span className="oracle-star oracle-star-2" aria-hidden="true">✷</span>
+              <span className="oracle-star oracle-star-3" aria-hidden="true">⋆</span>
             </div>
           </div>
         </div>
@@ -346,7 +361,7 @@ export default function Home() {
           <h2 className="font-serif text-4xl font-medium sm:text-5xl">Four ways to read your architecture.</h2>
           <p className="mt-4 leading-relaxed text-muted-foreground">Each report reads the same natal chart through a different lens. Start with the free Blueprint preview, then go as deep as the work requires.</p>
         </div>
-        <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-6 lg:grid-cols-2">
           {REPORTS.map((report, index) => (
             <article key={report.to} className={`home-report-card group flex flex-col rounded-2xl border bg-card/55 p-6 ${report.accent}`} data-testid={`card-report-${index}`}>
               <div className="relative z-10 flex items-start justify-between gap-3">
@@ -393,7 +408,7 @@ export default function Home() {
           <Sparkles className="mx-auto mb-6 h-9 w-9 text-primary" strokeWidth={1.2} />
           <h2 className="font-serif text-4xl font-medium leading-tight sm:text-6xl">Your blueprint already exists.</h2>
           <p className="mt-5 text-lg leading-relaxed text-foreground/60">The question is whether you understand the architecture behind it.</p>
-          <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row"><Link href="/reports/blueprint" className="home-cta home-cta-primary" data-testid="link-free-blueprint-final">Get Your Free Blueprint Preview <ArrowRight className="h-4 w-4" /></Link><a href="#reports" className="home-cta home-cta-secondary" data-testid="link-explore-reports-final">Explore reports</a></div>
+          <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row"><Link href="/reports/blueprint" className="home-cta home-cta-primary" data-testid="link-free-blueprint-final">Read My Blueprint <ArrowRight className="h-4 w-4" /></Link><a href="#reports" className="home-cta home-cta-secondary" data-testid="link-explore-reports-final">Explore reports</a></div>
           <p className="mt-5 font-mono text-xs text-muted-foreground/60">No account required · Free preview included</p>
         </div>
       </section>

@@ -27,18 +27,19 @@ const ALL_KEYS: PlanetKey[] = [
   "jupiter", "saturn", "uranus", "neptune", "pluto",
 ];
 
-// Transit planet priority: Moon first (daily driver), then personal, social, outer
+// Transit planet priority: personal and social planets lead; Moon provides
+// emotional context but should not dominate — capped to 2 aspects below.
 const PLANET_PRIORITY: Record<PlanetKey, number> = {
-  moon: 10,
-  sun: 8,
+  sun:     9,
+  mars:    8,
   mercury: 7,
-  venus: 7,
-  mars: 7,
-  jupiter: 5,
-  saturn: 5,
-  uranus: 3,
+  venus:   7,
+  jupiter: 6,
+  saturn:  6,
+  moon:    5,   // reduced — fast-mover; useful for tone, not always primary
+  uranus:  4,
   neptune: 3,
-  pluto: 3,
+  pluto:   3,
 };
 
 // Aspect type priority: conjunction highest, sextile lowest
@@ -75,6 +76,26 @@ export function todayDateString(): string {
   return `${year}-${month}-${day}`;
 }
 
+/** Return the current clock time in the given IANA timezone as "HH:MM". */
+function currentTimeForTz(tzName?: string, tzOffset?: number): string {
+  const now = new Date();
+  if (tzName) {
+    try {
+      const parts = new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit", minute: "2-digit", hour12: false, timeZone: tzName,
+      }).formatToParts(now);
+      const h = (parts.find(p => p.type === "hour")?.value ?? "12").padStart(2, "0");
+      const m = (parts.find(p => p.type === "minute")?.value ?? "00").padStart(2, "0");
+      return `${h === "24" ? "00" : h}:${m}`;
+    } catch { /* fall through to offset */ }
+  }
+  const offsetMs = (tzOffset ?? 0) * 3_600_000;
+  const local = new Date(now.getTime() + offsetMs);
+  const h = String(local.getUTCHours()).padStart(2, "0");
+  const m = String(local.getUTCMinutes()).padStart(2, "0");
+  return `${h}:${m}`;
+}
+
 /** Compute today's transit chart against the user's natal chart.
  *  Uses the user's birth location so house assignments are meaningful.
  *  The zodiac system is explicit so transit positions always match the
@@ -86,7 +107,9 @@ export function computeTransits(
 ): TransitData {
   const transitInput: BirthInput = {
     date,
-    time: "12:00",
+    // Use the chart's timezone so the moon's live position is accurate to
+    // the current hour rather than always being computed for noon.
+    time: currentTimeForTz(natal.input.tzName, natal.input.tz),
     place: natal.input.place,
     lat: natal.input.lat,
     lon: natal.input.lon,
@@ -128,10 +151,21 @@ export function computeTransits(
   // Sort by score descending — highest relevance first
   aspects.sort((a, b) => b.score - a.score);
 
+  // Cap Moon transits at 2 — they provide emotional context but the fast
+  // lunar movement would otherwise crowd out slower, more meaningful transits.
+  let moonCount = 0;
+  const balanced = aspects.filter(a => {
+    if (a.transitPlanet === "moon") {
+      if (moonCount >= 2) return false;
+      moonCount++;
+    }
+    return true;
+  });
+
   return {
     date,
     positions: transitChart.positions,
-    aspects: aspects.slice(0, 24), // top 24 for API payload
+    aspects: balanced.slice(0, 24),
   };
 }
 

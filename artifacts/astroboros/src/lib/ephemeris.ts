@@ -10,6 +10,7 @@ import { computeAspects } from "@/lib/aspects";
 import { getTimezoneOffset } from "@/lib/timezone";
 import { placidusCusps, houseOf, lahiriAyanamsa } from "@/lib/houses";
 import { heliocentric as plutoHeliocentric } from "astronomia/pluto";
+import { position as moonPositionMeeus } from "astronomia/moonposition";
 
 // --- trig helpers (degrees) ---
 const RAD = Math.PI / 180;
@@ -84,28 +85,11 @@ function longitudeOf(key: PlanetKey, d: number, xs: number, ys: number): number 
   const yh = r * (sind(o.N) * cosd(v + o.w) + cosd(o.N) * sind(v + o.w) * cosd(o.i));
 
   if (key === "moon") {
-    let lon = rev(atan2d(yh, xh));
-    const sun = sunPosition(d);
-    const Lm = rev(o.N + o.w + o.M);
-    const Ls = sun.Ls;
-    const Ms = sun.Ms;
-    const Mm = rev(o.M);
-    const D = rev(Lm - Ls);
-    const F = rev(Lm - o.N);
-    lon +=
-      -1.274 * sind(Mm - 2 * D) +
-      0.658 * sind(2 * D) -
-      0.186 * sind(Ms) -
-      0.059 * sind(2 * Mm - 2 * D) -
-      0.057 * sind(Mm - 2 * D + Ms) +
-      0.053 * sind(Mm + 2 * D) +
-      0.046 * sind(2 * D - Ms) +
-      0.041 * sind(Mm - Ms) -
-      0.035 * sind(D) -
-      0.031 * sind(Mm + Ms) -
-      0.015 * sind(2 * F - 2 * D) +
-      0.011 * sind(Mm - 4 * D);
-    return rev(lon);
+    // Meeus Chapter 47 via astronomia (~0.01° accuracy) replaces the
+    // Schlyter low-precision formula which drifts ~10° for dates 25+ years
+    // from J2000 epoch.  JDE = Schlyter d + J2000 epoch offset.
+    const { lon } = moonPositionMeeus(2451545.0 + d);
+    return rev(lon / RAD);
   }
 
   return rev(atan2d(yh + ys, xh + xs));

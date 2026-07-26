@@ -24,7 +24,6 @@ export interface ForgeReport {
   celestialField: CelestialFieldEntry[];
   todaysTheme: string;
   celestialState: string;
-  blueprintActivation: string;
   whatIsBeingRefined: string;
   /** @deprecated use whatIsBeingRefined */
   alchemicalProcess?: string;

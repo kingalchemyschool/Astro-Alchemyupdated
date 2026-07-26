@@ -9,7 +9,7 @@ import type { ForgeReport as ForgeReportType } from "@/types/forge";
 import type { BirthInput } from "@/types/astro";
 
 const FORGE_TOKEN_KEY = "astral_forge_token_forge";
-const FORGE_REPORT_CACHE_KEY = "astral_forge_daily_report_v2";
+const FORGE_REPORT_CACHE_KEY = "astral_forge_daily_report_v3";
 
 interface CachedReport {
   date: string;
@@ -98,6 +98,7 @@ export default function DailyForgePage() {
         natalPositions[key] = {
           signIndex: pos.signIndex,
           degree: pos.degree,
+          minute: pos.minute,
           house: pos.house,
           retrograde: pos.retrograde,
           longitude: pos.longitude,
@@ -109,6 +110,7 @@ export default function DailyForgePage() {
         transitPositions[key] = {
           signIndex: pos.signIndex,
           degree: pos.degree,
+          minute: pos.minute,
           house: pos.house,
           retrograde: pos.retrograde,
           longitude: pos.longitude,

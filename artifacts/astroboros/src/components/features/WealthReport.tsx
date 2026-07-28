@@ -414,6 +414,7 @@ export default function WealthReport({ reading, premium, onUnlock }: Props) {
         <RelationSection {...wb.relations.strategy} />
         <RelationSection {...wb.relations.dynamicValueCreation} />
         <RelationSection {...wb.relations.consciousStewardship} />
+        <CreativeArchitectureSection {...wb.creativeArchitecture} />
       </section>
 
       <div className="border-t border-white/[0.06]" />
@@ -466,5 +467,33 @@ export default function WealthReport({ reading, premium, onUnlock }: Props) {
     >
       {content}
     </PremiumGate>
+  );
+}
+
+function CreativeArchitectureSection({
+  title,
+  cycle,
+  paragraphs,
+}: {
+  title: string;
+  cycle: string;
+  paragraphs: string[];
+}) {
+  return (
+    <div className="rounded-2xl border border-violet-500/20 bg-violet-950/10 p-6 sm:p-7 space-y-5">
+      <div>
+        <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-violet-300/70 mb-2">
+          {title}
+        </div>
+        <h4 className="font-serif text-xl font-semibold text-white">How creation becomes durable</h4>
+      </div>
+      <div className="inline-flex items-center gap-2 rounded-lg border border-violet-300/15 px-4 py-2 font-mono text-[11px] tracking-wide text-violet-200/70">
+        <span className="h-1.5 w-1.5 rounded-full bg-violet-300/60 shrink-0" />
+        {cycle}
+      </div>
+      <div className="space-y-3 text-[15px] leading-relaxed text-foreground/80">
+        {paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+      </div>
+    </div>
   );
 }

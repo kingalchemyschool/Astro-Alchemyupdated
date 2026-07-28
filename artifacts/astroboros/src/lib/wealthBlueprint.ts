@@ -37,6 +37,15 @@ function retro(chart: NatalChart, key: keyof NatalChart["positions"]): boolean {
   return chart.positions[key].retrograde;
 }
 
+function placementLine(
+  chart: NatalChart,
+  key: keyof NatalChart["positions"],
+  contribution: string,
+): string {
+  const position = chart.positions[key];
+  return `${glyph(key)} ${PLANET_META[key].name} in ${signName(chart, key)} and the ${houseOrd(chart, key)} house contributes ${contribution}.`;
+}
+
 // ─── Aspect interpretation ────────────────────────────────────────────────────
 
 // Functional role of each planet in the wealth system — used to explain
@@ -972,14 +981,15 @@ function generateRelations(chart: NatalChart) {
 
   const strategy = {
     title: "Strategy",
-    subtitle: "How perception guides initiation",
+    subtitle: "How perception becomes directed force",
     planets: `${glyph("moon")} Moon · ${glyph("mars")} Mars`,
-    formula: "Perception → Direction → Action",
+    formula: "Recognition → Prioritization → Action",
     paragraphs: [
       STRATEGY_DEFINITION[moonEl],
       STRATEGY_OPERATION[moonEl],
-      MOON_PROCESS[moonSi],
-      `In ${signName(chart, "mars")}, Mars contributes its initiating force through ${MARS_FORCE[marsSi]}.`,
+      placementLine(chart, "moon", `recognition through ${MOON_PROCESS[moonSi].toLowerCase()}`),
+      placementLine(chart, "mars", `directed movement through ${MARS_FORCE[marsSi].toLowerCase()}`),
+      "The Moon supplies recognition, Mars supplies mobilization, and neither completes the process alone: perception without movement remains unexpressed, while movement without recognition spends force on whatever is nearest. Their cooperation converts significance into a chosen direction and then into action.",
       STRATEGY_NATURAL_EXPR[moonEl],
       relationAspect(chart, "moon", "mars"),
     ].filter(Boolean) as string[],
@@ -995,8 +1005,9 @@ function generateRelations(chart: NatalChart) {
     paragraphs: [
       DVC_DEFINITION[mercEl],
       DVC_OPERATION[mercEl],
-      `In ${signName(chart, "mercury")}, Mercury contributes through ${MERCURY_TRANSLATE[mercSi]}.`,
-      JUPITER_EXPAND[jupSi],
+      placementLine(chart, "mercury", `understanding through ${MERCURY_TRANSLATE[mercSi].toLowerCase()}`),
+      placementLine(chart, "jupiter", `reach through ${JUPITER_EXPAND[jupSi].toLowerCase()}`),
+      "Mercury creates understanding and Jupiter extends its application. Neither completes the process alone: insight without reach remains local, while expansion without understanding multiplies what has not been made coherent. Their cooperation translates intelligence into knowledge, systems, and ideas that can travel beyond their original context.",
       DVC_NATURAL_EXPR[mercEl],
       relationAspect(chart, "mercury", "jupiter"),
     ].filter(Boolean) as string[],
@@ -1008,12 +1019,13 @@ function generateRelations(chart: NatalChart) {
     title: "Conscious Stewardship",
     subtitle: "How value becomes lasting structure",
     planets: `${glyph("venus")} Venus · ${glyph("saturn")} Saturn`,
-    formula: "Value → Structure → Longevity",
+    formula: "Recognition → Commitment → Permanence",
     paragraphs: [
       STEWARDSHIP_DEFINITION[venEl],
       STEWARDSHIP_OPERATION[venEl],
-      VENUS_VALUE[venSi],
-      SATURN_MASTERY[satSi],
+      placementLine(chart, "venus", `discernment through ${VENUS_VALUE[venSi].toLowerCase()}`),
+      placementLine(chart, "saturn", `preservation through ${SATURN_MASTERY[satSi].toLowerCase()}`),
+      "Venus identifies what deserves investment and Saturn builds the structure that allows it to endure. Neither completes the process alone: value without commitment remains temporary, while structure without discernment preserves whatever happens to be there. Their cooperation converts recognition into permanence.",
       STEWARDSHIP_NATURAL_EXPR[venEl],
       relationAspect(chart, "venus", "saturn"),
     ].filter(Boolean) as string[],
@@ -1022,6 +1034,19 @@ function generateRelations(chart: NatalChart) {
   };
 
   return { strategy, dynamicValueCreation, consciousStewardship };
+}
+
+function generateCreativeArchitecture(): WealthBlueprint["creativeArchitecture"] {
+  return {
+    title: "Creative Architecture",
+    cycle: "Recognize → Develop → Sustain",
+    paragraphs: [
+      "Strategy determines where energy belongs. Moon + Mars answers: What deserves force? Perception identifies significance, then directed action gives that recognition consequence.",
+      "Dynamic Value Creation determines what deserves reach. Mercury + Jupiter turns understanding into transferable value — extending insight into knowledge, systems, and ideas that can operate beyond their original context.",
+      "Conscious Stewardship determines what deserves permanence. Venus + Saturn preserves and compounds what has been created by turning discerned value into structures capable of carrying it across time.",
+      "Together, these three mechanisms form a complete creative operating system: detect what matters, convert understanding into value, and build the structures that allow meaningful value to survive beyond the initial act of creation.",
+    ],
+  };
 }
 
 // ─── Synthesis section content ────────────────────────────────────────────────
@@ -1325,6 +1350,7 @@ export function generateWealthBlueprint(chart: NatalChart): WealthBlueprint {
 
   const core = coreArchetype(impTitle, weaTitle, conTitle, marsEl, jupEl, sunEl);
   const relations = generateRelations(chart);
+  const creativeArchitecture = generateCreativeArchitecture();
   const synthesis = generateSynthesis(chart);
 
   return {
@@ -1369,6 +1395,7 @@ export function generateWealthBlueprint(chart: NatalChart): WealthBlueprint {
     },
     coreArchetype: core,
     relations,
+    creativeArchitecture,
     synthesis,
   };
 }

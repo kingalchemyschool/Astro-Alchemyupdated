@@ -161,6 +161,11 @@ export interface WealthBlueprint {
     dynamicValueCreation: WealthRelation;
     consciousStewardship: WealthRelation;
   };
+  creativeArchitecture: {
+    title: string;
+    paragraphs: string[];
+    cycle: string;
+  };
   synthesis: {
     impact: WealthRelation;       // Mars + Pluto  — Force → Power → Consequence
     translation: WealthRelation;  // Mercury + Uranus — Insight → Pattern → Genius

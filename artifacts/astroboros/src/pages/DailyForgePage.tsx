@@ -9,7 +9,7 @@ import type { ForgeReport as ForgeReportType } from "@/types/forge";
 import type { BirthInput } from "@/types/astro";
 
 const FORGE_TOKEN_KEY = "astral_forge_token_forge";
-const FORGE_REPORT_CACHE_KEY = "astral_forge_daily_report_v4";
+const FORGE_REPORT_CACHE_KEY = "astral_forge_daily_report_v5";
 
 interface CachedReport {
   date: string;
@@ -23,7 +23,12 @@ function chartFingerprint(chart: import("@/types/astro").NatalChart): string {
   const sun = chart.positions.sun;
   const moon = chart.positions.moon;
   const asc = chart.ascendant;
-  return `${sun.signIndex}.${sun.degree}:${moon.signIndex}.${moon.degree}:${asc.signIndex}`;
+  return [
+    sun.longitude.toFixed(6),
+    moon.longitude.toFixed(6),
+    asc.longitude.toFixed(6),
+    chart.zodiac,
+  ].join(":");
 }
 
 export default function DailyForgePage() {

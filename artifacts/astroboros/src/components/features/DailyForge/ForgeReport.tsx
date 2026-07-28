@@ -109,14 +109,14 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
                     </span>
                   )}
                 </div>
-                <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 text-[11px] text-[#6B7A99]">
+                <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 text-[12px] text-[#A8B4D4]">
                   {entry.transitPlacement && <span>{entry.transitPlacement}</span>}
                   {entry.transitPlacement && <span className="text-[#2A3450]">·</span>}
                   <span>{entry.natalPlacement}</span>
                   {entry.houseActivation && (
                     <>
                       <span className="text-[#2A3450]">·</span>
-                      <span>{entry.houseActivation}</span>
+                      <span className="text-[#A8B4D4]">{entry.houseActivation}</span>
                     </>
                   )}
                 </div>

@@ -94,10 +94,15 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   const sun = natal.positions.sun;
   const moon = natal.positions.moon;
   const asc = natal.ascendant;
-  return `${sun?.signIndex ?? 0}.${sun?.degree ?? 0}:${moon?.signIndex ?? 0}.${moon?.degree ?? 0}:${asc?.signIndex ?? 0}`;
+  return [
+    sun?.longitude?.toFixed(6) ?? "0",
+    moon?.longitude?.toFixed(6) ?? "0",
+    `${asc?.signIndex ?? 0}.${asc?.degree ?? 0}`,
+    natal.zodiac,
+  ].join(":");
 }
 
-const REPORT_VERSION = "activation-v7";
+const REPORT_VERSION = "activation-v9";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -423,6 +428,44 @@ function formatDeg(p: PlanetSummary): string {
   return `${p.degree}° ${sign(p.signIndex)}${p.retrograde ? " Rx" : ""}`;
 }
 
+function angularSeparation(a: number, b: number): number {
+  const raw = Math.abs(a - b) % 360;
+  return raw > 180 ? 360 - raw : raw;
+}
+
+function expectedAspect(diff: number): { type: AspectType; orb: number } | null {
+  const defs: Array<{ type: AspectType; angle: number; orb: number }> = [
+    { type: "conjunction", angle: 0, orb: 3 },
+    { type: "sextile", angle: 60, orb: 3 },
+    { type: "square", angle: 90, orb: 3 },
+    { type: "trine", angle: 120, orb: 3 },
+    { type: "opposition", angle: 180, orb: 3 },
+  ];
+  for (const def of defs) {
+    const orb = Math.abs(diff - def.angle);
+    if (orb <= def.orb) return { type: def.type, orb: Math.round(orb * 10) / 10 };
+  }
+  return null;
+}
+
+/**
+ * The browser calculates aspects because it owns the birth input. Validate the
+ * supplied list against the supplied longitudes before generating prose so a
+ * stale/mixed chart cannot masquerade as a valid report.
+ */
+function validateTransitAspects(req: DailyForgeRequest): string | null {
+  for (const aspect of req.transits.aspects) {
+    const transit = req.transits.positions[aspect.transitPlanet];
+    const natal = req.natal.positions[aspect.natalPlanet];
+    if (!transit || !natal) return `Missing positions for ${aspect.transitPlanet}/${aspect.natalPlanet}.`;
+    const expected = expectedAspect(angularSeparation(transit.longitude, natal.longitude));
+    if (!expected || expected.type !== aspect.type || Math.abs(expected.orb - aspect.orb) > 0.2) {
+      return `Aspect data does not match the supplied sidereal/tropical positions for ${aspect.transitPlanet}/${aspect.natalPlanet}.`;
+    }
+  }
+  return null;
+}
+
 // ─── Report generator ─────────────────────────────────────────────────────────
 
 function generateReport(req: DailyForgeRequest): ForgeReport {
@@ -480,8 +523,8 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     return {
       planetaryAspect:       `${sp_tGlyph} ${sp_tName} ${ASPECT_LABEL_CAP[aspect.type]} Natal ${sp_nGlyph} ${sp_nName}`,
       transitPlacement:     `Transit ${sp_tSign} ${sp_tPos.degree}°${String(sp_tPos.minute ?? 0).padStart(2, "0")}′`,
-      natalPlacement:        `${sp_nSign} ${sp_nPos.degree}° · ${houseOrd(sp_nHouse)} House`,
-      houseActivation:       sp_houseInfo.short,
+      natalPlacement:        `Natal ${sp_nSign} ${sp_nPos.degree}° · ${houseOrd(sp_nHouse)} house`,
+      houseActivation:       `${houseOrd(sp_nHouse)} house · ${sp_houseInfo.short}`,
       coreFunctionActivated: activationDescription(aspect),
     };
   });
@@ -836,6 +879,14 @@ router.post("/daily-forge/report", forgeLimiter, async (req: any, res) => {
     logger.warn({ mismatches, zodiac, topZodiac, transitsZodiac }, "Mixed-zodiac Daily Forge request rejected");
     return res.status(400).json({
       error: `Inconsistent zodiac across request (${mismatches.join(", ")} must match natal.zodiac=${zodiac}). Please reload the page.`,
+    });
+  }
+
+  const aspectError = validateTransitAspects(body);
+  if (aspectError) {
+    logger.warn({ zodiac, aspectError }, "Inconsistent Daily Forge aspect data rejected");
+    return res.status(400).json({
+      error: `${aspectError} Refresh the chart and generate the report again.`,
     });
   }
 

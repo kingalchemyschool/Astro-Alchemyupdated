@@ -60,82 +60,53 @@ const OUTER_ROLE: Partial<Record<PlanetKey, string>> = {
   neptune: "Neptune is the outer octave of Venus — where Venus selects what is personally worth keeping, Neptune draws discernment toward what carries meaning beyond the personal: ideal forms, collective imagination, the transcendent dimension of what is worth creating. Its placement shows where your creative system is most permeable to inspiration that exceeds ordinary definition, and where the work is most likely to carry significance that outlasts its immediate moment.",
 };
 
-// ── Aspect synthesis factories ──────────────────────────────────────────────
-// Each factory: (otherName, otherFn, orb) → string.
+// ── Aspect synthesis ─────────────────────────────────────────────────────────
+// Internal function names orient the section title. Aspect prose translates
+// the relationship into observable behavior instead of asking the reader to
+// decode the architecture.
 
-type AspectDesc = (n: string, fn: string, orb: string) => string;
-const ASPECT_PAIR_TEXT: Partial<Record<PlanetKey, Record<AspectType, AspectDesc>>> = {
-  sun: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} means Essence and ${fn.toLowerCase()} are operating as a single integrated unit — they cannot be separated in the creative act, which means each one continuously shapes the quality of the other before either reaches the world.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} opens a reliable channel between Essence and ${fn.toLowerCase()} — one that activates readily and provides consistent access to ${n}'s resources without the dependency that a tighter contact would create.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} generates productive friction at the root of the system — what Essence establishes, ${fn.toLowerCase()} contests, and that pressure has been refining both sides into increasingly precise form ever since.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} means Essence draws on ${fn.toLowerCase()} without resistance — the originating creative quality and ${n}'s energy move together structurally, which is one of the quiet foundations of how this whole system operates.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places Essence in full creative dialogue with ${fn.toLowerCase()} — each articulates what the other cannot, and that polarity has been maturing, over time, from apparent conflict into complementary precision.`,
-  },
-  moon: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} fuses Perception and ${fn.toLowerCase()} at the level of instinct — what the emotional body knows and what ${n} does are processed together, making their interaction immediate, pre-verbal, and inseparable in how you read the world.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} lets Perception and ${fn.toLowerCase()} cooperate naturally — what your instinctive intelligence registers, ${n} can work with, and what ${n} generates, the perception function can orient toward without friction.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} creates tension between what the emotional body registers and what ${fn.toLowerCase()} demands — the two systems run at different rhythms, which produces a productive pressure that prevents either from operating without the corrective influence of the other.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} lets Perception draw naturally on ${fn.toLowerCase()} — what you feel as important is readily supported by what ${n} can do, and that structural alignment between emotional intelligence and ${n}'s function is a consistent advantage throughout the system.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places Perception in dynamic tension with ${fn.toLowerCase()} — what the emotional body registers and what ${n} produces must negotiate constantly, which deepens the accuracy of both and prevents either from running on assumption.`,
-  },
-  mars: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} fuses initiating Force directly with ${fn.toLowerCase()} — impulse and ${n}'s function activate together, which significantly concentrates the impact of both and collapses the gap between intention and consequence.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} lets Force draw on ${fn.toLowerCase()} when initiative requires it — the channel is open but not compulsory, which gives you access to ${n}'s resources without structural dependency or override.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} creates a sustained contest between Force and ${fn.toLowerCase()} — neither can run unopposed, and the resistance between them has been progressively producing more targeted, consequential, and precise initiative.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} lets Force move with ${n}'s natural support — what is initiated flows readily into ${fn.toLowerCase()}'s territory, which reduces the friction between action and the conditions that would otherwise need to be built before it could be sustained.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places Force in direct dialogue with ${fn.toLowerCase()} — action cannot proceed without awareness of what ${n} requires, and ${n} cannot operate without the pressure Mars generates. That polarity matures into complementary precision at both ends.`,
-  },
-  mercury: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} merges Expression and ${fn.toLowerCase()} at source — how you give form to what you know and what ${n} does are running as a single process, each shaping the quality of the other before either reaches the world as language, pattern, or authored signal.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} opens a productive channel between Expression and ${fn.toLowerCase()} — Mercury can draw on ${n}'s resources when the work of articulation requires it, without ${n} overriding how that expression finds its form.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} creates productive tension between Expression and ${fn.toLowerCase()} — how you give form to understanding and what ${n} demands are in friction, forcing each into greater precision and preventing either from settling into its easier, less tested version.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} lets Expression and ${fn.toLowerCase()} move together with structural ease — what Mercury articulates, ${n} can readily receive and apply, which reduces the loss between finding the right form for something and having it actually land in the world.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places Expression in full dialogue with ${fn.toLowerCase()} — how you give form to what you know is qualified by what ${n} requires, and what ${n} produces must be speakable through Mercury's register. That mutual pressure has been producing increasingly complementary precision on both sides.`,
-  },
-  jupiter: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} fuses Expansion directly with ${fn.toLowerCase()} — what Jupiter multiplies is immediately shaped by ${n}'s function, and what ${n} produces is immediately extended by Jupiter's scale. The two are structurally inseparable.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} lets Expansion draw on ${fn.toLowerCase()} when scaling requires additional depth — the channel is open and cooperative without creating a structural dependency that would limit either function's independent operation.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} generates productive tension between Expansion and ${fn.toLowerCase()} — the friction prevents Jupiter from multiplying what ${n} has not yet confirmed as worth scaling, which over time produces growth that actually holds its own weight.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} aligns Expansion and ${fn.toLowerCase()} — what ${n} generates, Jupiter multiplies with minimal friction, and each cycle of growth compounds on what the previous one built.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places Expansion in direct dialogue with ${fn.toLowerCase()} — Jupiter's tendency toward more is in constant negotiation with what ${n} actually requires, producing growth that is earned through that negotiation rather than assumed.`,
-  },
-  venus: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} merges the Value function with ${fn.toLowerCase()} at source — what is recognized as genuinely worth keeping is inseparable from what ${n} does, making the two functions conditions of each other in how worth is determined.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} opens a productive channel between Value and ${fn.toLowerCase()} — Venus's discernment draws on ${n}'s resources when refining what deserves sustained investment, without ${n} overriding the selection process.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} creates productive tension between Value and ${fn.toLowerCase()} — what is identified as worth keeping is contested by what ${n} requires, and that friction has been progressively refining the standard both apply.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} lets Value and ${fn.toLowerCase()} move together naturally — what is identified as genuinely worth keeping, ${n} can readily work with, which reduces the loss between clear discernment and its actual expression in the world.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places Value in direct dialogue with ${fn.toLowerCase()} — what Venus recognizes as worth keeping and what ${n} demands negotiate constantly, producing a standard of worth that has been tested from both directions simultaneously.`,
-  },
-  saturn: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} fuses Structure directly with ${fn.toLowerCase()} — Saturn's architecture and ${n}'s function are built into each other, which means the discipline applied to one is immediately and unavoidably experienced by the other.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} lets Structure draw on ${fn.toLowerCase()}'s resources when building requires additional depth — Saturn can access ${n}'s energy without being confined by it, which provides flexibility within discipline.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} creates productive friction between Structure and ${fn.toLowerCase()} — the resistance prevents Saturn from constructing frameworks that ${n} cannot sustain, and prevents ${n} from operating without the test of structural integrity.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} aligns Structure and ${fn.toLowerCase()} — Saturn's discipline and ${n}'s function reinforce rather than contest each other, allowing what is built to hold more of what ${n} generates.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places Structure in direct dialogue with ${fn.toLowerCase()} — what Saturn requires for permanence and what ${n} generates must negotiate, producing architecture that endures because it was tested from both ends.`,
-  },
-  pluto: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} fuses evolutionary Force directly with ${fn.toLowerCase()} — Pluto's regenerative pressure is built into ${n}'s function at the root, which gives that function an intensity and depth that can transform whatever it encounters.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} lets the regenerative capacity operate as an available resource for ${fn.toLowerCase()} — Pluto's depth and transformative power are accessible when ${n} requires them, without the overwhelm of a tighter contact.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} places Pluto's evolutionary pressure in direct friction with ${fn.toLowerCase()} — the resistance between them ensures that ${n}'s function is continuously being tested at depth, and what survives that testing carries considerably more power.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} lets Pluto's regenerative depth flow naturally into ${fn.toLowerCase()} — the transformative capacity is structurally available to ${n}'s function, which gives it a quiet power that operates without needing to announce itself.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places the evolutionary dimension in full dialogue with ${fn.toLowerCase()} — Pluto's depth and ${n}'s function are in continuous negotiation, which produces a polarity that matures, over time, into a significant capacity for transformation through that specific function.`,
-  },
-  uranus: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} fuses the disruption of ordinary pattern directly with ${fn.toLowerCase()} — Uranus's capacity for sudden original synthesis is built into ${n}'s function, making innovation not an occasional event but the structural mode of how that function operates.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} makes Uranus's pattern-breaking intelligence available to ${fn.toLowerCase()} when originality is required — a reliable channel to unconventional insight that can be accessed without the instability of a closer contact.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} creates productive friction between the impulse to break pattern and ${fn.toLowerCase()}'s established way of operating — the resistance between them prevents either from settling, which keeps ${n}'s function in a state of productive renewal.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} lets Uranus's original intelligence flow naturally through ${fn.toLowerCase()} — what ${n} does has access to a structural source of unconventional insight, which tends to produce work that surprises even the person doing it.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places the disruptive intelligence in full dialogue with ${fn.toLowerCase()} — what Uranus sees and what ${n} operates through are in continuous negotiation, producing a polarity that eventually becomes a capacity for genuine innovation within that function's territory.`,
-  },
-  neptune: {
-    conjunction: (n, fn, orb) => `The ${orb}° conjunction with ${n} fuses the dissolving, visionary quality directly with ${fn.toLowerCase()} — Neptune's capacity to reach beyond ordinary definition is built into ${n}'s function, which gives it an imaginative and transcendent dimension that cannot be separated from how it operates.`,
-    sextile:     (n, fn, orb) => `The ${orb}° sextile to ${n} makes Neptune's idealistic depth available to ${fn.toLowerCase()} as a resource — a channel to collective meaning and expanded imagination that can be drawn on without the confusion that a tighter contact might introduce.`,
-    square:      (n, fn, orb) => `The ${orb}° square to ${n} creates productive tension between the dissolving dimension and ${fn.toLowerCase()}'s need for workable form — the friction between vision and function has been demanding, over time, that both become more precise about where they meet.`,
-    trine:       (n, fn, orb) => `The ${orb}° trine to ${n} lets Neptune's visionary depth flow naturally into ${fn.toLowerCase()} — the idealistic and imaginative dimension moves through ${n}'s function with structural ease, which tends to give that function an unusual resonance and reach.`,
-    opposition:  (n, fn, orb) => `The ${orb}° opposition to ${n} places the dissolving intelligence in full dialogue with ${fn.toLowerCase()} — Neptune's pull toward the transcendent and ${n}'s operational requirements are in continuous negotiation, producing a polarity that matures into a distinctive blend of vision and function.`,
-  },
+const PLANET_EXPERIENCE: Record<PlanetKey, string> = {
+  sun: "your sense of purpose, identity, and creative direction",
+  moon: "your instinctive responses, emotional memory, and need for safety",
+  mercury: "your thinking, language, and decisions",
+  venus: "your values, attractions, and standards of quality",
+  mars: "your will, boundaries, and ability to act",
+  jupiter: "your confidence, beliefs, and appetite for growth",
+  saturn: "your standards, commitments, and long-term discipline",
+  uranus: "your originality and willingness to break an inherited pattern",
+  neptune: "your imagination, sensitivity, and ideals",
+  pluto: "your relationship with power, endings, and fundamental change",
 };
+
+function aspectExperience(
+  chart: NatalChart,
+  key: PlanetKey,
+  otherKey: PlanetKey,
+  type: AspectType,
+  orb: string,
+): string {
+  const subject = PLANET_EXPERIENCE[key];
+  const influence = PLANET_EXPERIENCE[otherKey];
+  const otherName = PLANET_META[otherKey].name;
+  const sign = SIGNS[chart.positions[key].signIndex].name;
+  const otherSign = SIGNS[chart.positions[otherKey].signIndex].name;
+  const subjectHouse = ORDINALS[chart.positions[key].house - 1];
+  const otherHouse = ORDINALS[chart.positions[otherKey].house - 1];
+  const contact = `${PLANET_META[key].name} in ${sign} and ${otherName} in ${otherSign}`;
+
+  switch (type) {
+    case "conjunction":
+      return `At ${orb}°, ${contact} operate as one concentrated pressure. Your ${subject} immediately activates ${influence}, so what you want, notice, or decide tends to carry the other planet's intensity with it. This strengthens your ability to commit fully and make a visible impact, but it can also make a first impulse feel more certain than it has been tested. In practice, the work is to give the combined drive one clear target before acting; this is where the pattern becomes a durable contribution rather than a reflex.`;
+    case "trine":
+      return `At ${orb}°, ${contact} support one another with unusual ease. Your ${subject} can draw on ${influence} without having to fight for access, which makes it easier to trust your instincts, communicate what you mean, and move from intention into action. The strength is natural coordination; the risk is assuming that what comes easily will organize itself. Deliberate practice turns this gift into a repeatable advantage in the ${subjectHouse} and ${otherHouse} areas of life.`;
+    case "sextile":
+      return `At ${orb}°, ${contact} create a practical opening. Your ${subject} has help available from ${influence}, but the benefit appears only when you choose a specific action rather than waiting for momentum. This strengthens initiative, adaptability, and the ability to convert a promising idea into a useful result. The challenge is hesitation disguised as preparation; your larger blueprint develops when you act while the opening is still present.`;
+    case "square":
+      return `At ${orb}°, ${contact} create friction that cannot be solved by ignoring either side. Your ${subject} wants to move one way while ${influence} introduces a competing demand, so the pattern can show up as urgency, overcorrection, defensiveness, or repeated pressure to revise your approach. This difficulty strengthens discernment and precision when you engage it directly. The life lesson is not to eliminate the tension, but to build a response that honors both needs and produces a more capable result than either could create alone.`;
+    case "opposition":
+      return `At ${orb}°, ${contact} pull your attention across two different perspectives. Your ${subject} is easier to recognize through the contrast created by ${influence}, often through other people, visible consequences, or situations that expose what your usual viewpoint leaves out. This strengthens self-awareness, negotiation, and the ability to hold competing truths without collapsing into one side. The challenge is projection or polarization; your path opens when you let the opposing experience refine your choices instead of treating it as an obstacle.`;
+  }
+}
 
 // ── Aspect synthesis paragraph ────────────────────────────────────────────────
 
@@ -162,15 +133,12 @@ function richAspectParagraph(chart: NatalChart, key: PlanetKey): string | null {
     const thisSign = SIGNS[thisPos.signIndex].name;
     const thisHouseOrd = ORDINALS[thisPos.house - 1];
 
-    const factory = ASPECT_PAIR_TEXT[key]?.[asp.type];
-    const baseText = factory
-      ? factory(otherMeta.name, otherMeta.fn, String(asp.orb))
-      : `The ${asp.orb}° ${ASPECT_WORD[asp.type]} with ${otherMeta.name} draws ${meta.name} in ${thisSign} into direct relationship with ${otherMeta.name} in ${otherSign} — neither operates without awareness of the other, and that mutual conditioning has been shaping both over time.`;
+    const baseText = aspectExperience(chart, key, otherKey, asp.type, String(asp.orb));
 
     // Add sign + house placement context to ground the aspect in actual positions
     const placementCtx = otherPos.house !== thisPos.house
-      ? ` ${meta.name} sits in ${thisSign} in the ${thisHouseOrd} house; ${otherMeta.name} sits in ${otherSign} in the ${otherHouseOrd} house. The contact between them runs between those two arenas — what happens in one is felt in the other, and the most productive engagement with this aspect involves holding both territories in view simultaneously.`
-      : ` Both ${meta.name} in ${thisSign} and ${otherMeta.name} in ${otherSign} share the ${thisHouseOrd} house — this concentrates the entire contact into a single arena of life, where its effects are immediate and impossible to compartmentalize.`;
+      ? ` It links the ${thisHouseOrd} house with the ${otherHouseOrd} house: what develops in one area will create consequences in the other, so the most useful response keeps both arenas in view.`
+      : ` Because both placements occupy the ${thisHouseOrd} house, the pattern is concentrated in one area of life and tends to produce immediate, difficult-to-compartmentalize consequences.`;
 
     return baseText + placementCtx;
   });
@@ -190,7 +158,7 @@ function richAspectParagraph(chart: NatalChart, key: PlanetKey): string | null {
     synthesis = `Taken together, these connections mean ${meta.name} has been consistently tested rather than smoothly supported — which is the precise condition through which its most durable and precise form is eventually developed.`;
   }
 
-  const intro = `${meta.name} is woven into the larger system through ${list.length === 1 ? "one major aspect" : `${list.length} major aspects`} — each one a living relationship that continuously shapes how this energy moves and what it can do.`;
+   const intro = `${meta.name} is shaped by ${list.length === 1 ? "one major planetary relationship" : `${list.length} major planetary relationships`}. These contacts describe recognizable patterns in how you respond, choose, create, and handle consequences.`;
 
   return `${intro} ${lines.join(" ")} ${synthesis}`;
 }

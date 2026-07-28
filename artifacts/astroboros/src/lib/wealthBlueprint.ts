@@ -1091,7 +1091,7 @@ function generateSynthesis(chart: NatalChart) {
     title: "Magnitude + Direction",
     subtitle: "How force becomes transformative consequence",
     planets: `${glyph("mars")} Mars · ${glyph("pluto")} Pluto`,
-    formula: "Force → Magnitude → Direction → Consequence",
+    formula: "Force → Concentration → Leverage → Transformation",
     paragraphs: [
       IMPACT_SYNTHESIS_INTRO[marsEl],
       placementLine(chart, "mars", `the original human function of force, expressed through ${MARS_FORCE[marsSi]}`),
@@ -1108,7 +1108,7 @@ function generateSynthesis(chart: NatalChart) {
     title: "Translation of Genius",
     subtitle: "How intelligence becomes evolutionary insight",
     planets: `${glyph("mercury")} Mercury · ${glyph("uranus")} Uranus`,
-    formula: "Perception → Translation → Genius → Breakthrough",
+    formula: "Pattern → Recognition → Translation → Breakthrough",
     paragraphs: [
       TRANSLATION_SYNTHESIS_INTRO[mercEl],
       placementLine(chart, "mercury", `the original human function of translation through ${MERCURY_TRANSLATE[mercSi]}`),
@@ -1125,7 +1125,7 @@ function generateSynthesis(chart: NatalChart) {
     title: "Resonance of Value",
     subtitle: "How value becomes collective meaning",
     planets: `${glyph("venus")} Venus · ${glyph("neptune")} Neptune`,
-    formula: "Value → Resonance → Meaning → Influence",
+    formula: "Value → Inspiration → Resonance → Influence",
     paragraphs: [
       VALUE_SYNTHESIS_INTRO[venEl],
       placementLine(chart, "venus", `the original human function of value through ${VENUS_VALUE[venSi]}`),

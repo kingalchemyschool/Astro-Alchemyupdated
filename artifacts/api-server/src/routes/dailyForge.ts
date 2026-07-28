@@ -97,7 +97,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   return `${sun?.signIndex ?? 0}.${sun?.degree ?? 0}:${moon?.signIndex ?? 0}.${moon?.degree ?? 0}:${asc?.signIndex ?? 0}`;
 }
 
-const REPORT_VERSION = "activation-v6";
+const REPORT_VERSION = "activation-v7";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;

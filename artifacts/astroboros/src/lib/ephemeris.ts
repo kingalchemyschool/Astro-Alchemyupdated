@@ -88,8 +88,10 @@ function longitudeOf(key: PlanetKey, d: number, xs: number, ys: number): number 
     // Meeus Chapter 47 via astronomia (~0.01° accuracy) replaces the
     // Schlyter low-precision formula which drifts ~10° for dates 25+ years
     // from J2000 epoch.  JDE = Schlyter d + J2000 epoch offset.
-    const { lon } = moonPositionMeeus(2451545.0 + d);
-    return rev(lon / RAD);
+    // `astronomia` returns a Coord instance. Its longitude is exposed through
+    // the `lon` getter; destructuring it loses the getter-backed value.
+    const moon = moonPositionMeeus(2451545.0 + d);
+    return rev(moon.lon / RAD);
   }
 
   return rev(atan2d(yh + ys, xh + xs));

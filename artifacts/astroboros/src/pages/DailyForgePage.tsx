@@ -9,7 +9,7 @@ import type { ForgeReport as ForgeReportType } from "@/types/forge";
 import type { BirthInput } from "@/types/astro";
 
 const FORGE_TOKEN_KEY = "astral_forge_token_forge";
-const FORGE_REPORT_CACHE_KEY = "astral_forge_daily_report_v3";
+const FORGE_REPORT_CACHE_KEY = "astral_forge_daily_report_v4";
 
 interface CachedReport {
   date: string;

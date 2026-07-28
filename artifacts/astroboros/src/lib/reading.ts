@@ -305,9 +305,9 @@ function outerPlanetSection(chart: NatalChart, key: "pluto" | "uranus" | "neptun
   if (p2) paragraphs.push(p2);
 
   const titleMap: Record<string, string> = {
-    pluto:   "Pluto · Regeneration",
-    uranus:  "Uranus · Disruption",
-    neptune: "Neptune · Dissolution",
+    pluto:   "Pluto · Transformation",
+    uranus:  "Uranus · Ingenuity",
+    neptune: "Neptune · Resonance",
   };
   const glyphMap: Record<string, string> = {
     pluto: "♇", uranus: "♅", neptune: "♆",

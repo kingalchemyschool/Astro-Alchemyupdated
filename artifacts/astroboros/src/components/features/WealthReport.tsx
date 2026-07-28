@@ -239,6 +239,140 @@ function RelationSection({
   );
 }
 
+// ── Interactive Wealth Enneagram ─────────────────────────────────────────────
+type EnneagramSelection =
+  | { kind: "point"; label: string; title: string; description: string; action?: string }
+  | { kind: "line"; label: string; title: string; description: string };
+
+const ENNEAGRAM_POINTS = [
+  { id: 1, x: 180, y: 42, label: "1", title: "Moon", description: "Inner processing and recognition: the first point of the creative system, where experience becomes significance.", action: "Open the full blueprint" },
+  { id: 2, x: 88, y: 82, label: "2", title: "Mars", description: "Force and initiation: the capacity to move what has been recognized into directed action." },
+  { id: 3, x: 88, y: 182, label: "3", title: "Strategy", description: "Moon + Mars — perception becomes directed force through Recognition → Prioritization → Action." },
+  { id: 4, x: 180, y: 222, label: "4", title: "Mercury", description: "Translation and communication: the function that turns perception into a usable pattern." },
+  { id: 5, x: 272, y: 182, label: "5", title: "Jupiter", description: "Expansion and reach: the function that allows understanding to become transferable value." },
+  { id: 6, x: 272, y: 82, label: "6", title: "Dynamic Value Creation", description: "Mercury + Jupiter — information becomes transferable value through Translation → Expansion → Application." },
+  { id: 7, x: 245, y: 42, label: "7", title: "Venus", description: "Value discernment: the function that recognizes what deserves cultivation and care." },
+  { id: 8, x: 115, y: 42, label: "8", title: "Saturn", description: "Structure and stewardship: the function that gives what matters a durable container." },
+  { id: 9, x: 180, y: 132, label: "9", title: "Resonance of Value", description: "Venus + Neptune — value becomes collective meaning through Value → Resonance → Meaning → Influence." },
+] as const;
+
+const ENNEAGRAM_LINES = [
+  { from: 9, to: 3, label: "9 → 3", title: "Strategy", description: "The path from resonance to directed force: what matters becomes something that can be prioritized and acted upon." },
+  { from: 3, to: 6, label: "3 → 6", title: "Dynamic Value Creation", description: "The path from directed action to reach: strategy becomes a repeatable process for translating effort into value." },
+  { from: 6, to: 9, label: "6 → 9", title: "Resonance of Value", description: "The path from expansion to significance: value becomes meaningful beyond its original context." },
+  { from: 1, to: 4, label: "1 → 4", title: "Translation of Genius", description: "Moon-led perception enters Mercury’s language and becomes available for translation into new understanding." },
+  { from: 4, to: 7, label: "4 → 7", title: "Magnitude + Direction", description: "Translated intelligence gains force and direction, moving from pattern into consequence." },
+  { from: 7, to: 1, label: "7 → 1", title: "Conscious Stewardship", description: "Recognized value returns to the inner system to be protected, embodied, and carried forward." },
+] as const;
+
+function InteractiveEnneagram({
+  premium,
+  onUnlock,
+}: {
+  premium: boolean;
+  onUnlock?: () => Promise<boolean>;
+}) {
+  const [selected, setSelected] = useState<EnneagramSelection>({
+    kind: "point",
+    label: "Point 1",
+    title: "Moon",
+    description: "Select any point or pathway to explore how the creative system moves from perception to consequence, innovation, and influence.",
+    action: "Open the full blueprint",
+  });
+
+  const pointById = new Map(ENNEAGRAM_POINTS.map((point) => [point.id, point] as const));
+  type PointId = typeof ENNEAGRAM_POINTS[number]["id"];
+  const point = (id: PointId) => pointById.get(id)!;
+
+  return (
+    <section className="rounded-2xl border border-cyan-500/20 bg-[#060c18] p-6 sm:p-8 shadow-[0_0_28px_rgba(34,211,238,0.06)]">
+      <div className="mb-5">
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-300/70 mb-2">
+          Interactive Creative Enneagram
+        </div>
+        <h3 className="font-serif text-2xl font-semibold text-white">Explore the creative system</h3>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/55">
+          Every point and connecting pathway is clickable. Follow the movement from inner function to
+          strategy, value creation, resonance, and higher-order creative mechanics.
+        </p>
+      </div>
+
+      <div className="grid items-center gap-6 lg:grid-cols-[minmax(320px,1fr)_minmax(260px,0.8fr)]">
+        <div className="mx-auto w-full max-w-[440px]">
+          <svg viewBox="0 0 360 265" className="w-full overflow-visible" role="img" aria-label="Interactive creative enneagram">
+            <defs>
+              <filter id="enneagram-glow"><feGaussianBlur stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+            </defs>
+            <circle cx="180" cy="132" r="91" fill="none" stroke="rgba(125,211,252,0.16)" strokeWidth="1" />
+            <g
+              role="button"
+              tabIndex={0}
+              aria-label="Integrated system"
+              onClick={() => setSelected({ kind: "line", label: "Center", title: "Integrated System", description: "Force, intelligence, and value operate as one evolutionary architecture: Transformation → Innovation → Influence." })}
+              onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setSelected({ kind: "line", label: "Center", title: "Integrated System", description: "Force, intelligence, and value operate as one evolutionary architecture: Transformation → Innovation → Influence." }); }}
+              className="cursor-pointer"
+            >
+              <circle cx="180" cy="132" r="38" fill="transparent" stroke="transparent" strokeWidth="10" />
+              <circle cx="180" cy="132" r="33" fill="rgba(139,92,246,0.08)" stroke="rgba(167,139,250,0.45)" strokeWidth="1" />
+            </g>
+
+            {ENNEAGRAM_LINES.map((line) => {
+              const start = point(line.from);
+              const end = point(line.to);
+              const active = selected.kind === "line" && selected.label === line.label;
+              return (
+                <g key={line.label} role="button" tabIndex={0} aria-label={`${line.title}: ${line.description}`}
+                  onClick={() => setSelected({ kind: "line", label: line.label, title: line.title, description: line.description })}
+                  onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setSelected({ kind: "line", label: line.label, title: line.title, description: line.description }); }}
+                  className="cursor-pointer">
+                  <line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke="transparent" strokeWidth="14" />
+                  <line x1={start.x} y1={start.y} x2={end.x} y2={end.y}
+                    stroke={active ? "#67e8f9" : "rgba(103,232,249,0.3)"} strokeWidth={active ? 2.5 : 1.2}
+                    strokeDasharray={line.from === 9 ? undefined : "4 4"} filter={active ? "url(#enneagram-glow)" : undefined} />
+                </g>
+              );
+            })}
+
+            {ENNEAGRAM_POINTS.map((item) => {
+              const active = selected.kind === "point" && selected.label === `Point ${item.id}`;
+              return (
+                <g key={item.id} role="button" tabIndex={0} aria-label={`Point ${item.id}: ${item.title}`}
+                  onClick={() => setSelected({ kind: "point", label: `Point ${item.id}`, title: item.title, description: item.description, action: "action" in item ? item.action : undefined })}
+                  onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setSelected({ kind: "point", label: `Point ${item.id}`, title: item.title, description: item.description, action: "action" in item ? item.action : undefined }); }}
+                  className="cursor-pointer">
+                  <circle cx={item.x} cy={item.y} r="18" fill={active ? "rgba(34,211,238,0.25)" : "rgba(15,23,42,0.96)"}
+                    stroke={active ? "#67e8f9" : "rgba(148,163,184,0.48)"} strokeWidth={active ? 2 : 1} filter={active ? "url(#enneagram-glow)" : undefined} />
+                  <text x={item.x} y={item.y + 4} textAnchor="middle" fill={active ? "#cffafe" : "#cbd5e1"} fontSize="12" fontFamily="monospace" fontWeight="700">{item.label}</text>
+                </g>
+              );
+            })}
+            <text x="180" y="128" textAnchor="middle" fill="#ddd6fe" fontSize="7" fontFamily="monospace" letterSpacing="0.08em">INTEGRATED</text>
+            <text x="180" y="139" textAnchor="middle" fill="#ddd6fe" fontSize="7" fontFamily="monospace" letterSpacing="0.08em">SYSTEM</text>
+          </svg>
+          <p className="mt-2 text-center font-mono text-[9px] uppercase tracking-[0.16em] text-white/30">
+            Select a point or line
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-5 min-h-[190px]">
+          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan-300/60">{selected.label}</div>
+          <h4 className="mt-2 font-serif text-xl font-semibold text-white">{selected.title}</h4>
+          <p className="mt-3 text-sm leading-relaxed text-white/65">{selected.description}</p>
+          {selected.kind === "point" && selected.action && (
+            <button
+              type="button"
+              onClick={() => { if (!premium) void onUnlock?.(); }}
+              className="mt-5 rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-cyan-200 transition hover:bg-cyan-400/20"
+            >
+              {premium ? "Full blueprint unlocked" : selected.action}
+            </button>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Cosmic header with mini Venn ─────────────────────────────────────────────
 function MiniVenn({ impact, wealth, consciousness }: { impact: string; wealth: string; consciousness: string }) {
   const cx = 130, cy = 90, r = 58, offset = 36;
@@ -432,7 +566,10 @@ export default function WealthReport({ reading, premium, onUnlock }: Props) {
         <RelationSection {...wb.synthesis.impact} />
         <RelationSection {...wb.synthesis.translation} />
         <RelationSection {...wb.synthesis.value} />
+        <CreativeMechanicsArchitectureSection {...wb.creativeMechanicsArchitecture} />
       </section>
+
+      <InteractiveEnneagram premium={premium} onUnlock={onUnlock} />
 
       <div className="border-t border-white/[0.06]" />
 
@@ -490,6 +627,32 @@ function CreativeArchitectureSection({
       <div className="inline-flex items-center gap-2 rounded-lg border border-violet-300/15 px-4 py-2 font-mono text-[11px] tracking-wide text-violet-200/70">
         <span className="h-1.5 w-1.5 rounded-full bg-violet-300/60 shrink-0" />
         {cycle}
+      </div>
+      <div className="space-y-3 text-[15px] leading-relaxed text-foreground/80">
+        {paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+      </div>
+    </div>
+  );
+}
+
+function CreativeMechanicsArchitectureSection({
+  title,
+  sequence,
+  paragraphs,
+}: {
+  title: string;
+  sequence: string;
+  paragraphs: string[];
+}) {
+  return (
+    <div className="rounded-2xl border border-cyan-500/20 bg-cyan-950/10 p-6 sm:p-7 space-y-5">
+      <div>
+        <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-300/70 mb-2">{title}</div>
+        <h4 className="font-serif text-xl font-semibold text-white">How personal function evolves</h4>
+      </div>
+      <div className="inline-flex items-center gap-2 rounded-lg border border-cyan-300/15 px-4 py-2 font-mono text-[11px] tracking-wide text-cyan-200/70">
+        <span className="h-1.5 w-1.5 rounded-full bg-cyan-300/60 shrink-0" />
+        {sequence}
       </div>
       <div className="space-y-3 text-[15px] leading-relaxed text-foreground/80">
         {paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}

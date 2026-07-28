@@ -128,13 +128,13 @@ export interface WealthStrength {
 }
 
 export interface WealthRelation {
-  title: string;             // "Strategy"
-  subtitle: string;          // "How perception guides initiation"
-  planets: string;           // "☽ Moon · ♂ Mars"
-  formula: string;           // "Perception → Direction → Action"
+  title: string;
+  subtitle: string;
+  planets: string;
+  formula: string;
   paragraphs: string[];      // flowing prose: function def → operation → contributions → natural expression
-  developmentalEdge?: string; // where the function becomes inefficient (Creative Functions only)
-  masteryConclusion?: string; // what the function creates at full development (Creative Functions only)
+  developmentalEdge?: string;
+  masteryConclusion?: string;
 }
 
 export interface WealthForce {
@@ -167,9 +167,14 @@ export interface WealthBlueprint {
     cycle: string;
   };
   synthesis: {
-    impact: WealthRelation;       // Mars + Pluto  — Force → Power → Consequence
-    translation: WealthRelation;  // Mercury + Uranus — Insight → Pattern → Genius
-    value: WealthRelation;        // Venus + Neptune — Resonance → Cultivation → Worth
+    impact: WealthRelation;       // Mars + Pluto
+    translation: WealthRelation;  // Mercury + Uranus
+    value: WealthRelation;        // Venus + Neptune
+  };
+  creativeMechanicsArchitecture: {
+    title: string;
+    paragraphs: string[];
+    sequence: string;
   };
 }
 

@@ -5,3 +5,4 @@
 - [Daily Forge calendar and zodiac](astroboros-daily-forge.md) — use the browser’s local date and explicitly pair transit calculations with the active natal zodiac
 - [Daily Forge activation language](astroboros-forge-language.md) — activation cards should explain the lived function and aspect dynamic, not use one-word planet labels
 - [Wealth reading prompt scope](wealth-reading-scope.md) — Creative Functions is one independently updated portion; preserve other Wealth sections for their own prompts
+- [Wealth mechanics and Enneagram](wealth-mechanics-enneagram.md) — octave transformations are separate from Creative Functions; Enneagram points and pathways are interactive

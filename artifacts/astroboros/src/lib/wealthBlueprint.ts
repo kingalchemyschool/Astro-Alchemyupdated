@@ -1088,45 +1088,70 @@ function generateSynthesis(chart: NatalChart) {
   const venEl     = el(chart, "venus");
 
   const impact: import("../types/astro").WealthRelation = {
-    title: "Magnitude",
-    subtitle: "How force becomes transformative power",
+    title: "Magnitude + Direction",
+    subtitle: "How force becomes transformative consequence",
     planets: `${glyph("mars")} Mars · ${glyph("pluto")} Pluto`,
-    formula: "Force → Amplification → Consequence",
+    formula: "Force → Magnitude → Direction → Consequence",
     paragraphs: [
       IMPACT_SYNTHESIS_INTRO[marsEl],
-      `In ${signName(chart, "mars")}, the initiating force operates through ${MARS_FORCE[marsSi]}.`,
-      `In ${signName(chart, "pluto")}, the amplification and transformation works through ${PLUTO_TRANSFORM[plutoSi]}.`,
+      placementLine(chart, "mars", `the original human function of force, expressed through ${MARS_FORCE[marsSi]}`),
+      placementLine(chart, "pluto", `magnitude and direction, transforming force through ${PLUTO_TRANSFORM[plutoSi]}`),
       relationAspect(chart, "mars", "pluto"),
+      "Before octave activation, Mars can initiate and move energy but may remain focused on immediate displacement. Pluto adds magnitude and direction, turning force toward the underlying structure that determines consequence.",
+      "After integration, this mechanism can apply force where it produces irreversible structural transformation rather than merely visible motion.",
     ].filter(Boolean),
+    developmentalEdge: "The imbalance is force without depth on one side, or magnitude without a usable initiating channel on the other. The refinement is to let Mars identify the point of action while Pluto supplies the depth and direction required for consequence.",
+    masteryConclusion: "The ability to apply force where it produces irreversible structural transformation.",
   };
 
   const translation: import("../types/astro").WealthRelation = {
-    title: "Genius",
-    subtitle: "How expression becomes breakthrough insight",
+    title: "Translation of Genius",
+    subtitle: "How intelligence becomes evolutionary insight",
     planets: `${glyph("mercury")} Mercury · ${glyph("uranus")} Uranus`,
-    formula: "Expression → Pattern Recognition → Breakthrough",
+    formula: "Perception → Translation → Genius → Breakthrough",
     paragraphs: [
       TRANSLATION_SYNTHESIS_INTRO[mercEl],
-      `In ${signName(chart, "mercury")}, intelligence translates through ${MERCURY_TRANSLATE[mercSi]}.`,
-      `In ${signName(chart, "uranus")}, evolutionary disruption emerges through ${URANUS_INNOVATE[uranusSi]}.`,
+      placementLine(chart, "mercury", `the original human function of translation through ${MERCURY_TRANSLATE[mercSi]}`),
+      placementLine(chart, "uranus", `genius and structural disruption through ${URANUS_INNOVATE[uranusSi]}`),
       relationAspect(chart, "mercury", "uranus"),
+      "Before octave activation, Mercury can interpret experience and make it communicable, but its intelligence may remain inside existing categories. Uranus introduces the capacity to recognize the new architecture implied by what has been perceived.",
+      "After integration, perception can become a breakthrough that is understandable, usable, and capable of changing the framework others work within.",
     ].filter(Boolean),
+    developmentalEdge: "The imbalance is insight that cannot be translated, or translation that keeps novel intelligence inside familiar frames. The refinement is to preserve the originality of the perception while giving it a form that can enter practice.",
+    masteryConclusion: "The ability to translate emerging intelligence into ideas that change existing frameworks.",
   };
 
   const value: import("../types/astro").WealthRelation = {
-    title: "Resonance",
+    title: "Resonance of Value",
     subtitle: "How value becomes collective meaning",
     planets: `${glyph("venus")} Venus · ${glyph("neptune")} Neptune`,
-    formula: "Value → Meaning → Influence",
+    formula: "Value → Resonance → Meaning → Influence",
     paragraphs: [
       VALUE_SYNTHESIS_INTRO[venEl],
-      `In ${signName(chart, "venus")}, value is recognized through ${VENUS_VALUE[venSi]}.`,
-      `In ${signName(chart, "neptune")}, collective meaning is located through ${NEPTUNE_VISION[neptuneSi]}.`,
+      placementLine(chart, "venus", `the original human function of value through ${VENUS_VALUE[venSi]}`),
+      placementLine(chart, "neptune", `resonance and higher meaning through ${NEPTUNE_VISION[neptuneSi]}`),
       relationAspect(chart, "venus", "neptune"),
+      "Before octave activation, Venus can recognize and cultivate what is personally valuable, but that value may remain bounded by preference or immediate exchange. Neptune extends the question toward collective meaning and what can continue to matter beyond the creator.",
+      "After integration, value becomes influence: what is created can carry meaning into a wider field and continue generating significance independently of its origin.",
     ].filter(Boolean),
+    developmentalEdge: "The imbalance is preference without collective resonance, or idealized meaning without a concrete value to carry it. The refinement is to embody what resonates so that significance has a real vessel through which it can reach others.",
+    masteryConclusion: "The ability to create value that continues generating meaning beyond the creator.",
   };
 
   return { impact, translation, value };
+}
+
+function generateCreativeMechanicsArchitecture(): WealthBlueprint["creativeMechanicsArchitecture"] {
+  return {
+    title: "Creative Evolutionary Architecture",
+    sequence: "Force → Intelligence → Value  becoming  Transformation → Innovation → Influence",
+    paragraphs: [
+      "Magnitude + Direction answers where energy must be applied to create transformation: Mars supplies force and Pluto gives that force the magnitude and direction required for consequence.",
+      "Translation of Genius answers how new perception becomes understandable and usable: Mercury translates intelligence while Uranus opens the breakthrough architecture that can reorganize an existing framework.",
+      "Resonance of Value answers how what is valuable becomes meaningful beyond the individual: Venus recognizes worth while Neptune extends it into collective significance and influence.",
+      "Together, the three octave mechanisms form an evolutionary system in which personal force becomes transformation, personal intelligence becomes innovation, and personal value becomes influence.",
+    ],
+  };
 }
 
 // ─── Main generator ───────────────────────────────────────────────────────────
@@ -1352,6 +1377,7 @@ export function generateWealthBlueprint(chart: NatalChart): WealthBlueprint {
   const relations = generateRelations(chart);
   const creativeArchitecture = generateCreativeArchitecture();
   const synthesis = generateSynthesis(chart);
+  const creativeMechanicsArchitecture = generateCreativeMechanicsArchitecture();
 
   return {
     alchemicalSignature: alchemicalIntro(impTitle, weaTitle, conTitle, signName(chart, "sun"), signName(chart, "mars"), signName(chart, "jupiter")),
@@ -1397,5 +1423,6 @@ export function generateWealthBlueprint(chart: NatalChart): WealthBlueprint {
     relations,
     creativeArchitecture,
     synthesis,
+    creativeMechanicsArchitecture,
   };
 }

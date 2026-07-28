@@ -287,7 +287,10 @@ function InteractiveEnneagram({
   type PointId = typeof ENNEAGRAM_POINTS[number]["id"];
   const point = (id: PointId) => pointById.get(id)!;
   const coord = (id: PointId, radius = 100) => {
-    const angle = (-90 + (id - 1) * 40) * (Math.PI / 180);
+    // Orient the Enneagram conventionally with point 9 at the top.
+    // The remaining points continue around the circumference in numeric order.
+    const position = id === 9 ? 0 : id;
+    const angle = (-90 + position * 40) * (Math.PI / 180);
     return { x: 180 + radius * Math.cos(angle), y: 132 + radius * Math.sin(angle) };
   };
 

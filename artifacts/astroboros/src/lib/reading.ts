@@ -66,16 +66,16 @@ const OUTER_ROLE: Partial<Record<PlanetKey, string>> = {
 // decode the architecture.
 
 const PLANET_EXPERIENCE: Record<PlanetKey, string> = {
-  sun: "your sense of purpose, identity, and creative direction",
-  moon: "your instinctive responses, emotional memory, and need for safety",
-  mercury: "your thinking, language, and decisions",
-  venus: "your values, attractions, and standards of quality",
-  mars: "your will, boundaries, and ability to act",
-  jupiter: "your confidence, beliefs, and appetite for growth",
-  saturn: "your standards, commitments, and long-term discipline",
-  uranus: "your originality and willingness to break an inherited pattern",
-  neptune: "your imagination, sensitivity, and ideals",
-  pluto: "your relationship with power, endings, and fundamental change",
+  sun: "sense of purpose, identity, and creative direction",
+  moon: "instinctive responses, emotional memory, and need for safety",
+  mercury: "thinking, language, and decisions",
+  venus: "values, attractions, and standards of quality",
+  mars: "will, boundaries, and ability to act",
+  jupiter: "confidence, beliefs, and appetite for growth",
+  saturn: "standards, commitments, and long-term discipline",
+  uranus: "originality and willingness to break an inherited pattern",
+  neptune: "imagination, sensitivity, and ideals",
+  pluto: "relationship with power, endings, and fundamental change",
 };
 
 function aspectExperience(
@@ -93,19 +93,41 @@ function aspectExperience(
   const subjectHouse = ORDINALS[chart.positions[key].house - 1];
   const otherHouse = ORDINALS[chart.positions[otherKey].house - 1];
   const contact = `${PLANET_META[key].name} in ${sign} and ${otherName} in ${otherSign}`;
+  const signContext = `${PLANET_META[key].name}'s ${SIGN_QUALITY[chart.positions[key].signIndex]} style meets ${otherName}'s ${SIGN_QUALITY[chart.positions[otherKey].signIndex]} style`;
 
   switch (type) {
     case "conjunction":
-      return `At ${orb}°, ${contact} operate as one concentrated pressure. Your ${subject} immediately activates ${influence}, so what you want, notice, or decide tends to carry the other planet's intensity with it. This strengthens your ability to commit fully and make a visible impact, but it can also make a first impulse feel more certain than it has been tested. In practice, the work is to give the combined drive one clear target before acting; this is where the pattern becomes a durable contribution rather than a reflex.`;
+      return `At ${orb}°, this is a conjunction: ${contact} are close enough to act as one concentrated influence. Your ${subject} immediately activates your ${influence}, so what you want, notice, or decide tends to carry the other planet's intensity with it. ${signContext}; the result is powerful but not automatically coordinated. The strength is commitment and impact. The risk is mistaking intensity for certainty, so give the combined drive one clear target before acting.`;
     case "trine":
-      return `At ${orb}°, ${contact} support one another with unusual ease. Your ${subject} can draw on ${influence} without having to fight for access, which makes it easier to trust your instincts, communicate what you mean, and move from intention into action. The strength is natural coordination; the risk is assuming that what comes easily will organize itself. Deliberate practice turns this gift into a repeatable advantage in the ${subjectHouse} and ${otherHouse} areas of life.`;
+      return `At ${orb}°, this is a trine: the two planets are roughly 120° apart, so their drives can cooperate without constantly blocking one another. ${contact} connect ${subject} with ${influence}; ${signContext}. This can make it easier to trust an instinct, communicate what you mean, and move from intention into action. The ease is an available resource, not a finished result: deliberate practice is what turns it into dependable skill.`;
     case "sextile":
-      return `At ${orb}°, ${contact} create a practical opening. Your ${subject} has help available from ${influence}, but the benefit appears only when you choose a specific action rather than waiting for momentum. This strengthens initiative, adaptability, and the ability to convert a promising idea into a useful result. The challenge is hesitation disguised as preparation; your larger blueprint develops when you act while the opening is still present.`;
+      return `At ${orb}°, this is a sextile: the planets are about 60° apart, creating an opportunity rather than an automatic flow. ${contact} give your ${subject} a usable opening into your ${influence}; ${signContext}. The benefit appears when you choose a specific action—otherwise the potential stays dormant.`;
     case "square":
-      return `At ${orb}°, ${contact} create friction that cannot be solved by ignoring either side. Your ${subject} wants to move one way while ${influence} introduces a competing demand, so the pattern can show up as urgency, overcorrection, defensiveness, or repeated pressure to revise your approach. This difficulty strengthens discernment and precision when you engage it directly. The life lesson is not to eliminate the tension, but to build a response that honors both needs and produces a more capable result than either could create alone.`;
+      return `At ${orb}°, this is a square: the planets are about 90° apart, so their demands arrive at cross-purposes. Your ${subject} wants to move one way while your ${influence} introduces a competing demand; ${signContext}. This can show up as urgency, overcorrection, defensiveness, or repeated pressure to revise your approach. The tension is productive only when you name both needs and build a response that honors them.`;
     case "opposition":
-      return `At ${orb}°, ${contact} pull your attention across two different perspectives. Your ${subject} is easier to recognize through the contrast created by ${influence}, often through other people, visible consequences, or situations that expose what your usual viewpoint leaves out. This strengthens self-awareness, negotiation, and the ability to hold competing truths without collapsing into one side. The challenge is projection or polarization; your path opens when you let the opposing experience refine your choices instead of treating it as an obstacle.`;
+      return `At ${orb}°, this is an opposition: the planets face one another across the zodiac, so their needs become visible through contrast. ${contact} pull your ${subject} toward a conscious relationship with your ${influence}; ${signContext}. Other people, consequences, or external events may show you what your usual viewpoint leaves out. The work is negotiation rather than choosing one side—let the contrast refine your choices instead of turning it into projection or polarization.`;
   }
+}
+
+function houseAspectContext(
+  chart: NatalChart,
+  key: PlanetKey,
+  otherKey: PlanetKey,
+): string {
+  const keyHouse = chart.positions[key].house;
+  const otherHouse = chart.positions[otherKey].house;
+  const keyOrd = ORDINALS[keyHouse - 1];
+  const otherOrd = ORDINALS[otherHouse - 1];
+  const keyDomain = HOUSE_DOMAIN[keyHouse - 1];
+  const otherDomain = HOUSE_DOMAIN[otherHouse - 1];
+  const keyThrough = HOUSE_THROUGH[keyHouse - 1];
+  const otherThrough = HOUSE_THROUGH[otherHouse - 1];
+
+  if (keyHouse === otherHouse) {
+    return `Both planets work through the ${keyOrd} house, ${keyDomain}. That gives this relationship one shared outlet: it is likely to surface through ${keyThrough}. Purpose, feeling, and response are therefore tested in the same concrete area rather than being kept in separate compartments; choices made there quickly reveal whether the two drives are actually cooperating.`;
+  }
+
+  return `This relationship connects the ${keyOrd} house, ${keyDomain}, with the ${otherOrd} house, ${otherDomain}. In practice, it links ${keyThrough} with ${otherThrough}: developments in one arena change the demands placed on the other. The aspect becomes useful when you make decisions with that exchange in mind, rather than solving one area while creating a new problem in the other.`;
 }
 
 // ── Aspect synthesis paragraph ────────────────────────────────────────────────
@@ -129,18 +151,10 @@ function richAspectParagraph(chart: NatalChart, key: PlanetKey): string | null {
     const otherPos = chart.positions[otherKey];
     const thisPos = chart.positions[key];
     const otherSign = SIGNS[otherPos.signIndex].name;
-    const otherHouseOrd = ORDINALS[otherPos.house - 1];
     const thisSign = SIGNS[thisPos.signIndex].name;
-    const thisHouseOrd = ORDINALS[thisPos.house - 1];
 
     const baseText = aspectExperience(chart, key, otherKey, asp.type, String(asp.orb));
-
-    // Add sign + house placement context to ground the aspect in actual positions
-    const placementCtx = otherPos.house !== thisPos.house
-      ? ` It links the ${thisHouseOrd} house with the ${otherHouseOrd} house: what develops in one area will create consequences in the other, so the most useful response keeps both arenas in view.`
-      : ` Because both placements occupy the ${thisHouseOrd} house, the pattern is concentrated in one area of life and tends to produce immediate, difficult-to-compartmentalize consequences.`;
-
-    return baseText + placementCtx;
+    return `${baseText} ${houseAspectContext(chart, key, otherKey)}`;
   });
 
   let synthesis: string;

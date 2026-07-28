@@ -4,14 +4,16 @@ A modern astrological blueprint engine — turns natal chart placements into int
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/astroboros run dev` — run the frontend (port 24827, set by artifact)
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080)
+Use the **Astral Forge** and **API Server** workflows in Replit to start the services. To run manually:
+
+- `pnpm --filter @workspace/astroboros run dev` — run the frontend (port 5173)
+- `PORT=8080 pnpm --filter @workspace/api-server run dev` — run the API server (port 8080)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
 
-All commands must be run from the monorepo root: `attached_assets/bring_app_life/Bring-App-Life/`
+All commands must be run from the monorepo root.
 
 ## Required Environment Variables
 

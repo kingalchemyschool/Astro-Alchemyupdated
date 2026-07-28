@@ -14,3 +14,9 @@ The Moon ephemeris returns an `astronomia` `Coord` object; read its longitude as
 **Why:** Destructuring the getter-backed longitude produced an invalid Moon position, creating false Moon aspects and hiding the sidereal contacts shown by Astro-Seek.
 
 **How to apply:** When changing or upgrading the Moon calculation, verify both natal and transit Moon positions before trusting Daily Forge aspects.
+
+The ephemeris day counter uses the Schlyter epoch (JD 2451543.5), so conversions into `astronomia` JDE-based routines must add 2451543.5, not J2000.0 JD 2451545.0.
+
+**Why:** The 1.5-day offset moved the natal Moon by about 18°, incorrectly placing it in the 10th house instead of the 9th; Pluto used the same incorrect conversion.
+
+**How to apply:** Validate natal Moon and Pluto against known chart references before diagnosing house cusps; if the cusps match but a planet does not, inspect the epoch conversion first.

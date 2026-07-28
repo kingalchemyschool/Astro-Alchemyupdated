@@ -87,10 +87,11 @@ function longitudeOf(key: PlanetKey, d: number, xs: number, ys: number): number 
   if (key === "moon") {
     // Meeus Chapter 47 via astronomia (~0.01° accuracy) replaces the
     // Schlyter low-precision formula which drifts ~10° for dates 25+ years
-    // from J2000 epoch.  JDE = Schlyter d + J2000 epoch offset.
+    // from J2000 epoch. `d` uses the Schlyter epoch, so convert it with the
+    // Schlyter epoch's Julian day rather than the J2000.0 offset.
     // `astronomia` returns a Coord instance. Its longitude is exposed through
     // the `lon` getter; destructuring it loses the getter-backed value.
-    const moon = moonPositionMeeus(2451545.0 + d);
+    const moon = moonPositionMeeus(2451543.5 + d);
     return rev(moon.lon / RAD);
   }
 
@@ -107,7 +108,8 @@ function longitudeOf(key: PlanetKey, d: number, xs: number, ys: number): number 
  * (from sunPosition) used to convert heliocentric → geocentric.
  */
 function plutoLongitude(d: number, xs: number, ys: number): number {
-  const jde = 2451545.0 + d; // Schlyter d → Julian Day Ephemeris
+  // `d` is measured from 2000 Jan 0.0 (JD 2451543.5), not J2000.0.
+  const jde = 2451543.5 + d;
   const { lon, lat, range } = plutoHeliocentric(jde);
 
   // Convert heliocentric ecliptic → rectangular (J2000 frame, ~0.056° vs

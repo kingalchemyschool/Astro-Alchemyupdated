@@ -6,3 +6,4 @@
 - [Daily Forge activation language](astroboros-forge-language.md) — activation cards should explain the lived function and aspect dynamic, not use one-word planet labels
 - [Wealth reading prompt scope](wealth-reading-scope.md) — Creative Functions is one independently updated portion; preserve other Wealth sections for their own prompts
 - [Wealth mechanics and Enneagram](wealth-mechanics-enneagram.md) — octave transformations are separate from Creative Functions; Enneagram points and pathways are interactive
+- [Report prose variation](report-prose-variation.md) — vary recurring explanations by context and remove exact sentence repeats within assembled reports

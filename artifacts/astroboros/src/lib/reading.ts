@@ -19,6 +19,7 @@ import { aspectsFor, ASPECT_WORD } from "@/lib/aspects";
 import { deriveFunctions, derivePrimary } from "@/lib/archetypes";
 import { generateHeroJourney } from "@/lib/heroJourney";
 import { generateWealthBlueprint } from "@/lib/wealthBlueprint";
+import { withoutRepeatedSentences } from "@/lib/text";
 
 type Element = "fire" | "earth" | "air" | "water";
 type Modality = "cardinal" | "fixed" | "mutable";
@@ -94,12 +95,17 @@ function aspectExperience(
   const otherHouse = ORDINALS[chart.positions[otherKey].house - 1];
   const contact = `${PLANET_META[key].name} in ${sign} and ${otherName} in ${otherSign}`;
   const signContext = `${PLANET_META[key].name}'s ${SIGN_QUALITY[chart.positions[key].signIndex]} style meets ${otherName}'s ${SIGN_QUALITY[chart.positions[otherKey].signIndex]} style`;
+  const variation = (key.charCodeAt(0) + otherKey.charCodeAt(0)) % 3;
 
   switch (type) {
     case "conjunction":
       return `At ${orb}°, this is a conjunction: ${contact} are close enough to act as one concentrated influence. Your ${subject} immediately activates your ${influence}, so what you want, notice, or decide tends to carry the other planet's intensity with it. ${signContext}; the result is powerful but not automatically coordinated. The strength is commitment and impact. The risk is mistaking intensity for certainty, so give the combined drive one clear target before acting.`;
     case "trine":
-      return `At ${orb}°, this is a trine: the two planets are roughly 120° apart, so their drives can cooperate without constantly blocking one another. ${contact} connect ${subject} with ${influence}; ${signContext}. This can make it easier to trust an instinct, communicate what you mean, and move from intention into action. The ease is an available resource, not a finished result: deliberate practice is what turns it into dependable skill.`;
+      return [
+        `At ${orb}°, this is a trine: the two planets are roughly 120° apart, so their drives can cooperate without constantly blocking one another. ${contact} connect ${subject} with ${influence}; ${signContext}. This can make it easier to trust an instinct, communicate what you mean, and move from intention into action. Treat that fluency as raw material: the skill appears when you give it a demanding use.`,
+        `At ${orb}°, this is a trine: the two planets are roughly 120° apart, allowing their drives to reinforce one another instead of competing for access. ${contact} connect ${subject} with ${influence}; ${signContext}. The natural rapport is valuable precisely because it frees attention for a more ambitious application.`,
+        `At ${orb}°, this is a trine: the two planets are roughly 120° apart, creating a channel where effort can travel between them with less friction. ${contact} connect ${subject} with ${influence}; ${signContext}. Notice what becomes possible when you stop spending energy on coordination and put that energy into depth.`,
+      ][variation];
     case "sextile":
       return `At ${orb}°, this is a sextile: the planets are about 60° apart, creating an opportunity rather than an automatic flow. ${contact} give your ${subject} a usable opening into your ${influence}; ${signContext}. The benefit appears when you choose a specific action—otherwise the potential stays dormant.`;
     case "square":
@@ -174,7 +180,7 @@ function richAspectParagraph(chart: NatalChart, key: PlanetKey): string | null {
 
    const intro = `${meta.name} is shaped by ${list.length === 1 ? "one major planetary relationship" : `${list.length} major planetary relationships`}. These contacts describe recognizable patterns in how you respond, choose, create, and handle consequences.`;
 
-  return `${intro} ${lines.join(" ")} ${synthesis}`;
+  return withoutRepeatedSentences([`${intro} ${lines.join(" ")} ${synthesis}`])[0] ?? "";
 }
 
 // ── Inner planet section ───────────────────────────────────────────────────────
@@ -235,7 +241,7 @@ function planetSection(chart: NatalChart, key: PlanetKey): ReportSection {
     subtitle: `${sign.name} — ${houseOrd} House`,
     glyph: meta.glyph,
     planetKeys: meta.octave ? [key, meta.octave] : [key],
-    paragraphs,
+    paragraphs: withoutRepeatedSentences(paragraphs),
   };
 }
 
@@ -302,7 +308,7 @@ function outerPlanetSection(chart: NatalChart, key: "pluto" | "uranus" | "neptun
     subtitle: `${sign.name} — ${houseOrd} House · Outer Octave of ${innerMeta.name}`,
     glyph: glyphMap[key],
     planetKeys: [key],
-    paragraphs,
+    paragraphs: withoutRepeatedSentences(paragraphs),
   };
 }
 

@@ -14,6 +14,7 @@
 
 import type { NatalChart, WealthBlueprint, WealthForce, WealthStrength } from "@/types/astro";
 import { SIGNS, ORDINALS, PLANET_META } from "@/constants/astro";
+import { withoutRepeatedSentences } from "@/lib/text";
 
 type El = "fire" | "earth" | "air" | "water";
 type Mod = "cardinal" | "fixed" | "mutable";
@@ -80,6 +81,7 @@ function aspectsFor(chart: NatalChart, key: keyof NatalChart["positions"]): stri
     const tFn = PLANET_FUNCTION[key];
     const oFn = PLANET_FUNCTION[other];
 
+    const variation = (key.charCodeAt(0) + other.charCodeAt(0)) % 3;
     switch (asp.type) {
       case "conjunction":
         return `${tG} ${tN} and ${oG} ${oN} are conjunct — these two functions merge at the point of activation, so engaging one engages both simultaneously. The result is amplification when both are consciously directed; the developmental work is learning to separate them enough to deploy each with precision rather than as a single undifferentiated force.`;
@@ -88,7 +90,11 @@ function aspectsFor(chart: NatalChart, key: keyof NatalChart["positions"]): stri
       case "square":
         return `${tG} ${tN} and ${oG} ${oN} are in square — these two functions operate on different rhythms, generating friction when both are active. That friction is not a problem to resolve: it is the mechanism through which each develops precision it could not build in an unchallenged environment.`;
       case "trine":
-        return `${tG} ${tN} and ${oG} ${oN} form a trine — their cooperation is largely effortless, creating a self-reinforcing circuit that generates consistent output without demanding active management. What flows easily here tends to remain invisible, which is both its advantage and its developmental risk.`;
+        return [
+          `${tG} ${tN} and ${oG} ${oN} form a trine — their cooperation is largely effortless, creating a self-reinforcing circuit that generates consistent output without demanding active management. The risk is allowing that fluency to remain invisible to you; name what it makes possible, then build with it.`,
+          `${tG} ${tN} and ${oG} ${oN} form a trine — the two functions reinforce each other with little negotiation overhead. That is an advantage, but it can hide the source of the output. Conscious use turns an automatic strength into a repeatable method.`,
+          `${tG} ${tN} and ${oG} ${oN} form a trine — capacity passes between them naturally, leaving more attention available for scale and refinement. Do not mistake low friction for low value; this is a channel worth deliberately extending.`,
+        ][variation];
       case "opposition":
         return `${tG} ${tN} and ${oG} ${oN} are in opposition — both functions are fully active on opposite ends of the same operational axis. The natural pattern is to cycle between them rather than integrate them; holding both simultaneously is what converts the tension into complete operational range.`;
       default:
@@ -113,6 +119,7 @@ function relationAspect(
   if (!asp) return "";
   const aG = PLANET_META[a].glyph, aN = PLANET_META[a].name;
   const bG = PLANET_META[b].glyph, bN = PLANET_META[b].name;
+  const variation = (a.charCodeAt(0) + b.charCodeAt(0)) % 3;
   switch (asp.type) {
     case "conjunction":
       return `${aG} ${aN} and ${bG} ${bN} are conjunct — these two functions merge at the point of activation, amplifying each other's output. The developmental work is learning to deploy each with precision rather than as a single undifferentiated force.`;
@@ -121,7 +128,11 @@ function relationAspect(
     case "square":
       return `${aG} ${aN} and ${bG} ${bN} are in square — these two functions operate on different rhythms, generating friction when both are active. That friction is the mechanism through which each develops precision it could not build in an unchallenged environment.`;
     case "trine":
-      return `${aG} ${aN} and ${bG} ${bN} form a trine — their cooperation is largely effortless, creating a self-reinforcing circuit. What flows easily here tends to remain invisible; consciously examining this pairing reveals capacity that has likely been underutilized.`;
+      return [
+        `${aG} ${aN} and ${bG} ${bN} form a trine — their cooperation is largely effortless, creating a self-reinforcing circuit. Look closely at what this pairing lets you do without preparation; that ease may be an underused asset.`,
+        `${aG} ${aN} and ${bG} ${bN} form a trine — their functions meet with unusual ease, so the pairing can operate beneath conscious attention. Bringing it into deliberate use reveals where natural capacity can become greater reach.`,
+        `${aG} ${aN} and ${bG} ${bN} form a trine — each gives the other room to work, producing a quiet surplus of capability. The developmental move is not to force the connection, but to give its output a more consequential assignment.`,
+      ][variation];
     case "opposition":
       return `${aG} ${aN} and ${bG} ${bN} are in opposition — both fully active on opposite ends of the same axis, tending to alternate in dominance rather than integrate. Holding both simultaneously converts the tension into complete operational range.`;
     default:
@@ -984,7 +995,7 @@ function generateRelations(chart: NatalChart) {
     subtitle: "How perception becomes directed force",
     planets: `${glyph("moon")} Moon · ${glyph("mars")} Mars`,
     formula: "Recognition → Prioritization → Action",
-    paragraphs: [
+    paragraphs: withoutRepeatedSentences([
       STRATEGY_DEFINITION[moonEl],
       STRATEGY_OPERATION[moonEl],
       placementLine(chart, "moon", `recognition through ${MOON_PROCESS[moonSi].toLowerCase()}`),
@@ -992,7 +1003,7 @@ function generateRelations(chart: NatalChart) {
       "The Moon supplies recognition, Mars supplies mobilization, and neither completes the process alone: perception without movement remains unexpressed, while movement without recognition spends force on whatever is nearest. Their cooperation converts significance into a chosen direction and then into action.",
       STRATEGY_NATURAL_EXPR[moonEl],
       relationAspect(chart, "moon", "mars"),
-    ].filter(Boolean) as string[],
+    ].filter(Boolean) as string[]),
     developmentalEdge: STRATEGY_DEV_EDGE[moonEl],
     masteryConclusion: STRATEGY_MASTERY[moonEl],
   };
@@ -1002,7 +1013,7 @@ function generateRelations(chart: NatalChart) {
     subtitle: "How intelligence becomes scalable value",
     planets: `${glyph("mercury")} Mercury · ${glyph("jupiter")} Jupiter`,
     formula: "Information → Translation → Expansion",
-    paragraphs: [
+    paragraphs: withoutRepeatedSentences([
       DVC_DEFINITION[mercEl],
       DVC_OPERATION[mercEl],
       placementLine(chart, "mercury", `understanding through ${MERCURY_TRANSLATE[mercSi].toLowerCase()}`),
@@ -1010,7 +1021,7 @@ function generateRelations(chart: NatalChart) {
       "Mercury creates understanding and Jupiter extends its application. Neither completes the process alone: insight without reach remains local, while expansion without understanding multiplies what has not been made coherent. Their cooperation translates intelligence into knowledge, systems, and ideas that can travel beyond their original context.",
       DVC_NATURAL_EXPR[mercEl],
       relationAspect(chart, "mercury", "jupiter"),
-    ].filter(Boolean) as string[],
+    ].filter(Boolean) as string[]),
     developmentalEdge: DVC_DEV_EDGE[mercEl],
     masteryConclusion: DVC_MASTERY[mercEl],
   };
@@ -1020,7 +1031,7 @@ function generateRelations(chart: NatalChart) {
     subtitle: "How value becomes lasting structure",
     planets: `${glyph("venus")} Venus · ${glyph("saturn")} Saturn`,
     formula: "Recognition → Commitment → Permanence",
-    paragraphs: [
+    paragraphs: withoutRepeatedSentences([
       STEWARDSHIP_DEFINITION[venEl],
       STEWARDSHIP_OPERATION[venEl],
       placementLine(chart, "venus", `discernment through ${VENUS_VALUE[venSi].toLowerCase()}`),
@@ -1028,7 +1039,7 @@ function generateRelations(chart: NatalChart) {
       "Venus identifies what deserves investment and Saturn builds the structure that allows it to endure. Neither completes the process alone: value without commitment remains temporary, while structure without discernment preserves whatever happens to be there. Their cooperation converts recognition into permanence.",
       STEWARDSHIP_NATURAL_EXPR[venEl],
       relationAspect(chart, "venus", "saturn"),
-    ].filter(Boolean) as string[],
+    ].filter(Boolean) as string[]),
     developmentalEdge: STEWARDSHIP_DEV_EDGE[venEl],
     masteryConclusion: STEWARDSHIP_MASTERY[venEl],
   };
@@ -1040,12 +1051,12 @@ function generateCreativeArchitecture(): WealthBlueprint["creativeArchitecture"]
   return {
     title: "Creative Architecture",
     cycle: "Recognize → Develop → Sustain",
-    paragraphs: [
+    paragraphs: withoutRepeatedSentences([
       "Strategy determines where energy belongs. Moon + Mars answers: What deserves force? Perception identifies significance, then directed action gives that recognition consequence.",
       "Dynamic Value Creation determines what deserves reach. Mercury + Jupiter turns understanding into transferable value — extending insight into knowledge, systems, and ideas that can operate beyond their original context.",
       "Conscious Stewardship determines what deserves permanence. Venus + Saturn preserves and compounds what has been created by turning discerned value into structures capable of carrying it across time.",
       "Together, these three mechanisms form a complete creative operating system: detect what matters, convert understanding into value, and build the structures that allow meaningful value to survive beyond the initial act of creation.",
-    ],
+    ]),
   };
 }
 
@@ -1092,14 +1103,14 @@ function generateSynthesis(chart: NatalChart) {
     subtitle: "How force becomes transformative consequence",
     planets: `${glyph("mars")} Mars · ${glyph("pluto")} Pluto`,
     formula: "Force → Concentration → Leverage → Transformation",
-    paragraphs: [
+    paragraphs: withoutRepeatedSentences([
       IMPACT_SYNTHESIS_INTRO[marsEl],
       placementLine(chart, "mars", `the original human function of force, expressed through ${MARS_FORCE[marsSi]}`),
       placementLine(chart, "pluto", `magnitude and direction, transforming force through ${PLUTO_TRANSFORM[plutoSi]}`),
       relationAspect(chart, "mars", "pluto"),
       "Before octave activation, Mars can initiate and move energy but may remain focused on immediate displacement. Pluto adds magnitude and direction, turning force toward the underlying structure that determines consequence.",
       "After integration, this mechanism can apply force where it produces irreversible structural transformation rather than merely visible motion.",
-    ].filter(Boolean),
+      ].filter(Boolean)),
     developmentalEdge: "The imbalance is force without depth on one side, or magnitude without a usable initiating channel on the other. The refinement is to let Mars identify the point of action while Pluto supplies the depth and direction required for consequence.",
     masteryConclusion: "The ability to apply force where it produces irreversible structural transformation.",
   };
@@ -1109,14 +1120,14 @@ function generateSynthesis(chart: NatalChart) {
     subtitle: "How intelligence becomes evolutionary insight",
     planets: `${glyph("mercury")} Mercury · ${glyph("uranus")} Uranus`,
     formula: "Pattern → Recognition → Translation → Breakthrough",
-    paragraphs: [
+      paragraphs: withoutRepeatedSentences([
       TRANSLATION_SYNTHESIS_INTRO[mercEl],
       placementLine(chart, "mercury", `the original human function of translation through ${MERCURY_TRANSLATE[mercSi]}`),
       placementLine(chart, "uranus", `genius and structural disruption through ${URANUS_INNOVATE[uranusSi]}`),
       relationAspect(chart, "mercury", "uranus"),
       "Before octave activation, Mercury can interpret experience and make it communicable, but its intelligence may remain inside existing categories. Uranus introduces the capacity to recognize the new architecture implied by what has been perceived.",
       "After integration, perception can become a breakthrough that is understandable, usable, and capable of changing the framework others work within.",
-    ].filter(Boolean),
+      ].filter(Boolean)),
     developmentalEdge: "The imbalance is insight that cannot be translated, or translation that keeps novel intelligence inside familiar frames. The refinement is to preserve the originality of the perception while giving it a form that can enter practice.",
     masteryConclusion: "The ability to translate emerging intelligence into ideas that change existing frameworks.",
   };
@@ -1126,14 +1137,14 @@ function generateSynthesis(chart: NatalChart) {
     subtitle: "How value becomes collective meaning",
     planets: `${glyph("venus")} Venus · ${glyph("neptune")} Neptune`,
     formula: "Value → Inspiration → Resonance → Influence",
-    paragraphs: [
+      paragraphs: withoutRepeatedSentences([
       VALUE_SYNTHESIS_INTRO[venEl],
       placementLine(chart, "venus", `the original human function of value through ${VENUS_VALUE[venSi]}`),
       placementLine(chart, "neptune", `resonance and higher meaning through ${NEPTUNE_VISION[neptuneSi]}`),
       relationAspect(chart, "venus", "neptune"),
       "Before octave activation, Venus can recognize and cultivate what is personally valuable, but that value may remain bounded by preference or immediate exchange. Neptune extends the question toward collective meaning and what can continue to matter beyond the creator.",
       "After integration, value becomes influence: what is created can carry meaning into a wider field and continue generating significance independently of its origin.",
-    ].filter(Boolean),
+      ].filter(Boolean)),
     developmentalEdge: "The imbalance is preference without collective resonance, or idealized meaning without a concrete value to carry it. The refinement is to embody what resonates so that significance has a real vessel through which it can reach others.",
     masteryConclusion: "The ability to create value that continues generating meaning beyond the creator.",
   };

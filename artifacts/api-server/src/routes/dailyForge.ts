@@ -102,7 +102,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v12";
+const REPORT_VERSION = "activation-v13";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -272,17 +272,28 @@ const NATAL_FUNCTION: Record<PlanetKey, string> = {
   pluto:   "your relationship to power, endings, and deep transformation",
 };
 
-function activationDescription(aspect: TransitAspect): string {
+function activationDescription(aspect: TransitAspect, variant = 0): string {
   const transit = TRANSIT_FUNCTION[aspect.transitPlanet];
   const natal = NATAL_FUNCTION[aspect.natalPlanet];
 
   switch (aspect.type) {
     case "conjunction":
       return `The current transit brings ${transit} into direct contact with ${natal}. What surfaces wants your full attention rather than a quick reaction.`;
-    case "trine":
-      return `The current transit lets ${transit} move more easily through ${natal}. The ease is real, but it becomes useful when you turn it into deliberate movement.`;
+    case "trine": {
+      const trineClosings = [
+        "Use the open channel to make one meaningful move, not simply to enjoy how smoothly things are moving.",
+        "This is supportive ground; give it a direction and let the resulting action prove what the alignment can do.",
+        "The pathway is clear enough to carry more than maintenance. Put it behind a choice that asks you to grow.",
+        "What comes naturally today becomes an asset when you apply it on purpose, especially where you usually hesitate.",
+      ];
+      return `The current transit lets ${transit} move more easily through ${natal}. ${trineClosings[variant % trineClosings.length]}`;
+    }
     case "sextile":
-      return `The current transit opens a practical opportunity to develop ${natal} through ${transit}. The opening becomes real when you take a specific step.`;
+      return [
+        `The current transit opens a practical opportunity to develop ${natal} through ${transit}. Make the first move concrete enough to be completed today.`,
+        `The current transit gives ${transit} a useful entry point into ${natal}. Potential becomes progress only after you choose where to apply it.`,
+        `The current transit creates room for ${natal} to grow through ${transit}. Do not wait for momentum to appear; create it with one deliberate action.`,
+      ][variant % 3];
     case "square": {
       const squareClosings: Partial<Record<PlanetKey, string>> = {
         sun:     "The pressure is clarifying where your sense of purpose has been running on assumption rather than intention.",
@@ -300,7 +311,11 @@ function activationDescription(aspect: TransitAspect): string {
       return `The current transit puts ${transit} under pressure from ${natal}. ${closing}`;
     }
     case "opposition":
-      return `The current transit places ${transit} across from ${natal}. The tension reveals what your usual perspective leaves out.`;
+      return [
+        `The current transit places ${transit} across from ${natal}. The tension reveals what your usual perspective leaves out.`,
+        `The current transit puts ${transit} in direct contrast with ${natal}. Let the other side of the situation become information rather than an enemy.`,
+        `The current transit draws ${transit} and ${natal} into opposing view. Hold the contrast long enough to discover the option neither side offers alone.`,
+      ][variant % 3];
   }
 }
 
@@ -522,7 +537,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
       transitPlacement:     `Transit ${sp_tSign} ${sp_tPos.degree}°${String(sp_tPos.minute ?? 0).padStart(2, "0")}′`,
       natalPlacement:        `Natal ${sp_nSign} ${sp_nPos.degree}° · ${houseOrd(sp_nHouse)} house`,
       houseActivation:       `${houseOrd(sp_nHouse)} house · ${sp_houseInfo.short}`,
-      coreFunctionActivated: activationDescription(aspect),
+      coreFunctionActivated: activationDescription(aspect, activeAspects.indexOf(aspect)),
     };
   });
 
@@ -603,7 +618,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   // ── BLUEPRINT ACTIVATION ─────────────────────────────────────────────────
   const supportingFunctionCtx = supporting.length > 0
     ? ` Alongside this, ${supporting.map(a =>
-        `transiting ${PLANET_NAMES[a.transitPlanet]} forms a ${a.type} with your natal ${PLANET_NAMES[a.natalPlanet]} — ${activationDescription(a)}`
+        `transiting ${PLANET_NAMES[a.transitPlanet]} forms a ${a.type} with your natal ${PLANET_NAMES[a.natalPlanet]} — ${activationDescription(a, supporting.indexOf(a) + 1)}`
       ).join(', and ')}, adding further complexity to today's field.`
     : '';
 
@@ -617,7 +632,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   // ── WHAT IS BEING REFINED ─────────────────────────────────────────────────
   const supportingRefinementCtx = supporting.length > 0
     ? ` In the background, ${supporting.map(a =>
-        `${PLANET_NAMES[a.transitPlanet]}'s ${a.type} to natal ${PLANET_NAMES[a.natalPlanet]} (${activationDescription(a)})`
+        `${PLANET_NAMES[a.transitPlanet]}'s ${a.type} to natal ${PLANET_NAMES[a.natalPlanet]} (${activationDescription(a, supporting.indexOf(a) + 2)})`
       ).join(' and ')} adds to the developmental load — shaping the overall field within which today's primary refinement is occurring.`
     : '';
 

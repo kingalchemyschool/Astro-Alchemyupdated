@@ -328,20 +328,23 @@ function outerPlanetSection(chart: NatalChart, key: "pluto" | "uranus" | "neptun
 
 function impactThreshold(chart: NatalChart): ReportSection {
   const mars = SIGNS[chart.positions.mars.signIndex].name;
-  const sun = SIGNS[chart.positions.sun.signIndex].name;
-  const moon = SIGNS[chart.positions.moon.signIndex].name;
+  const pluto = SIGNS[chart.positions.pluto.signIndex].name;
   const mercury = SIGNS[chart.positions.mercury.signIndex].name;
+  const uranus = SIGNS[chart.positions.uranus.signIndex].name;
+  const marsHouse = ORDINALS[chart.positions.mars.house - 1];
+  const mercuryHouse = ORDINALS[chart.positions.mercury.house - 1];
   return {
     kind: "threshold",
     order: 0,
     title: "Impact",
-    subtitle: "Force + Expression → External Reach",
+    subtitle: "Force · Intelligence → External Consequence",
     glyph: "◬",
     planetKeys: [],
     paragraphs: [
-      `The Being threshold marks the point where identity becomes expression — where what you are turns into what you make happen in the world. It is not a planet but a transformation event: the moment when the interior structure of your creative self must translate into something others can actually encounter.`,
-      `Your Sun in ${sun} holds the originating Essence — your creative source, your identity, and the fundamental quality from which all expression extends. Your Moon in ${moon} holds perception and embodiment — the emotional imprint through which that source is experienced from the inside and carried into action. Together, these two establish the foundation from which all creation emerges. Being answers the question: what is the source I am creating from?`,
-      `The output of Being is Impact — the capacity of this identity and internal structure to reach the world and register there. Your Mars in ${mars} is the force that translates Being into outward effect: the drive, the initiative, the willingness to move first. Before your Mercury in ${mercury} can shape that energy into communicable signal, Mars must refine raw drive into deliberate direction. Cross this threshold and the question shifts from "how hard can I push" to "where does this need to land." Action stops being reactive and becomes targeted.`,
+      `The Impact threshold is not a planet — it is a synthesis point, the architecture that emerges when force and intelligence converge. It answers one question: how does this blueprint convert directed force and unique intelligence into external consequence?`,
+      `The force mechanism is held by Mars in ${mars} in the ${marsHouse} house — the initiating drive, the direction of applied energy, and the willingness to generate real movement. Pluto in ${pluto} operates as the outer register of that same mechanism: not initiation alone, but the depth and magnitude behind it — the transformational pressure that gives action its irreversible quality, the capacity to operate at an evolutionary scale rather than a surface one. Together, they determine the intensity and direction of how this blueprint applies force.`,
+      `The intelligence mechanism is held by Mercury in ${mercury} in the ${mercuryHouse} house — the translation function, the capacity to organize information into understanding, to give the blueprint's output a form that can be received, built upon, and transmitted. Uranus in ${uranus} extends that function into ingenuity: breakthrough synthesis, the ability to identify what the established pattern misses, and the originality that introduces approaches ordinary intelligence does not locate. Together, they determine how this blueprint interprets and innovates.`,
+      `The Impact threshold is the operating pattern created where these two mechanisms meet. Strategy without force remains theoretical. Force without strategy remains undirected. When this threshold is functioning with precision, what this blueprint produces is externally recognizable: specific, consequential, and not easily replicated — because it carries both the depth of the force mechanism and the precision of the intelligence mechanism working in coordination.`,
     ],
   };
 }
@@ -350,17 +353,20 @@ function willThreshold(chart: NatalChart): ReportSection {
   const jupiter = SIGNS[chart.positions.jupiter.signIndex].name;
   const venus = SIGNS[chart.positions.venus.signIndex].name;
   const neptune = SIGNS[chart.positions.neptune.signIndex].name;
+  const jupiterHouse = ORDINALS[chart.positions.jupiter.house - 1];
+  const venusHouse = ORDINALS[chart.positions.venus.house - 1];
   return {
     kind: "threshold",
     order: 0,
     title: "Wealth",
-    subtitle: "Expansion + Value → Meaningful Worth",
+    subtitle: "Expansion · Value → Accumulated Worth",
     glyph: "◬",
     planetKeys: [],
     paragraphs: [
-      `The Will threshold represents the transformation of possibility into tangible value. This is the point in the cycle where what has been initiated and communicated must now become something worth keeping — where expansion earns its meaning by being refined into genuine worth.`,
-      `Your Jupiter in ${jupiter} opens the field of possibility: it expands reach, multiplies opportunity, and increases what is available to work with. But an expanded field still requires selection. Your Venus in ${venus} provides the discernment to recognize what within that abundance is genuinely valuable — not what merely feels large, but what is actually worth the investment of sustained attention. Your Neptune in ${neptune} elevates that discernment further, drawing value toward what carries meaning beyond personal preference into collective resonance.`,
-      `Together, these three planets answer the question: what am I bringing into existence, and why does it matter? The output of Will is Wealth — not measured in accumulation alone, but in the quality of what is created, the resources it generates, and the lasting influence it establishes. Cross this threshold and growth becomes purposeful. Expansion stops being measured by how much can be added and starts being defined by how precisely energy is directed toward what holds real value.`,
+      `The Wealth threshold is not a planet — it is the synthesis point that emerges when expansion and value converge. It answers one architectural question: how does this blueprint transform growth into lasting accumulated value?`,
+      `Jupiter in ${jupiter} in the ${jupiterHouse} house governs the expansion mechanism: the inherent capacity to increase reach, multiply opportunity, and compound what is available to work with. Jupiter does not select — it extends. The sign and house it occupies describe the specific territory and quality of that growth, the channels through which the blueprint naturally widens its field.`,
+      `Venus in ${venus} in the ${venusHouse} house governs the value function: the discernment to recognize what within an expanded field is genuinely worth retaining — what deserves sustained investment, what the system should build on. Neptune in ${neptune} extends that function into collective resonance, drawing the value signal beyond personal preference toward what carries meaning at a shared, symbolic, or enduring level. What Venus identifies as worth keeping, Neptune tests against a larger standard.`,
+      `The Wealth threshold is the operating pattern created where these functions meet. Wealth, as this architecture defines it, is not limited to financial accumulation — it includes resources, knowledge, skills, relationships, reputation, creative output, and accumulated advantage in all its forms. This threshold describes how the blueprint converts the fields it expands into concentrated, lasting value: growth that does not merely increase, but compounds into something that continues generating return well after the original investment.`,
     ],
   };
 }
@@ -368,18 +374,20 @@ function willThreshold(chart: NatalChart): ReportSection {
 function retentionThreshold(chart: NatalChart): ReportSection {
   const saturn = SIGNS[chart.positions.saturn.signIndex].name;
   const sun = SIGNS[chart.positions.sun.signIndex].name;
-  const moon = SIGNS[chart.positions.moon.signIndex].name;
+  const sunHouse = ORDINALS[chart.positions.sun.house - 1];
+  const saturnHouse = ORDINALS[chart.positions.saturn.house - 1];
   return {
     kind: "threshold",
     order: 0,
     title: "Actualization",
-    subtitle: "Structure + Essence → Embodied Expression",
-    glyph: "♄",
+    subtitle: "Essence · Structure → Embodied Expression",
+    glyph: "◬",
     planetKeys: [],
     paragraphs: [
-      `The Retention threshold asks the final question of the creation cycle: what will remain? Creation reaches completion only when what has been built can survive the cycle that created it — when the lesson stops being learned and becomes part of the structure itself.`,
-      `Your Saturn in ${saturn} holds the function of Retention: the discipline, structure, endurance, and mastery required for what has been created to outlast the moment of inspiration. Saturn does not reward speed or brilliance. It rewards the willingness to build with sufficient care and precision that the work stands when the creator is no longer actively sustaining it. Integrated with the originating Essence carried by your Sun in ${sun} and the lived experience held by your Moon in ${moon}, Retention asks: what from this creation cycle is strong enough to endure? What must be preserved, and what must be released because it cannot sustain the weight of permanence?`,
-      `The output of Retention is Legacy — what compounds beyond the moment of creation, what continues generating meaning without requiring continuous reinvestment, and what eventually becomes part of the field itself rather than merely something produced within it. Cross this threshold and experience becomes architecture. What you have built stops being something you carry and begins carrying itself.`,
+      `The Actualization threshold is not a planet — it is the synthesis point where essence and structure converge. It is the final point in the refinement cycle, and it answers the deepest architectural question: how does this blueprint transform inherent essence into enduring, embodied expression?`,
+      `The Sun in ${sun} in the ${sunHouse} house holds the originating essence — the fundamental creative pattern encoded within this blueprint, the core identity structure from which the entire architecture extends. This is not what the blueprint does. It is what the blueprint is. Point 0 holds the essence as it enters the cycle: unrefined, inherent, already present.`,
+      `Saturn in ${saturn} in the ${saturnHouse} house holds the consolidation function: the structure, discipline, and mastery required for what is inherent to become durable. Saturn does not generate the essence — it gives the essence architecture to stand within. It is the mechanism by which potential becomes embodiment, and by which expression outlasts the moments that produce it. The specific sign and house describe the precise conditions under which this blueprint builds what endures.`,
+      `The Actualization threshold is the expression of what this blueprint becomes when the full refinement cycle has operated with precision. Point 0 holds the original encoding. Point 9 holds the same essence after it has passed through reception, force, intelligence, expansion, cultivation, and consolidation. This threshold is not aspiration — it is the encoded endpoint of an architecture already in motion. What is being refined here is the capacity to fully embody what was always present: not to create the essence, but to develop the structure through which it can be expressed without remainder.`,
     ],
   };
 }

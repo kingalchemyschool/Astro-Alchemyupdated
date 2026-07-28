@@ -53,11 +53,13 @@ const ASPECT_PRIORITY: Record<AspectType, number> = {
 };
 
 const ASPECT_DEFS: { type: AspectType; angle: number; orb: number }[] = [
-  { type: "conjunction", angle: 0, orb: 8 },
-  { type: "sextile", angle: 60, orb: 5 },
-  { type: "square", angle: 90, orb: 7 },
-  { type: "trine", angle: 120, orb: 7 },
-  { type: "opposition", angle: 180, orb: 8 },
+  // Match the Astro-Seek reference used by Daily Forge: the report is
+  // limited to aspects under 3° orb, rather than broad natal-style orbs.
+  { type: "conjunction", angle: 0, orb: 3 },
+  { type: "sextile", angle: 60, orb: 3 },
+  { type: "square", angle: 90, orb: 3 },
+  { type: "trine", angle: 120, orb: 3 },
+  { type: "opposition", angle: 180, orb: 3 },
 ];
 
 function separation(a: number, b: number): number {

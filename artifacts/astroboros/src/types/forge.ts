@@ -1,5 +1,6 @@
 export interface CelestialFieldEntry {
   planetaryAspect: string;
+  transitPlacement?: string;
   natalPlacement: string;
   houseActivation: string;
   coreFunctionActivated: string;
@@ -7,6 +8,8 @@ export interface CelestialFieldEntry {
 
 export interface ForgeReport {
   date: string;
+  zodiac?: "tropical" | "sidereal";
+  referenceTime?: string;
   primaryTransit: {
     transitPlanet: string;
     natalPlanet: string;

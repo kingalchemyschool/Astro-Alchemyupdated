@@ -49,6 +49,8 @@ interface DailyForgeRequest {
 
 export interface ForgeReport {
   date: string;
+  zodiac: "tropical" | "sidereal";
+  referenceTime: string;
   primaryTransit: {
     transitPlanet: string;
     natalPlanet: string;
@@ -65,6 +67,7 @@ export interface ForgeReport {
   }>;
   celestialField: Array<{
     planetaryAspect: string;
+    transitPlacement: string;
     natalPlacement: string;
     houseActivation: string;
     coreFunctionActivated: string;
@@ -94,7 +97,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   return `${sun?.signIndex ?? 0}.${sun?.degree ?? 0}:${moon?.signIndex ?? 0}.${moon?.degree ?? 0}:${asc?.signIndex ?? 0}`;
 }
 
-const REPORT_VERSION = "activation-v4";
+const REPORT_VERSION = "activation-v6";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -457,8 +460,10 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   const refinement2 = pick(REFINEMENT_NOUN[nPlanet], seed, 1);
 
   const houseLabel = houseOrd(nHouse);
-  const nFuncName  = PLANET_FUNCTION_NAME[nPlanet];
-  const tFuncName  = PLANET_FUNCTION_NAME[tPlanet];
+  // Keep proprietary framework labels internal. Report copy should translate
+  // them into lived experience for the reader.
+  const nFuncName  = NATAL_FUNCTION[nPlanet];
+  const tFuncName  = TRANSIT_FUNCTION[tPlanet];
 
   // ── CELESTIAL FIELD ──────────────────────────────────────────────────────
   const celestialField = activeAspects.map(aspect => {
@@ -469,10 +474,12 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     const sp_tGlyph    = PLANET_GLYPH[aspect.transitPlanet];
     const sp_nGlyph    = PLANET_GLYPH[aspect.natalPlanet];
     const sp_nSign     = sign(sp_nPos.signIndex);
+    const sp_tSign     = sign(sp_tPos.signIndex);
     const sp_nHouse    = sp_nPos.house;
     const sp_houseInfo = HOUSE_MEANING[sp_nHouse] ?? { short: "Life", full: "a key area" };
     return {
       planetaryAspect:       `${sp_tGlyph} ${sp_tName} ${ASPECT_LABEL_CAP[aspect.type]} Natal ${sp_nGlyph} ${sp_nName}`,
+      transitPlacement:     `Transit ${sp_tSign} ${sp_tPos.degree}°${String(sp_tPos.minute ?? 0).padStart(2, "0")}′`,
       natalPlacement:        `${sp_nSign} ${sp_nPos.degree}° · ${houseOrd(sp_nHouse)} House`,
       houseActivation:       sp_houseInfo.short,
       coreFunctionActivated: activationDescription(aspect),
@@ -521,10 +528,10 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
 
   // ── CELESTIAL STATE ──────────────────────────────────────────────────────
   const celestialStateTemplates = [
-    `Today's primary planetary contact is a ${aspectType} between transiting ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) at ${formatDeg(nPos)} in your ${houseLabel} House. A ${aspectType} means ${aspectInfo.mechanism} — and in practical terms, this produces ${aspectInfo.experiential}. The ${houseLabel} House governs ${nHouseMeaning.full}, placing your ${nFuncName} function in this arena — which is exactly where today's contact lands. ${tName} is currently in ${tSign}, a sign characterized by ${tSignInfo.brief}, bringing ${tSignInfo.operative} to the way this interaction unfolds. With an orb of ${top.orb}°, this aspect is tight and active throughout the day.`,
-    `The sky today puts a ${aspectType} between ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) — a configuration that means ${aspectInfo.mechanism}. Your natal ${nName} sits in your ${houseLabel} House at ${formatDeg(nPos)}, a house concerned with ${nHouseMeaning.full}: this is the arena through which your ${nFuncName} function operates, and it is the territory today's contact is pressing directly into. Transiting ${tName} at ${formatDeg(tPos)} is ${aspectType === "conjunction" ? "merging with" : aspectType === "opposition" ? "pulling from across" : aspectType === "square" ? "pressing against" : aspectType === "trine" ? "flowing into" : "opening a path to"} that natal point. What this produces is ${aspectInfo.experiential}. The ${tSignInfo.brief} quality of ${tSign} is the character through which this contact expresses itself today.`,
-    `A ${aspectType} between transiting ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) is the main planetary condition today. The ${aspectType} is how these two functions are interacting: it means ${aspectInfo.mechanism}. Your natal ${nName} in the ${houseLabel} House governs ${nHouseMeaning.full} — that is the specific arena through which your ${nFuncName} function moves, and the precise territory this contact is engaging. Transiting ${tName} at ${formatDeg(tPos)} in ${tSign} — a ${tSignInfo.brief} sign — is bringing ${tSignInfo.operative} to that domain. Orb: ${top.orb}°. The contact is precise and active.`,
-    `Today, ${tName} (${tFuncName}) in ${tSign} forms a ${aspectType} with your natal ${nName} (${nFuncName}) in your ${houseLabel} House. A ${aspectType} produces ${aspectInfo.experiential} — the two functions do not operate independently under this configuration. Your ${nFuncName} function is placed in the ${houseLabel} House, which governs ${nHouseMeaning.full}: that is where this contact's pressure is applied. ${tName} at ${formatDeg(tPos)} is bringing its current ${tSignInfo.brief} quality into direct relation with your natal ${nName} at ${formatDeg(nPos)}. The ${top.orb}° orb keeps this interaction tight and personally relevant throughout today.`,
+    `Today's primary planetary contact is a ${aspectType} between transiting ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) at ${formatDeg(nPos)} in your ${houseLabel} House. A ${aspectType} means ${aspectInfo.mechanism} — and in practical terms, this produces ${aspectInfo.experiential}. The ${houseLabel} House governs ${nHouseMeaning.full}, placing this part of your life at the center of today's contact. ${tName} is currently in ${tSign}, a sign characterized by ${tSignInfo.brief}, bringing ${tSignInfo.operative} to the way this interaction unfolds. With an orb of ${top.orb}°, this aspect is tight and active throughout the day.`,
+    `The sky today puts a ${aspectType} between transiting ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) — a configuration that means ${aspectInfo.mechanism}. Your natal ${nName} sits in your ${houseLabel} House at ${formatDeg(nPos)}, a house concerned with ${nHouseMeaning.full}: this is the territory today's contact is pressing directly into. Transiting ${tName} at ${formatDeg(tPos)} is ${aspectType === "conjunction" ? "merging with" : aspectType === "opposition" ? "pulling from across" : aspectType === "square" ? "pressing against" : aspectType === "trine" ? "flowing into" : "opening a path to"} that natal point. What this produces is ${aspectInfo.experiential}. The ${tSignInfo.brief} quality of ${tSign} is the character through which this contact expresses itself today.`,
+    `A ${aspectType} between transiting ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) is the main planetary condition today. The ${aspectType} describes how these two experiences meet: ${aspectInfo.mechanism}. Your natal ${nName} in the ${houseLabel} House governs ${nHouseMeaning.full} — the precise territory this contact is engaging. Transiting ${tName} at ${formatDeg(tPos)} in ${tSign} — a ${tSignInfo.brief} sign — is bringing ${tSignInfo.operative} to that domain. Orb: ${top.orb}°. The contact is precise and active.`,
+    `Today, ${tName} (${tFuncName}) in ${tSign} forms a ${aspectType} with your natal ${nName} (${nFuncName}) in your ${houseLabel} House. A ${aspectType} produces ${aspectInfo.experiential}. Your ${houseLabel} House governs ${nHouseMeaning.full}: that is where this contact's pressure is applied. ${tName} at ${formatDeg(tPos)} is bringing its current ${tSignInfo.brief} quality into direct relation with your natal ${nName} at ${formatDeg(nPos)}. The ${top.orb}° orb keeps this interaction tight and personally relevant throughout today.`,
   ];
 
   // Supporting aspect paragraphs (one per secondary aspect)
@@ -719,6 +726,8 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
 
   return {
     date,
+    zodiac: transits.zodiac as "tropical" | "sidereal",
+    referenceTime: "12:00 local chart time",
     primaryTransit: {
       transitPlanet: tName,
       natalPlanet:   nName,

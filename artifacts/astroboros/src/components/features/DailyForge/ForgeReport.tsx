@@ -40,6 +40,7 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
     ? report.celestialField
     : [{
         planetaryAspect: `${pt.transitPlanet} ${ASPECT_LABEL[pt.aspect] ?? pt.aspect} Natal ${pt.natalPlanet}`,
+        transitPlacement: "",
         natalPlacement: `${houseOrd(pt.house)} House`,
         houseActivation: HOUSE_SHORT[pt.house] ?? "",
         coreFunctionActivated: `${pt.orb}° orb`,
@@ -59,6 +60,9 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
               Today's Forge
             </p>
             <h1 className="font-serif text-2xl font-semibold text-[#E8E4D8]">{dateLabel}</h1>
+            <p className="mt-1 text-[10px] font-mono uppercase tracking-widest text-[#6B7A99]">
+              {zodiac === "sidereal" ? "Sidereal · Lahiri" : "Tropical"} · {report.referenceTime ?? "Daily reference"}
+            </p>
           </div>
           <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
             <button
@@ -106,6 +110,8 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
                   )}
                 </div>
                 <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 text-[11px] text-[#6B7A99]">
+                  {entry.transitPlacement && <span>{entry.transitPlacement}</span>}
+                  {entry.transitPlacement && <span className="text-[#2A3450]">·</span>}
                   <span>{entry.natalPlacement}</span>
                   {entry.houseActivation && (
                     <>

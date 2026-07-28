@@ -1,0 +1,70 @@
+CORE READING LANGUAGE RULE — TRANSLATE THE SYSTEM, DO NOT EXPOSE THE SYSTEM
+
+All Astral Forge readings must prioritize reader comprehension over framework terminology.
+
+The planetary functions, archetypal labels, thresholds, and internal mechanics are the architecture behind the interpretation. They are not the language the reader should repeatedly encounter. The system exists to generate the reading, not to become the subject of the reading.
+
+RULE:
+
+Introduce each function, archetype, or mechanism only when necessary, and explain its purpose in natural language the first time it appears. After that, translate the concept into lived experience rather than repeating the label.
+
+Example:
+
+Correct:
+"Moon — Reception
+
+Receiving the vision established by the Sun, the Moon converts that original pattern into lived experience. It determines what registers as true, what the body recognizes instinctively, and how experiences become emotionally meaningful.
+
+With the Moon in Scorpio, this process is intense and penetrating. You naturally detect hidden motivations, emotional undercurrents, and information beneath the surface. Your instincts are designed to investigate, transform, and uncover what others may overlook."
+
+Incorrect:
+"Reception allows Perception to process the Essence of the Sun through emotional awareness. This creates a deeper Reception pattern where Perception..."
+
+The reader should understand the meaning without needing to decode internal system language.
+
+---
+
+ASPECT INTERPRETATION RULE:
+
+Never describe aspects as abstract relationships between functions.
+
+Avoid:
+"Saturn strengthens Perception through consolidation."
+
+Instead:
+"Saturn gives your emotional responses structure. You are able to slow down, organize what you experience, and turn lessons into reliable patterns that support long-term growth."
+
+Every aspect must explain:
+
+1. What this relationship produces.
+2. How it changes the person's behavior.
+3. What ability it strengthens.
+4. What challenge or imbalance it creates.
+5. How it contributes to the person's larger blueprint.
+
+---
+
+LANGUAGE STANDARD:
+
+The reading should sound like a precise psychological and strategic blueprint, not a manual explaining the astrology engine.
+
+Prioritize:
+- observable patterns
+- decision-making style
+- creative process
+- strengths
+- friction points
+- developmental challenges
+- real-world expression
+- external consequence
+
+Avoid:
+- repeatedly naming functions
+- explaining the framework instead of interpreting the person
+- forcing the reader to learn proprietary terminology
+- using abstract labels without translating them
+
+The reader should finish the reading knowing themselves more clearly, not knowing the mechanics of the software.
+
+The system calculates the architecture.
+The reading translates the architecture into human understanding.

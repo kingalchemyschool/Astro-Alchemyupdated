@@ -1,0 +1,76 @@
+ASPECT INTERPRETATION — NEVER EXPOSE CALCULATION LANGUAGE
+
+The reading must never describe aspects using raw astronomical calculation data.
+
+Do not write:
+- "At 1.8°, this is a conjunction..."
+- "At 6.5°, this is a conjunction..."
+- "At 6.9°, this is a square..."
+- "The planets are 90° apart..."
+- "Within a 5° orb..."
+- "This aspect is formed because..."
+- Any sentence that explains the mathematical construction of the aspect.
+
+The chart calculation has already been completed before interpretation begins. The reader does not need to know how the software identified the aspect. They need to understand what the relationship creates.
+
+Translate the calculation into meaning.
+
+Instead of stating the degree:
+Explain the strength of the connection.
+
+Examples:
+
+"At 1.8°, this is a conjunction"
+becomes:
+"This is one of the strongest relationships in your chart, merging these two planetary drives into a single operating pattern."
+
+"At 6.5°, this is a conjunction"
+becomes:
+"This connection strongly blends your identity and your ability to act, making these energies difficult to separate in your expression."
+
+"At 6.9°, this is a square"
+becomes:
+"This creates a dynamic tension between two different needs. The friction is not a flaw; it is the pressure that forces growth, refinement, and conscious development."
+
+---
+
+ASPECTS SHOULD ALWAYS FOLLOW THIS STRUCTURE:
+
+1. Identify the relationship in human terms:
+"Your Sun is closely connected with Saturn..."
+"Your Moon forms a supportive relationship with Jupiter..."
+"Your Mars experiences tension with Pluto..."
+
+2. Explain what the two energies create together:
+"What happens when these two parts of your system work together?"
+
+3. Explain the practical expression:
+"How does this show up in decisions, behavior, creativity, relationships, work, or personal development?"
+
+4. Explain the developmental lesson:
+"What does this relationship require the person to learn, integrate, or master?"
+
+---
+
+Never describe:
+Planet A's "style" meeting Planet B's "style."
+
+Avoid:
+"Sun's direct, pioneering, and driven-to-begin style meets Saturn's fluid, imaginative, and permeable style."
+
+This forces the reader to decode the framework.
+
+Instead:
+"Your instinct to move quickly and create something new is constantly shaped by Saturn's demand for patience, structure, and long-term development. This creates a pattern where success comes not from speed alone, but from learning how to turn momentum into something durable."
+
+---
+
+The purpose of aspect interpretation is not to explain why the chart calculator labeled something a conjunction, square, or trine.
+
+The purpose is to explain:
+- what these energies create together
+- where the person experiences ease or friction
+- what ability emerges from the combination
+- what pattern they must consciously develop
+
+The reader should experience the aspect as a description of themselves, not as a technical explanation of astrology.

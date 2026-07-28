@@ -46,7 +46,7 @@ function aspClause(fn: FunctionMeta, asp: Aspect | undefined): string {
       trine: "flow in natural trine, the kind of alignment that makes articulation feel inevitable",
       opposition: "stand in productive opposition, creating the arc of tension from which message draws its range",
     };
-    return `${words[asp.type]} (orb ${asp.orb}°)`;
+    return words[asp.type];
   }
   
   if (fn.key === "execution") {
@@ -57,7 +57,7 @@ function aspClause(fn: FunctionMeta, asp: Aspect | undefined): string {
       trine: "flow in natural trine, the kind of alignment that makes decisive movement feel inevitable",
       opposition: "stand in productive opposition, creating the arc of tension from which execution draws its range",
     };
-    return `${words[asp.type]} (orb ${asp.orb}°)`;
+    return words[asp.type];
   }
   
   if (fn.key === "discipline") {
@@ -68,7 +68,7 @@ function aspClause(fn: FunctionMeta, asp: Aspect | undefined): string {
       trine: "flow in natural trine, the kind of alignment that makes mastery feel like an inevitable consequence of practice",
       opposition: "stand in productive opposition, creating the arc of tension from which discipline draws its range",
     };
-    return `${words[asp.type]} (orb ${asp.orb}°)`;
+    return words[asp.type];
   }
   
   if (fn.key === "mastery") {
@@ -79,7 +79,7 @@ function aspClause(fn: FunctionMeta, asp: Aspect | undefined): string {
       trine: "flow in natural trine, the kind of alignment that makes genuine authority feel inevitable",
       opposition: "stand in productive opposition, creating the arc of tension from which mastery draws its range",
     };
-    return `${words[asp.type]} (orb ${asp.orb}°)`;
+    return words[asp.type];
   }
   
   if (fn.key === "cultivation") {
@@ -90,7 +90,7 @@ function aspClause(fn: FunctionMeta, asp: Aspect | undefined): string {
       trine: "flow in natural trine, the kind of alignment that makes creation and curation feel inevitable",
       opposition: "stand in productive opposition, creating the arc of tension from which cultivation draws its range",
     };
-    return `${words[asp.type]} (orb ${asp.orb}°)`;
+    return words[asp.type];
   }
   
   // integration
@@ -101,7 +101,7 @@ function aspClause(fn: FunctionMeta, asp: Aspect | undefined): string {
     trine: "flow in natural trine, the kind of alignment that makes embodied connection feel inevitable",
     opposition: "stand in productive opposition, creating the arc of tension from which integration draws its range",
   };
-  return `${words[asp.type]} (orb ${asp.orb}°)`;
+  return words[asp.type];
 }
 
 function toneFor(chart: NatalChart, a: PlanetKey, b: PlanetKey): string {
@@ -277,11 +277,11 @@ function transmissionText(pA: string, pB: string, asp: Aspect | undefined): stri
     return `${pA} and ${pB} share no major aspect, which means this function does not run on an automatic channel. The two planets develop independently — maturing at different rates and through different experiences before learning to coordinate. Insight from one side often arrives well before the other is ready to receive it, creating periods of lag where one half of the function waits for the other to catch up. When the connection does form, it tends to arrive in complete frameworks rather than incremental steps, producing sudden integration rather than gradual development.`;
   }
   const entries: Record<Aspect["type"], string> = {
-    conjunction: `${pA} and ${pB} are conjoined, meaning this function operates as a single unified system rather than as two cooperating parts. There is no gap between the impulse ${pA} generates and the response ${pB} provides — they activate together, and the function moves with speed and decisiveness. The limitation is that the two planets cannot easily observe each other from a distance: what ${pA} produces, ${pB} immediately inherits, leaving very little room for self-correction before the function has already engaged. (orb ${asp.orb}°)`,
-    sextile:     `${pA} and ${pB} share a productive sextile (orb ${asp.orb}°). This aspect works through invitation rather than pressure — each planet creates conditions the other can use, but neither compels the other to respond. The function builds through cultivation: the more deliberately it is engaged, the more fluid the exchange becomes. Left passive, the sextile can remain latent — a resource that exists but is never fully drawn on.`,
-    square:      `${pA} and ${pB} are in a generative square (orb ${asp.orb}°). The two planets pull in different directions, and the function is powered by the tension between them. The square makes this function effortful: it does not flow automatically, and every time it engages, it requires that the friction between what ${pA} demands and what ${pB} is prepared to deliver be resolved. That friction is not a flaw in the system — it is the mechanism that makes the output forceful rather than passive. The function does not work when the tension is avoided; it works precisely when the tension is entered directly.`,
-    trine:       `${pA} and ${pB} share a flowing trine (orb ${asp.orb}°). Energy passes between them without resistance, and this function activates with a naturalness that can feel almost unconscious. Because the alignment is so easy, the function often operates below the level of deliberate attention — which is both its greatest strength and its primary risk. What flows without friction is also what flows without scrutiny, meaning the patterns this function produces can run for years before being examined directly.`,
-    opposition:  `${pA} and ${pB} stand in productive opposition (orb ${asp.orb}°). This function operates through the dynamic between two poles rather than through a single unified direction. What ${pA} generates, ${pB} qualifies — and vice versa, in constant alternation. The function develops through contrast: each planet is understood by seeing itself reflected and challenged by the other. This produces a function with remarkable range, built from two extreme positions rather than from one consolidated center. The challenge is that the two poles can periodically feel irreconcilable until a new synthesis is forced.`,
+    conjunction: `${pA} and ${pB} are conjoined, meaning this function operates as a single unified system rather than as two cooperating parts. There is no gap between the impulse ${pA} generates and the response ${pB} provides — they activate together, and the function moves with speed and decisiveness. The limitation is that the two planets cannot easily observe each other from a distance: what ${pA} produces, ${pB} immediately inherits, leaving very little room for self-correction before the function has already engaged.`,
+    sextile:     `${pA} and ${pB} share a productive sextile — this aspect works through invitation rather than pressure. Each planet creates conditions the other can use, but neither compels the other to respond. The function builds through cultivation: the more deliberately it is engaged, the more fluid the exchange becomes. Left passive, the sextile can remain latent — a resource that exists but is never fully drawn on.`,
+    square:      `${pA} and ${pB} are in a generative square — the two planets pull in different directions, and the function is powered by the tension between them. The square makes this function effortful: it does not flow automatically, and every time it engages, it requires that the friction between what ${pA} demands and what ${pB} is prepared to deliver be resolved. That friction is not a flaw in the system — it is the mechanism that makes the output forceful rather than passive. The function does not work when the tension is avoided; it works precisely when the tension is entered directly.`,
+    trine:       `${pA} and ${pB} share a flowing trine — energy passes between them without resistance, and this function activates with a naturalness that can feel almost unconscious. Because the alignment is so easy, the function often operates below the level of deliberate attention — which is both its greatest strength and its primary risk. What flows without friction is also what flows without scrutiny, meaning the patterns this function produces can run for years before being examined directly.`,
+    opposition:  `${pA} and ${pB} stand in productive opposition — this function operates through the dynamic between two poles rather than through a single unified direction. What ${pA} generates, ${pB} qualifies — and vice versa, in constant alternation. The function develops through contrast: each planet is understood by seeing itself reflected and challenged by the other. This produces a function with remarkable range, built from two extreme positions rather than from one consolidated center. The challenge is that the two poles can periodically feel irreconcilable until a new synthesis is forced.`,
   };
   return entries[asp.type];
 }

@@ -43,7 +43,7 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
         transitPlacement: "",
         natalPlacement: `${houseOrd(pt.house)} House`,
         houseActivation: HOUSE_SHORT[pt.house] ?? "",
-        coreFunctionActivated: `${pt.orb}° orb`,
+        coreFunctionActivated: `Transit ${pt.aspect} your natal ${pt.natalPlanet} — ${HOUSE_SHORT[pt.house] ?? "Life"} area active.`,
       }];
 
   // Backward compat: whatIsBeingRefined may be absent on old cached reports

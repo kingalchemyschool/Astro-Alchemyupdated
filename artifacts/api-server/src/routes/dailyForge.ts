@@ -43,6 +43,7 @@ interface DailyForgeRequest {
     date: string;
     positions: Record<PlanetKey, PlanetSummary>;
     aspects: TransitAspect[];
+    zodiac: string;
   };
 }
 
@@ -70,6 +71,7 @@ export interface ForgeReport {
   }>;
   todaysTheme: string;
   celestialState: string;
+  blueprintActivation: string;
   whatIsBeingRefined: string;
   forgePrinciple: string;
   journalPrompt: string;
@@ -798,7 +800,12 @@ router.post("/daily-forge/report", forgeLimiter, async (req: any, res) => {
     return res.status(400).json({ error: "Invalid date format. Expected YYYY-MM-DD." });
   }
 
-  const zodiac = body.natal.zodiac === "sidereal" ? "sidereal" : "tropical";
+  if (body.natal.zodiac !== "sidereal" && body.natal.zodiac !== "tropical") {
+    return res.status(400).json({
+      error: "Invalid natal zodiac. Expected tropical or sidereal.",
+    });
+  }
+  const zodiac = body.natal.zodiac;
 
   // ── Consistency guard ───────────────────────────────────────────────────────
   // Reject any request where the client mixes zodiac systems across the natal
@@ -813,6 +820,7 @@ router.post("/daily-forge/report", forgeLimiter, async (req: any, res) => {
     : topZodiacRaw === "tropical" ? "tropical" : null;
 
   const mismatches: string[] = [];
+  if (!transitsZodiac) mismatches.push("transits.zodiac missing or invalid");
   if (topZodiac && topZodiac !== zodiac) mismatches.push("zodiac");
   if (transitsZodiac && transitsZodiac !== zodiac) mismatches.push("transits.zodiac");
   if (mismatches.length) {

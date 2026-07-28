@@ -18,6 +18,7 @@ export interface TransitAspect {
 
 export interface TransitData {
   date: string;
+  zodiac: "tropical" | "sidereal";
   positions: Record<PlanetKey, PlanetPosition>;
   aspects: TransitAspect[];
 }
@@ -76,24 +77,16 @@ export function todayDateString(): string {
   return `${year}-${month}-${day}`;
 }
 
-/** Return the current clock time in the given IANA timezone as "HH:MM". */
-function currentTimeForTz(tzName?: string, tzOffset?: number): string {
-  const now = new Date();
-  if (tzName) {
-    try {
-      const parts = new Intl.DateTimeFormat("en-US", {
-        hour: "2-digit", minute: "2-digit", hour12: false, timeZone: tzName,
-      }).formatToParts(now);
-      const h = (parts.find(p => p.type === "hour")?.value ?? "12").padStart(2, "0");
-      const m = (parts.find(p => p.type === "minute")?.value ?? "00").padStart(2, "0");
-      return `${h === "24" ? "00" : h}:${m}`;
-    } catch { /* fall through to offset */ }
-  }
-  const offsetMs = (tzOffset ?? 0) * 3_600_000;
-  const local = new Date(now.getTime() + offsetMs);
-  const h = String(local.getUTCHours()).padStart(2, "0");
-  const m = String(local.getUTCMinutes()).padStart(2, "0");
-  return `${h}:${m}`;
+/** Return noon on the selected calendar date in the chart's location.
+ *
+ * Daily Forge is a day-level report, not a live-clock report. Using the
+ * current instant here could cross a date boundary while the report date
+ * remains yesterday/tomorrow, and makes the same Daily Forge disagree with
+ * a daily transit chart such as Astro-Seek. Noon also avoids most DST
+ * transition edge cases while keeping the calculation deterministic.
+ */
+function dailyTransitTime(): string {
+  return "12:00";
 }
 
 /** Compute today's transit chart against the user's natal chart.
@@ -107,9 +100,9 @@ export function computeTransits(
 ): TransitData {
   const transitInput: BirthInput = {
     date,
-    // Use the chart's timezone so the moon's live position is accurate to
-    // the current hour rather than always being computed for noon.
-    time: currentTimeForTz(natal.input.tzName, natal.input.tz),
+    // Use a stable daily reference time rather than the current clock. The
+    // date and time together identify the same daily sky for every refresh.
+    time: dailyTransitTime(),
     place: natal.input.place,
     lat: natal.input.lat,
     lon: natal.input.lon,
@@ -164,6 +157,7 @@ export function computeTransits(
 
   return {
     date,
+    zodiac,
     positions: transitChart.positions,
     aspects: balanced.slice(0, 24),
   };

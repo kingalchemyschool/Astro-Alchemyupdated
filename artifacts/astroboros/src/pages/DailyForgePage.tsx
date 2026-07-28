@@ -34,7 +34,10 @@ export default function DailyForgePage() {
   const [error, setError] = useState<string | null>(null);
   const fetchedRef = useRef(false);
 
-  const today = todayDateString();
+  // Capture the report day once for the whole cache/request cycle. This keeps
+  // the displayed date, transit ephemeris date, and server cache key aligned
+  // even if the browser crosses midnight while the page is open.
+  const [today] = useState(todayDateString);
   // The reading's chart is regenerated in the active system on toggle, so this
   // is THE single source of truth for the zodiac displayed, transits computed,
   // and zodiac reported to the server. No separate transit-only state.
@@ -133,7 +136,7 @@ export default function DailyForgePage() {
           date: transitData.date,
           positions: transitPositions,
           aspects: transitData.aspects,
-          zodiac,
+          zodiac: transitData.zodiac,
         },
       };
 

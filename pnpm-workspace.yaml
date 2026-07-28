@@ -37,7 +37,9 @@ minimumReleaseAgeExclude:
   - stripe-replit-sync
 
 onlyBuiltDependencies:
+  - '@clerk/shared'
   - '@swc/core'
+  - core-js
   - esbuild
   - msw
   - unrs-resolver

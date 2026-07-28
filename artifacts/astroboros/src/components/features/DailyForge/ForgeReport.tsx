@@ -86,9 +86,9 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
 
         {/* Celestial Field */}
         <div className="mt-5">
-          <p className="font-mono text-[9px] tracking-widest uppercase text-[#6B7A99] mb-3">
-            Celestial Field
-          </p>
+            <p className="font-mono text-[9px] tracking-widest uppercase text-[#6B7A99] mb-3">
+              Celestial Field
+            </p>
           <div className="space-y-2">
             {celestialField.map((entry, i) => (
               <div

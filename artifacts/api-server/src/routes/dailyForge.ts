@@ -102,7 +102,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v11";
+const REPORT_VERSION = "activation-v12";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -217,20 +217,6 @@ const MOON_PROCESSING: Record<string, { style: string; lens: string }> = {
   Capricorn:   { style: "disciplined, strategic, and utility-focused",      lens: "filtering experience through long-term value" },
   Aquarius:    { style: "detached, systems-oriented, and pattern-aware",    lens: "observing the structure of what is happening before reacting" },
   Pisces:      { style: "open, absorbing, and emotionally receptive",         lens: "taking in experience from multiple directions at once" },
-};
-
-// Blueprint creative function names (per the Astroboros system)
-const PLANET_FUNCTION_NAME: Record<PlanetKey, string> = {
-  sun:     "Essence",
-  moon:    "Perception",
-  mercury: "Expression",
-  venus:   "Value",
-  mars:    "Impact",
-  jupiter: "Expansion",
-  saturn:  "Foundation",
-  uranus:  "Genius",          // octave activator of Mercury / Expression
-  neptune: "Dissolution",     // octave activator of Venus / Value
-  pluto:   "Regeneration",    // outer octave of Mars / Impact
 };
 
 // How each aspect type activates a function
@@ -519,9 +505,6 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   const houseLabel = houseOrd(nHouse);
   // Keep proprietary framework labels internal. Report copy should translate
   // them into lived experience for the reader.
-  const nFuncName  = NATAL_FUNCTION[nPlanet];
-  const tFuncName  = TRANSIT_FUNCTION[tPlanet];
-
   // ── CELESTIAL FIELD ──────────────────────────────────────────────────────
   const celestialField = activeAspects.map(aspect => {
     const sp_tPos      = transits.positions[aspect.transitPlanet];
@@ -587,10 +570,10 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
 
   // ── CELESTIAL STATE ──────────────────────────────────────────────────────
   const celestialStateTemplates = [
-    `Today's primary planetary contact is a ${aspectType} between transiting ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) at ${formatDeg(nPos)} in your ${houseLabel} House. A ${aspectType} means ${aspectInfo.mechanism} — and in practical terms, this produces ${aspectInfo.experiential}. The ${houseLabel} House governs ${nHouseMeaning.full}, placing this part of your life at the center of today's contact. ${tName} is currently in ${tSign}, a sign characterized by ${tSignInfo.brief}, bringing ${tSignInfo.operative} to the way this interaction unfolds. This aspect is precise and personally active throughout the day.`,
-    `The sky today puts a ${aspectType} between transiting ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) — a configuration that means ${aspectInfo.mechanism}. Your natal ${nName} sits in your ${houseLabel} House at ${formatDeg(nPos)}, a house concerned with ${nHouseMeaning.full}: this is the territory today's contact is pressing directly into. Transiting ${tName} at ${formatDeg(tPos)} is ${aspectType === "conjunction" ? "merging with" : aspectType === "opposition" ? "pulling from across" : aspectType === "square" ? "pressing against" : aspectType === "trine" ? "flowing into" : "opening a path to"} that natal point. What this produces is ${aspectInfo.experiential}. Its ${tSignInfo.brief} quality brings ${tSignInfo.operative} to the way this contact expresses itself today.`,
-    `A ${aspectType} between transiting ${tName} (${tFuncName}) and your natal ${nName} (${nFuncName}) is the main planetary condition today. The ${aspectType} describes how these two experiences meet: ${aspectInfo.mechanism}. Your natal ${nName} in the ${houseLabel} House governs ${nHouseMeaning.full} — the precise territory this contact is engaging. Transiting ${tName} at ${formatDeg(tPos)} — carrying a ${tSignInfo.brief} quality — is bringing ${tSignInfo.operative} to that domain. The contact is precise and active throughout the day.`,
-    `Today, ${tName} (${tFuncName}) in ${tSign} forms a ${aspectType} with your natal ${nName} (${nFuncName}) in your ${houseLabel} House. A ${aspectType} produces ${aspectInfo.experiential}. Your ${houseLabel} House governs ${nHouseMeaning.full}: that is where this contact's pressure is applied. ${tName} at ${formatDeg(tPos)} is bringing its current ${tSignInfo.brief} quality into direct relation with your natal ${nName} at ${formatDeg(nPos)}. This interaction is tight and personally relevant throughout today.`,
+    `Today's primary planetary contact is a ${aspectType} between transiting ${tName}, which influences ${TRANSIT_FUNCTION[tPlanet]}, and your natal ${nName}, connected to ${NATAL_FUNCTION[nPlanet]}. This contact is at ${formatDeg(nPos)} in your ${houseLabel} House. A ${aspectType} means ${aspectInfo.mechanism} — and in practical terms, this produces ${aspectInfo.experiential}. The ${houseLabel} House governs ${nHouseMeaning.full}, placing this part of your life at the center of today's contact. ${tName} is currently in ${tSign}, a sign characterized by ${tSignInfo.brief}, bringing ${tSignInfo.operative} to the way this interaction unfolds. This aspect is precise and personally active throughout the day.`,
+    `The sky today puts a ${aspectType} between transiting ${tName} and your natal ${nName} — a relationship between ${TRANSIT_FUNCTION[tPlanet]} and ${NATAL_FUNCTION[nPlanet]}. Your natal ${nName} sits in your ${houseLabel} House at ${formatDeg(nPos)}, a house concerned with ${nHouseMeaning.full}: this is the territory today's contact is pressing directly into. Transiting ${tName} at ${formatDeg(tPos)} is ${aspectType === "conjunction" ? "merging with" : aspectType === "opposition" ? "pulling from across" : aspectType === "square" ? "pressing against" : aspectType === "trine" ? "flowing into" : "opening a path to"} that natal point. What this produces is ${aspectInfo.experiential}. Its ${tSignInfo.brief} quality brings ${tSignInfo.operative} to the way this contact expresses itself today.`,
+    `A ${aspectType} between transiting ${tName} and your natal ${nName} is the main planetary condition today. These two areas — ${TRANSIT_FUNCTION[tPlanet]} and ${NATAL_FUNCTION[nPlanet]} — meet through ${aspectInfo.mechanism}. Your natal ${nName} in the ${houseLabel} House governs ${nHouseMeaning.full} — the precise territory this contact is engaging. Transiting ${tName} at ${formatDeg(tPos)} — carrying a ${tSignInfo.brief} quality — is bringing ${tSignInfo.operative} to that domain. The contact is precise and active throughout the day.`,
+    `Today, ${tName} in ${tSign} forms a ${aspectType} with your natal ${nName} in your ${houseLabel} House. A ${aspectType} produces ${aspectInfo.experiential} between ${TRANSIT_FUNCTION[tPlanet]} and ${NATAL_FUNCTION[nPlanet]}. Your ${houseLabel} House governs ${nHouseMeaning.full}: that is where this contact's pressure is applied. ${tName} at ${formatDeg(tPos)} is bringing its current ${tSignInfo.brief} quality into direct relation with your natal ${nName} at ${formatDeg(nPos)}. This interaction is tight and personally relevant throughout today.`,
   ];
 
   // Supporting aspect paragraphs (one per secondary aspect)
@@ -608,10 +591,9 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     const sp_houseInfo  = HOUSE_MEANING[sp_nHouse] ?? { short: "Life", full: "a key area of your life" };
     const sp_aspectInfo = ASPECT_MEANING[sp_aspectType];
     const sp_tSignInfo  = SIGN_QUALITY[sp_tSign] ?? { brief: "purposeful", operative: "deliberate engagement" };
-    const sp_nFunc      = PLANET_FUNCTION_NAME[sp_nPlanet];
     const templates = [
-      `A supporting contact is active alongside the primary: ${sp_tName} in ${sp_tSign} forms a ${sp_aspectType} with your natal ${sp_nName} at ${sp_nSign} ${sp_nPos.degree}° in your ${houseOrd(sp_nHouse)} House (${sp_houseInfo.full}). This ${sp_aspectType} means ${sp_aspectInfo.mechanism} — adding ${sp_tSignInfo.operative} to the area of ${sp_houseInfo.short.toLowerCase()}. Your ${sp_nFunc} function is modulated through ${ASPECT_MODE[sp_aspectType].toLowerCase()} alongside the primary activation.`,
-      `A secondary aspect is also active: ${sp_tName} in ${sp_tSign} at a ${sp_aspectType} to your natal ${sp_nName} in your ${houseOrd(sp_nHouse)} House. This ${sp_aspectType} produces ${sp_aspectInfo.experiential} in the area of ${sp_houseInfo.full}. The ${sp_tSignInfo.brief} quality of ${sp_tSign} shapes how this contact operates — bringing ${sp_tSignInfo.operative} to your ${sp_nFunc} function.`,
+      `A supporting contact is active alongside the primary: ${sp_tName} in ${sp_tSign} forms a ${sp_aspectType} with your natal ${sp_nName} at ${sp_nSign} ${sp_nPos.degree}° in your ${houseOrd(sp_nHouse)} House (${sp_houseInfo.full}). This ${sp_aspectType} means ${sp_aspectInfo.mechanism} — adding ${sp_tSignInfo.operative} to the area of ${sp_houseInfo.short.toLowerCase()}.`,
+      `A secondary aspect is also active: ${sp_tName} in ${sp_tSign} at a ${sp_aspectType} to your natal ${sp_nName} in your ${houseOrd(sp_nHouse)} House. This ${sp_aspectType} produces ${sp_aspectInfo.experiential} in the area of ${sp_houseInfo.full}. The ${sp_tSignInfo.brief} quality of ${sp_tSign} shapes how this contact operates — bringing ${sp_tSignInfo.operative} to that area.`,
     ];
     return pick(templates, seed, 9 + i);
   });

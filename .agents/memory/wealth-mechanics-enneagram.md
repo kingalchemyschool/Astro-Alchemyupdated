@@ -7,4 +7,4 @@ Creative Mechanics are a distinct octave-transformation layer: Mars → Pluto be
 
 **Why:** The prompt distinguishes higher-order creative mechanisms from the existing Creative Functions, and the user wants the Enneagram to make both planetary points and system pathways explorable.
 
-**How to apply:** Preserve the three mechanics and their evolutionary architecture as their own Wealth section. Keep Enneagram interactions available for all nodes, pathways, and the integrated center; use the full blueprint action for the Moon entry.
+**How to apply:** Preserve the three mechanics and their evolutionary architecture as their own Wealth section. Reuse the Blueprint Enneagram component on Wealth and provide label overrides instead of creating a second geometry implementation; keep all node, octave, threshold, and pathway interactions intact.

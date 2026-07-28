@@ -13,6 +13,11 @@ interface Props {
   functions: ArchetypeFunction[];
   premium: boolean;
   onUnlock?: () => Promise<boolean>;
+  labelOverrides?: {
+    planets?: Partial<Record<PlanetKey, string>>;
+    functions?: Partial<Record<FunctionKey, string>>;
+    thresholds?: Partial<Record<3 | 6, string>>;
+  };
 }
 
 type Selected =
@@ -70,6 +75,7 @@ export default function InteractiveEnneagram({
   functions,
   premium,
   onUnlock,
+  labelOverrides,
 }: Props) {
   const [selected, setSelected] = useState<Selected>(null);
 
@@ -133,7 +139,7 @@ export default function InteractiveEnneagram({
                 <line x1={base.x} y1={base.y} x2={sat.x} y2={sat.y} stroke="hsl(var(--accent) / 0.35)" strokeWidth={1} strokeDasharray="2 3" />
                 <circle cx={sat.x} cy={sat.y} r={13} fill="hsl(var(--card))" stroke={active ? "hsl(var(--accent))" : "hsl(var(--accent) / 0.5)"} strokeWidth={active ? 2 : 1.3} />
                 <text x={sat.x} y={sat.y + 4} textAnchor="middle" fontSize={12} className="glyph" fill="hsl(var(--accent))">
-                  {PLANET_META[nd.octave!].glyph}
+              {PLANET_META[nd.octave!].glyph}
                 </text>
               </g>
             );
@@ -173,7 +179,7 @@ export default function InteractiveEnneagram({
                   {PLANET_META[nd.planet].glyph}
                 </text>
                 <text x={x} y={y - 27} textAnchor="middle" fontSize={9} fontFamily="'JetBrains Mono', monospace" fill="hsl(var(--muted-foreground))">
-                  {PLANET_META[nd.planet].fn}
+                  {labelOverrides?.planets?.[nd.planet] ?? PLANET_META[nd.planet].fn}
                 </text>
               </g>
             );
@@ -185,7 +191,7 @@ export default function InteractiveEnneagram({
 
       {/* Detail panel */}
       <div className="flex flex-col rounded-xl border border-border bg-card/60 p-6">
-        <Detail selected={selected} chart={chart} functions={functions} />
+        <Detail selected={selected} chart={chart} functions={functions} labelOverrides={labelOverrides} />
       </div>
     </div>
   );
@@ -195,10 +201,12 @@ function Detail({
   selected,
   chart,
   functions,
+  labelOverrides,
 }: {
   selected: Selected;
   chart: NatalChart;
   functions: ArchetypeFunction[];
+  labelOverrides?: Props["labelOverrides"];
 }) {
   if (!selected) {
     return (
@@ -226,7 +234,7 @@ function Detail({
           <span className="glyph text-3xl text-accent">{meta.glyph}</span>
           <div>
             <h4 className="font-serif text-xl font-semibold">
-              {meta.name} · {meta.fn}
+              {meta.name} · {labelOverrides?.planets?.[key] ?? meta.fn}
             </h4>
             <p className="font-mono text-xs text-muted-foreground">
               {SIGNS[pos.signIndex].name} · {ORDINALS[pos.house - 1]} house
@@ -250,7 +258,7 @@ function Detail({
       <div>
         <div className="mb-3 flex items-center gap-2">
           <span className="text-xl text-primary">◬</span>
-          <h4 className="font-serif text-xl font-semibold">{info.label}</h4>
+           <h4 className="font-serif text-xl font-semibold">{labelOverrides?.thresholds?.[selected.key] ?? info.label}</h4>
         </div>
         <p className="text-sm leading-relaxed text-foreground/90">{info.description}</p>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -268,7 +276,7 @@ function Detail({
         <span className="glyph text-2xl text-accent">{fn.glyphs[0]}</span>
         <span className="text-muted-foreground">+</span>
         <span className="glyph text-2xl text-primary">{fn.glyphs[1]}</span>
-        <h4 className="ml-1 font-serif text-xl font-semibold">{fn.title}</h4>
+         <h4 className="ml-1 font-serif text-xl font-semibold">{labelOverrides?.functions?.[selected.key] ?? fn.title}</h4>
       </div>
       <p className="text-xs text-muted-foreground">{fn.tagline}</p>
       <p className="mt-3 text-sm leading-relaxed text-foreground/90">{fn.definition}</p>

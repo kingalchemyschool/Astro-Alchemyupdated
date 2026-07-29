@@ -20,3 +20,9 @@ The ephemeris day counter uses the Schlyter epoch (JD 2451543.5), so conversions
 **Why:** The 1.5-day offset moved the natal Moon by about 18°, incorrectly placing it in the 10th house instead of the 9th; Pluto used the same incorrect conversion.
 
 **How to apply:** Validate natal Moon and Pluto against known chart references before diagnosing house cusps; if the cusps match but a planet does not, inspect the epoch conversion first.
+
+Daily Forge aspect selection should use one box per transiting planet, with room for up to two Moon contacts when available; each box carries the detailed interpretation, while Celestial State synthesizes the overall energy and Moon processing instead of repeating the boxes.
+
+**Why:** A single transit planet can aspect multiple natal planets and crowd out the rest of the sky, while a transit-by-transit Celestial State duplicated the information already visible in the boxes.
+
+**How to apply:** Deduplicate non-Moon transit planets during ranked aspect selection, preserve extra lunar coverage, and keep Celestial State at the level of energetic tone, processing, and response.

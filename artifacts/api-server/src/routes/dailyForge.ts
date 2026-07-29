@@ -102,7 +102,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v13";
+const REPORT_VERSION = "activation-v14";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -319,6 +319,31 @@ function activationDescription(aspect: TransitAspect, variant = 0): string {
   }
 }
 
+function aspectBoxDescription(
+  aspect: TransitAspect,
+  natal: DailyForgeRequest["natal"],
+  transits: DailyForgeRequest["transits"],
+  variant: number,
+): string {
+  const transitName = PLANET_NAMES[aspect.transitPlanet];
+  const natalName = PLANET_NAMES[aspect.natalPlanet];
+  const natalPosition = natal.positions[aspect.natalPlanet];
+  const transitPosition = transits.positions[aspect.transitPlanet];
+  const houseInfo = HOUSE_MEANING[natalPosition.house] ?? { short: "Life", full: "a key area of your life" };
+  const signInfo = SIGN_QUALITY[sign(transitPosition.signIndex)] ?? {
+    brief: "purposeful",
+    operative: "deliberate engagement",
+  };
+  const meaning = ASPECT_MEANING[aspect.type];
+  const practicalClose = [
+    `In the ${houseOrd(natalPosition.house)} House, let this show up as a specific choice rather than an abstract feeling.`,
+    `The useful response is to work with this in the area of ${houseInfo.full}, where the pattern can become observable and actionable.`,
+    `Give this contact a real-world outlet in ${houseInfo.full}; that is where its potential becomes something you can develop.`,
+  ][variant % 3];
+
+  return `${activationDescription(aspect, variant)} ${transitName} brings ${signInfo.operative} to ${natalName}, while this ${aspect.type} produces ${meaning.experiential}. ${meaning.demand}. ${practicalClose} Watch for ${meaning.doNot}.`;
+}
+
 const SIGN_QUALITY: Record<string, { brief: string; operative: string }> = {
   Aries:       { brief: "initiating and direct",             operative: "directness and initiative" },
   Taurus:      { brief: "grounded and persistent",           operative: "groundedness and deliberate pace" },
@@ -472,21 +497,45 @@ function validateTransitAspects(req: DailyForgeRequest): string | null {
 function generateReport(req: DailyForgeRequest): ForgeReport {
   const { natal, transits } = req;
 
-  // Take top 4–5 aspects; guarantee at least one Moon transit where available.
-  // Primary drives most generation; supporting aspects add context.
+  // Take up to five aspects, but only one box per transiting planet. This keeps
+  // a busy transit such as Sun trining two natal planets from crowding out
+  // other planetary voices. Moon is guaranteed when available.
   const MAX_ASPECTS = 5;
-  let activeAspects = transits.aspects.slice(0, Math.min(MAX_ASPECTS, transits.aspects.length));
-  const hasMoonTransit = activeAspects.some(a => a.transitPlanet === "moon");
-  if (!hasMoonTransit) {
-    const moonAspect = transits.aspects.find(a => a.transitPlanet === "moon");
-    if (moonAspect) {
-      if (activeAspects.length < MAX_ASPECTS) {
-        activeAspects = [...activeAspects, moonAspect];
-      } else {
-        // Swap out the lowest-priority slot (last) for Moon
-        activeAspects = [...activeAspects.slice(0, MAX_ASPECTS - 1), moonAspect];
-      }
+  const activeAspects: TransitAspect[] = [];
+  const selectedTransitPlanets = new Set<PlanetKey>();
+  const selectedMoonAspects: TransitAspect[] = [];
+  for (const aspect of transits.aspects) {
+    if (aspect.transitPlanet === "moon") {
+      if (selectedMoonAspects.length >= 2) continue;
+      selectedMoonAspects.push(aspect);
+    } else if (selectedTransitPlanets.has(aspect.transitPlanet)) {
+      continue;
     }
+    activeAspects.push(aspect);
+    selectedTransitPlanets.add(aspect.transitPlanet);
+    if (activeAspects.length === MAX_ASPECTS) break;
+  }
+  const moonAspect = selectedMoonAspects[0] ?? transits.aspects.find(a => a.transitPlanet === "moon");
+  if (moonAspect && !selectedTransitPlanets.has("moon")) {
+    if (activeAspects.length === MAX_ASPECTS) {
+      selectedTransitPlanets.delete(activeAspects[activeAspects.length - 1].transitPlanet);
+      activeAspects[activeAspects.length - 1] = moonAspect;
+    } else {
+      activeAspects.push(moonAspect);
+    }
+    selectedTransitPlanets.add("moon");
+  }
+  // If the ranked list only surfaced one Moon aspect, make room for a second
+  // lunar contact before keeping another duplicate planetary voice.
+  const selectedMoonCount = activeAspects.filter(a => a.transitPlanet === "moon").length;
+  const nextMoonAspect = transits.aspects.find(
+    aspect => aspect.transitPlanet === "moon" && !activeAspects.includes(aspect),
+  );
+  if (selectedMoonCount < 2 && nextMoonAspect) {
+    const replaceIndex = activeAspects.findIndex(
+      (aspect, index) => index > 0 && aspect.transitPlanet !== "moon",
+    );
+    if (replaceIndex >= 0) activeAspects[replaceIndex] = nextMoonAspect;
   }
   const top       = activeAspects[0];
   const supporting = activeAspects.slice(1);
@@ -537,7 +586,12 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
       transitPlacement:     `Transit ${sp_tSign} ${sp_tPos.degree}°${String(sp_tPos.minute ?? 0).padStart(2, "0")}′`,
       natalPlacement:        `Natal ${sp_nSign} ${sp_nPos.degree}° · ${houseOrd(sp_nHouse)} house`,
       houseActivation:       `${houseOrd(sp_nHouse)} house · ${sp_houseInfo.short}`,
-      coreFunctionActivated: activationDescription(aspect, activeAspects.indexOf(aspect)),
+      coreFunctionActivated: aspectBoxDescription(
+        aspect,
+        natal,
+        transits,
+        activeAspects.indexOf(aspect),
+      ),
     };
   });
 
@@ -584,36 +638,44 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     : primaryThemeStr;
 
   // ── CELESTIAL STATE ──────────────────────────────────────────────────────
-  const celestialStateTemplates = [
-    `Today's primary planetary contact is a ${aspectType} between transiting ${tName}, which influences ${TRANSIT_FUNCTION[tPlanet]}, and your natal ${nName}, connected to ${NATAL_FUNCTION[nPlanet]}. This contact is at ${formatDeg(nPos)} in your ${houseLabel} House. A ${aspectType} means ${aspectInfo.mechanism} — and in practical terms, this produces ${aspectInfo.experiential}. The ${houseLabel} House governs ${nHouseMeaning.full}, placing this part of your life at the center of today's contact. ${tName} is currently in ${tSign}, a sign characterized by ${tSignInfo.brief}, bringing ${tSignInfo.operative} to the way this interaction unfolds. This aspect is precise and personally active throughout the day.`,
-    `The sky today puts a ${aspectType} between transiting ${tName} and your natal ${nName} — a relationship between ${TRANSIT_FUNCTION[tPlanet]} and ${NATAL_FUNCTION[nPlanet]}. Your natal ${nName} sits in your ${houseLabel} House at ${formatDeg(nPos)}, a house concerned with ${nHouseMeaning.full}: this is the territory today's contact is pressing directly into. Transiting ${tName} at ${formatDeg(tPos)} is ${aspectType === "conjunction" ? "merging with" : aspectType === "opposition" ? "pulling from across" : aspectType === "square" ? "pressing against" : aspectType === "trine" ? "flowing into" : "opening a path to"} that natal point. What this produces is ${aspectInfo.experiential}. Its ${tSignInfo.brief} quality brings ${tSignInfo.operative} to the way this contact expresses itself today.`,
-    `A ${aspectType} between transiting ${tName} and your natal ${nName} is the main planetary condition today. These two areas — ${TRANSIT_FUNCTION[tPlanet]} and ${NATAL_FUNCTION[nPlanet]} — meet through ${aspectInfo.mechanism}. Your natal ${nName} in the ${houseLabel} House governs ${nHouseMeaning.full} — the precise territory this contact is engaging. Transiting ${tName} at ${formatDeg(tPos)} — carrying a ${tSignInfo.brief} quality — is bringing ${tSignInfo.operative} to that domain. The contact is precise and active throughout the day.`,
-    `Today, ${tName} in ${tSign} forms a ${aspectType} with your natal ${nName} in your ${houseLabel} House. A ${aspectType} produces ${aspectInfo.experiential} between ${TRANSIT_FUNCTION[tPlanet]} and ${NATAL_FUNCTION[nPlanet]}. Your ${houseLabel} House governs ${nHouseMeaning.full}: that is where this contact's pressure is applied. ${tName} at ${formatDeg(tPos)} is bringing its current ${tSignInfo.brief} quality into direct relation with your natal ${nName} at ${formatDeg(nPos)}. This interaction is tight and personally relevant throughout today.`,
-  ];
-
-  // Supporting aspect paragraphs (one per secondary aspect)
-  const supportingCelestialParas = supporting.map((aspect, i) => {
-    const sp_tPlanet    = aspect.transitPlanet;
-    const sp_nPlanet    = aspect.natalPlanet;
-    const sp_aspectType = aspect.type;
-    const sp_tPos       = transits.positions[sp_tPlanet];
-    const sp_nPos       = natal.positions[sp_nPlanet];
-    const sp_tName      = PLANET_NAMES[sp_tPlanet];
-    const sp_nName      = PLANET_NAMES[sp_nPlanet];
-    const sp_tSign      = sign(sp_tPos.signIndex);
-    const sp_nSign      = sign(sp_nPos.signIndex);
-    const sp_nHouse     = sp_nPos.house;
-    const sp_houseInfo  = HOUSE_MEANING[sp_nHouse] ?? { short: "Life", full: "a key area of your life" };
-    const sp_aspectInfo = ASPECT_MEANING[sp_aspectType];
-    const sp_tSignInfo  = SIGN_QUALITY[sp_tSign] ?? { brief: "purposeful", operative: "deliberate engagement" };
-    const templates = [
-      `A supporting contact is active alongside the primary: ${sp_tName} in ${sp_tSign} forms a ${sp_aspectType} with your natal ${sp_nName} at ${sp_nSign} ${sp_nPos.degree}° in your ${houseOrd(sp_nHouse)} House (${sp_houseInfo.full}). This ${sp_aspectType} means ${sp_aspectInfo.mechanism} — adding ${sp_tSignInfo.operative} to the area of ${sp_houseInfo.short.toLowerCase()}.`,
-      `A secondary aspect is also active: ${sp_tName} in ${sp_tSign} at a ${sp_aspectType} to your natal ${sp_nName} in your ${houseOrd(sp_nHouse)} House. This ${sp_aspectType} produces ${sp_aspectInfo.experiential} in the area of ${sp_houseInfo.full}. The ${sp_tSignInfo.brief} quality of ${sp_tSign} shapes how this contact operates — bringing ${sp_tSignInfo.operative} to that area.`,
-    ];
-    return pick(templates, seed, 9 + i);
-  });
-
-  const celestialState = [pick(celestialStateTemplates, seed, 0), ...supportingCelestialParas].join('\n\n');
+  // Synthesize the selected boxes into today's energetic weather instead of
+  // repeating each transit a second time.
+  const typeCounts = activeAspects.reduce<Record<AspectType, number>>((counts, aspect) => {
+    counts[aspect.type] += 1;
+    return counts;
+  }, { conjunction: 0, sextile: 0, square: 0, trine: 0, opposition: 0 });
+  const hasEase = typeCounts.trine + typeCounts.sextile > 0;
+  const hasFriction = typeCounts.square + typeCounts.opposition > 0;
+  const energyTone = hasEase && hasFriction
+    ? "mixed but productive"
+    : hasFriction
+      ? "pressurized and clarifying"
+      : typeCounts.conjunction > 0
+        ? "concentrated and demanding of presence"
+        : "open and forward-moving";
+  const moonAspectForState = activeAspects.find(aspect => aspect.transitPlanet === "moon");
+  const moonNatalName = moonAspectForState
+    ? PLANET_NAMES[moonAspectForState.natalPlanet]
+    : null;
+  const dominantMovement = hasFriction
+    ? "stay close to what the tension is revealing before trying to resolve it"
+    : hasEase
+      ? "give the available ease a direction so it becomes progress rather than pleasant drift"
+      : "keep your attention on the one area asking for the most complete engagement";
+  const aspectMix = [
+    typeCounts.conjunction ? `${typeCounts.conjunction} concentrated contact${typeCounts.conjunction > 1 ? "s" : ""}` : "",
+    typeCounts.trine ? `${typeCounts.trine} flowing connection${typeCounts.trine > 1 ? "s" : ""}` : "",
+    typeCounts.sextile ? `${typeCounts.sextile} opening${typeCounts.sextile > 1 ? "s" : ""}` : "",
+    typeCounts.square ? `${typeCounts.square} point${typeCounts.square > 1 ? "s" : ""} of productive friction` : "",
+    typeCounts.opposition ? `${typeCounts.opposition} contrast${typeCounts.opposition > 1 ? "s" : ""}` : "",
+  ].filter(Boolean).join(", ");
+  const celestialState = [
+    `Today's energy is ${energyTone}. The active field combines ${aspectMix}, so the day is asking for both awareness and response rather than a single fixed mood. ${dominantMovement}.`,
+    moonAspectForState
+      ? `The Moon is processing experience through a ${moonInfo.style} lens — ${moonInfo.lens} — while its contact with natal ${moonNatalName} gives that inner weather a particular place to work itself out. Let the emotional signal inform your timing without allowing it to make every decision for you.`
+      : `The Moon is processing experience through a ${moonInfo.style} lens — ${moonInfo.lens}. Let that immediate inner weather inform your timing without allowing it to define the whole day.`,
+    `Process the field by moving from sensation to choice: notice what is being opened, pressured, or intensified; name the response it is inviting; then give that response one concrete expression. The value of today's energy is not in predicting what will happen, but in becoming more deliberate about how you meet what does.`,
+  ].join("\n\n");
 
   // ── BLUEPRINT ACTIVATION ─────────────────────────────────────────────────
   const supportingFunctionCtx = supporting.length > 0

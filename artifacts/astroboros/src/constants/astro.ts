@@ -42,7 +42,7 @@ export const PLANET_META: Record<PlanetKey, PlanetInfo> = {
   mercury: { name: "Mercury", glyph: "☿", fn: "Translation", point: 4, octave: "uranus" },
   jupiter: { name: "Jupiter", glyph: "♃", fn: "Expansion", point: 5 },
   venus: { name: "Venus", glyph: "♀", fn: "Value", point: 7, octave: "neptune" },
-  saturn: { name: "Saturn", glyph: "♄", fn: "Consolidation", point: 8 },
+  saturn: { name: "Saturn", glyph: "♄", fn: "Structure", point: 8 },
   pluto: { name: "Pluto", glyph: "♇", fn: "Transformation" },
   uranus: { name: "Uranus", glyph: "♅", fn: "Ingenuity" },
   neptune: { name: "Neptune", glyph: "♆", fn: "Resonance" },
@@ -273,56 +273,56 @@ export const PLANET_HOUSE: Partial<Record<PlanetKey, string[]>> = {
 
   moon: [
     // H1
-    "In the 1st house, Perception is immediately visible — your emotional register and instinctive responses are readable from the first moment of contact, making you a natural barometer for the feeling-tone of any room you enter.",
+    "In the 1st house, Reception is immediately visible — you take in the feeling-tone of a room through your body and emotional register before you have language for it, making your first response a powerful source of information.",
     // H2
-    "In the 2nd house, Perception is grounded in material security and embodied comfort. Your instinctive intelligence is most reliable when your physical foundation is stable — financial insecurity disrupts the signal at its root and makes accurate perception difficult.",
+    "In the 2nd house, Reception is grounded in material security and embodied comfort. You receive information from the environment most clearly when your physical foundation is stable — financial insecurity can distort the signal before you have time to interpret it.",
     // H3
-    "In the 3rd house, Perception moves through language and ideas. You process experience by talking, writing, and articulating — putting something into words is not reflection that follows perception but the act of perception itself, happening in real time.",
+    "In the 3rd house, Reception moves through language and ideas. You take in experience by talking, writing, and articulating — putting something into words helps your system receive and organize the signal in real time.",
     // H4
-    "In the 4th house, Perception is rooted in memory, ancestry, and the private interior. Your instinctive intelligence is most acute when it has access to depth — what you perceive most clearly is often what you have always known but never needed to name.",
+    "In the 4th house, Reception is rooted in memory, ancestry, and the private interior. You receive the environment most fully when you have access to depth and privacy — what arrives there may be familiar long before you need to name it.",
     // H5
-    "In the 5th house, Perception is playful, creative, and emotionally expressive. What moves you aesthetically and emotionally is also what guides your most reliable creative instincts — resonance and delight are not distractions but directional signals.",
+    "In the 5th house, Reception is playful, creative, and emotionally expressive. What moves you aesthetically and emotionally is also what your system receives most clearly — resonance and delight are directional signals, not distractions.",
     // H6
-    "In the 6th house, Perception is attuned to detail, pattern, and the subtle disturbances in systems. You notice what is slightly off before others do — your instinctive intelligence manifests as a finely calibrated sensitivity to process, health, and craft.",
+    "In the 6th house, Reception is attuned to detail, pattern, and subtle disturbances in systems. You take in what is slightly off before others do, so process, health, and craft become finely calibrated sources of information.",
     // H7
-    "In the 7th house, Perception is relational and reciprocal. You understand yourself most clearly through others — your emotional intelligence is most acute inside real relationships, where the mirror of another person makes visible what you could not see alone.",
+    "In the 7th house, Reception is relational and reciprocal. You receive important information through real relationships — the presence and response of another person can make visible what you could not register alone.",
     // H8
-    "In the 8th house, Perception is deep and oriented toward what is concealed. You sense things below the surface of what is said or shown — your instinctive awareness is particularly acute around emotional truth, power dynamics, and what is being withheld.",
+    "In the 8th house, Reception is deep and oriented toward what is concealed. You take in what sits below the surface of what is said or shown, especially around emotional truth, power dynamics, and what is being withheld.",
     // H9
-    "In the 9th house, Perception is expansive and philosophical. You process experience by locating it in a larger framework of meaning — what something means matters more to your instinctive intelligence than what, precisely, it is.",
+    "In the 9th house, Reception is expansive and philosophical. You receive experience by locating it in a larger framework of meaning — the significance of an event can reach you before its practical details do.",
     // H10
-    "In the 10th house, Perception is attuned to social dynamics, reputation, and public feeling. You read professional rooms with unusual precision — your instinctive awareness of how authority, achievement, and expectation move through a group is a reliable compass.",
+    "In the 10th house, Reception is attuned to social dynamics, reputation, and public feeling. You take in how authority, achievement, and expectation move through a professional room, often before anyone says what is happening.",
     // H11
-    "In the 11th house, Perception is collective and future-oriented. You are instinctively attuned to group feeling and the subtle currents that move through communities — you often sense what a group needs before it can name it.",
+    "In the 11th house, Reception is collective and future-oriented. You take in group feeling and the subtle currents moving through communities, often sensing what a group needs before it can name it.",
     // H12
-    "In the 12th house, Perception is oceanic and often pre-verbal. Your instinctive intelligence arrives from below ordinary consciousness — through dreams, intuition, and a permeable boundary between your own experience and the emotional field around you.",
+    "In the 12th house, Reception is oceanic and often pre-verbal. You receive information through dreams, intuition, and a permeable boundary between your own experience and the emotional field around you.",
   ],
 
   mars: [
     // H1
-    "In the 1st house, Force is front-facing and immediate — you act without hesitation, lead through presence, and your will is visible from the first moment of contact. The work gets started because you start it, and you do not wait for conditions to be favorable.",
+    "In the 1st house, Initiation is front-facing and immediate — you act without hesitation, lead through presence, and your will is visible from the first moment of contact. The work gets started because you start it, and you do not wait for conditions to be favorable.",
     // H2
-    "In the 2nd house, Force is directed toward the acquisition and protection of material value. You apply energy most naturally to building something durable — earning, accumulating, and defending what matters is where your drive is most reliably and productively sustained.",
+    "In the 2nd house, Initiation is directed toward the acquisition and protection of material value. You apply energy most naturally to building something durable — earning, accumulating, and defending what matters is where your drive is most reliably and productively sustained.",
     // H3
-    "In the 3rd house, Force expresses through argument, assertion, and the power of stated ideas. Your will to act moves through language — debate, persuasion, and the ability to cut through ambiguity with clear communication is your most reliable leverage point.",
+    "In the 3rd house, Initiation expresses through argument, assertion, and the power of stated ideas. Your will to act moves through language — debate, persuasion, and the ability to cut through ambiguity with clear communication is your most reliable leverage point.",
     // H4
-    "In the 4th house, Force is private, defensive, and roots-driven. You mobilize most completely when something personally foundational is at stake — your drive is less about public recognition and more about establishing and protecting what is real and lasting at your core.",
+    "In the 4th house, Initiation is private, defensive, and roots-driven. You mobilize most completely when something personally foundational is at stake — your drive is less about public recognition and more about establishing and protecting what is real and lasting at your core.",
     // H5
-    "In the 5th house, Force is creative, expressive, and competitively engaged. You bring full energy to self-expression and authored work — when you are creating, you are not holding back, and the intensity of your drive is most visible in what you actually make.",
+    "In the 5th house, Initiation is creative, expressive, and competitively engaged. You bring full energy to self-expression and authored work — when you are creating, you are not holding back, and the intensity of your drive is most visible in what you actually make.",
     // H6
-    "In the 6th house, Force is channeled into daily discipline, craft, and the relentless improvement of process. Your drive expresses most fully in the sustained work itself — consistent effort, precise execution, and the willingness to do difficult things repeatedly over time.",
+    "In the 6th house, Initiation is channeled into daily discipline, craft, and the relentless improvement of process. Your drive expresses most fully in the sustained work itself — consistent effort, precise execution, and the willingness to do difficult things repeatedly over time.",
     // H7
-    "In the 7th house, Force engages through relationship and direct opposition. You are energized by a real counterpart — competition, collaboration, and the friction of a genuine equal are not distractions from your drive but the conditions that bring it fully online.",
+    "In the 7th house, Initiation engages through relationship and direct opposition. You are energized by a real counterpart — competition, collaboration, and the friction of a genuine equal are not distractions from your drive but the conditions that bring it fully online.",
     // H8
-    "In the 8th house, Force is concentrated, investigative, and transformative. You apply will most powerfully in high-stakes territory — shared resources, psychological depth, and the kind of pressure that most people instinctively step back from.",
+    "In the 8th house, Initiation is concentrated, investigative, and transformative. You apply will most powerfully in high-stakes territory — shared resources, psychological depth, and the kind of pressure that most people instinctively step back from.",
     // H9
-    "In the 9th house, Force is philosophical and expansive. Your drive is activated by the pursuit of meaning — challenging ideas, disorienting travel, and the ambition to build something that reaches well beyond what you already know are its primary activating conditions.",
+    "In the 9th house, Initiation is philosophical and expansive. Your drive is activated by the pursuit of meaning — challenging ideas, disorienting travel, and the ambition to build something that reaches well beyond what you already know are its primary activating conditions.",
     // H10
-    "In the 10th house, Force is directed toward public achievement and professional mastery. Your ambition is career-defining — you bring your full will to the work of building something that will be recognized, remembered, and respected beyond the moment of creation.",
+    "In the 10th house, Initiation is directed toward public achievement and professional mastery. Your ambition is career-defining — you bring your full will to the work of building something that will be recognized, remembered, and respected beyond the moment of creation.",
     // H11
-    "In the 11th house, Force moves through collective action and shared goals. Your drive is most reliably energized by purpose that extends beyond personal benefit — you are at your most effective when working toward something a community or movement needs.",
+    "In the 11th house, Initiation moves through collective action and shared goals. Your drive is most reliably energized by purpose that extends beyond personal benefit — you are at your most effective when working toward something a community or movement needs.",
     // H12
-    "In the 12th house, Force is internalized, psychological, and operates beneath the visible surface. Your will is most powerful in private — research, solitary creation, and the behind-the-scenes effort that operates without audience and often does more than it appears.",
+    "In the 12th house, Initiation is internalized, psychological, and operates beneath the visible surface. Your will is most powerful in private — research, solitary creation, and the behind-the-scenes effort that operates without audience and often does more than it appears.",
   ],
 
   mercury: [
@@ -408,42 +408,42 @@ export const PLANET_HOUSE: Partial<Record<PlanetKey, string[]>> = {
 
   saturn: [
     // H1
-    "In the 1st house, Foundation is built through the patient construction of a reliable, distinctive identity. The discipline here is personal — learning to occupy your own presence with authority, and building the kind of consistent self-presentation that earns trust over time.",
+    "In the 1st house, Structure is built through the patient construction of a reliable, distinctive identity. The discipline here is personal — learning to occupy your own presence with authority, and building the kind of consistent self-presentation that earns trust over time.",
     // H2
-    "In the 2nd house, Foundation is built through sustained financial discipline and the careful management of resources. Security comes through earned rather than assumed stability — what you build materially is built slowly, and proves durable precisely because you have not cut corners.",
+    "In the 2nd house, Structure is built through sustained financial discipline and the careful management of resources. Security comes through earned rather than assumed stability — what you build materially is built slowly, and proves durable precisely because you have not cut corners.",
     // H3
-    "In the 3rd house, Foundation is built through the mastery of communication and the discipline of precise thinking. Your structural authority is earned through rigorous study, careful expression, and the kind of intellectual depth that holds up under sustained scrutiny.",
+    "In the 3rd house, Structure is built through the mastery of communication and the discipline of precise thinking. Your structural authority is earned through rigorous study, careful expression, and the kind of intellectual depth that holds up under sustained scrutiny.",
     // H4
-    "In the 4th house, Foundation is built in the private sphere — the discipline here is deeply personal and often demanding, centering on family, home, and the psychological structure that supports everything built above it. What is established here determines the load-bearing capacity of the rest.",
+    "In the 4th house, Structure is built in the private sphere — the discipline here is deeply personal and often demanding, centering on family, home, and the psychological structure that supports everything built above it. What is established here determines the load-bearing capacity of the rest.",
     // H5
-    "In the 5th house, Foundation is built through creative discipline and the long practice of developing a distinctive voice. The work is real, but what makes it endure is the seriousness about the craft behind it — the willingness to practice the thing in private so the public output holds.",
+    "In the 5th house, Structure is built through creative discipline and the long practice of developing a distinctive voice. The work is real, but what makes it endure is the seriousness about the craft behind it — the willingness to practice the thing in private so the public output holds.",
     // H6
-    "In the 6th house, Foundation is built through consistent daily practice and the mastery of craft — one of Saturn's most congenial placements. The discipline of showing up and doing the work with precision is exactly what this house demands, and the authority built here is particularly durable.",
+    "In the 6th house, Structure is built through consistent daily practice and the mastery of craft — one of Saturn's most congenial placements. The discipline of showing up and doing the work with precision is exactly what this house demands, and the authority built here is particularly durable.",
     // H7
-    "In the 7th house, Foundation is built through serious, tested relationships. The discipline is relational — learning to hold commitments, navigate partnership with integrity, and build the kind of alliances that do not collapse when reality becomes more difficult than anticipated.",
+    "In the 7th house, Structure is built through serious, tested relationships. The discipline is relational — learning to hold commitments, navigate partnership with integrity, and build the kind of alliances that do not collapse when reality becomes more difficult than anticipated.",
     // H8
-    "In the 8th house, Foundation is built through confrontation with depth, shared power, and psychological complexity. The structure you develop is earned through exactly the encounters most people avoid — crisis, transformation, and what cannot be managed from the surface.",
+    "In the 8th house, Structure is built through confrontation with depth, shared power, and psychological complexity. The structure you develop is earned through exactly the encounters most people avoid — crisis, transformation, and what cannot be managed from the surface.",
     // H9
-    "In the 9th house, Foundation is built through sustained study, developed belief, and the patient construction of a genuine philosophical framework. You build authority in the domain of ideas and meaning — the discipline of actually mastering what you believe, rather than holding it loosely.",
+    "In the 9th house, Structure is built through sustained study, developed belief, and the patient construction of a genuine philosophical framework. You build authority in the domain of ideas and meaning — the discipline of actually mastering what you believe, rather than holding it loosely.",
     // H10
-    "In the 10th house, Foundation is built in public — this is Saturn's most natural terrain. The discipline of building a career, establishing a reputation, and sustaining professional integrity over decades produces exactly the kind of lasting, recognized structure that Saturn demands and rewards.",
+    "In the 10th house, Structure is built in public — this is Saturn's most natural terrain. The discipline of building a career, establishing a reputation, and sustaining professional integrity over decades produces exactly the kind of lasting, recognized structure that Saturn demands and rewards.",
     // H11
-    "In the 11th house, Foundation is built through tested alliances and the slow development of a genuine community. The discipline is collective — learning which relationships have structural integrity and which are circumstantial, and investing consistently in the ones that compound.",
+    "In the 11th house, Structure is built through tested alliances and the slow development of a genuine community. The discipline is collective — learning which relationships have structural integrity and which are circumstantial, and investing consistently in the ones that compound.",
     // H12
-    "In the 12th house, Foundation is built in solitude and through the discipline of a rich interior life. The structure you develop is invisible to others but essential — the psychological and spiritual framework that allows you to sustain significant creative work without requiring constant external validation.",
+    "In the 12th house, Structure is built in solitude and through the discipline of a rich interior life. The structure you develop is invisible to others but essential — the psychological and spiritual framework that allows you to sustain significant creative work without requiring constant external validation.",
   ],
 };
 
 // Free planet-function explainers for the interactive enneagram.
 export const PLANET_ABOUT: Record<PlanetKey, string> = {
   sun: "Essence — the originating creative principle of the entire system. The Sun is the source point from which the whole creation process draws coherence and direction. Where the Moon perceives, Mercury translates, and Mars initiates, the Sun simply is — the fundamental quality of the creator from which everything else naturally extends. It describes what is inherently trying to express itself through you: the creative signature that persists regardless of circumstance or context. Its sign reveals how your Essence naturally colours, shapes, and gives character to everything else in the chart. When the Sun is operating with clarity, the entire system finds its purpose.",
-  moon: "Reception — how the blueprint receives and integrates experience. The Moon governs perception, memory, emotional processing, adaptation, and environmental feedback. It gathers sensation and body-level awareness, turning raw experience into felt understanding before the mind can name it. Your Moon's sign shapes the filter through which all incoming information passes. The Moon shows how external experience modifies and develops the original essence — where the Sun holds what is encoded, the Moon determines how the blueprint absorbs and responds to what it encounters.",
+  moon: "Reception — how the blueprint receives and integrates experience. The Moon gathers sensation, environmental cues, memory, and body-level information, turning incoming experience into felt understanding before the mind can name it. Your Moon's sign shapes the way information from the environment reaches you. The Moon shows how external experience modifies and develops the original essence — where the Sun holds what is encoded, the Moon determines how the blueprint absorbs and responds to what it encounters.",
   mars: "Initiation — the mechanism that mobilizes energy and creates movement. Mars is the activation function: the point where internal awareness crosses into directed force and meets resistance. It determines how the blueprint applies effort, how it handles obstacles, and the natural rhythm of its energy. Together with Pluto at Point 2, Mars and Pluto govern the full force mechanism — initiation at the personal scale and transformation at the evolutionary scale. When Initiation is working with precision, energy is directed rather than scattered, and movement generates consequence.",
   mercury: "Translation — how the blueprint organizes information, forms understanding, and creates transmissible signal. Mercury translates what the Moon receives and what the Sun encodes into language, thought, and structured pattern — giving the blueprint's output a form that can be received, built on, and transmitted. Uranus, its higher octave, extends that function into Ingenuity: breakthrough synthesis and the capacity to introduce original frameworks that ordinary intelligence would not locate. Together at Point 4, Translation and Ingenuity determine not just how this blueprint thinks, but how it innovates.",
   jupiter: "Expansion — the function that increases the reach and possibility of whatever it touches. Jupiter is not simply luck; it is the mechanism through which your work grows beyond its original container. It represents your instinct toward growth, your relationship with abundance, and the philosophical framework you use to understand why things matter. Jupiter's sign tells you how you naturally expand — through depth, breadth, optimism, discipline, or another quality — and its house shows which arena of life is most naturally amplified.",
   venus: "Value — the function of discernment and worth. Venus determines what you find genuinely meaningful, what you choose to invest in, and what you consider worth creating. It is not decoration; it is the selection mechanism that decides which of Jupiter's many possibilities actually deserve your continued attention and refinement. Venus in your chart shapes your aesthetic instincts, your relationship with desire, and the standard by which you evaluate your own output. When Venus is working clearly, you build things of lasting worth. When it is confused, you pursue what looks valuable rather than what is.",
-  saturn: "Consolidation — the structure required for longevity. Saturn represents the architecture, discipline, and mastery required for what has value to endure. It governs systems, boundaries, mastery, discipline, and permanence — the mechanisms by which the blueprint stabilizes and preserves what it has developed. Saturn is where you are tested most consistently and where, through that testing, you develop your deepest structural competence. Its sign shapes how you consolidate, and its house shows which arena of life demands the most sustained structural effort and offers the most durable reward.",
+  saturn: "Structure — the architecture required for longevity. Saturn represents the discipline and mastery required for what has value to endure. It governs systems, boundaries, permanence, and the mechanisms by which the blueprint stabilizes and preserves what it has developed. Saturn is where you are tested most consistently and where, through that testing, you develop your deepest structural competence. Its sign shapes how you build structure, and its house shows which arena of life demands the most sustained structural effort and offers the most durable reward.",
   pluto: "Transformation — the outer octave of Mars, operating at the level of irreversible change. Where Mars initiates movement, Pluto drives regeneration at an evolutionary scale — the kind that requires complete dismantling of what no longer serves before a new configuration can take shape. Pluto is slow and total: it does not adjust, it transforms. In your chart, Pluto shows where you are subject to the deepest cycles of breakdown and rebuilding — and where your capacity for depth and total renewal is most concentrated.",
-  uranus: "Ingenuity — the outer octave of Mercury's Translation function, operating at the level of systemic reinvention. Where Mercury organizes information within existing frameworks, Uranus reorganizes the frameworks themselves through sudden insight, pattern-breaking perception, and the kind of original synthesis that arrives as recognition rather than construction. Uranus shows where you naturally see what others miss, where innovation is not a style but a structural necessity, and where the blueprint is most regularly disrupted and renewed.",
+  uranus: "Ingenuity — the outer octave of Mercury's Translation function, operating at the level of systemic reinvention. Where Mercury organizes information within existing frameworks, Uranus reorganizes the frameworks themselves through sudden insight, pattern-breaking awareness, and the kind of original synthesis that arrives as recognition rather than construction. Uranus shows where you naturally see what others miss, where innovation is not a style but a structural necessity, and where the blueprint is most regularly disrupted and renewed.",
   neptune: "Resonance — the outer octave of Venus, operating at the level of collective meaning and symbolic significance. Where Venus determines personal worth, Neptune connects value to what carries meaning beyond the personal: ideal forms, collective imagination, the transcendent dimension of what is worth creating. Neptune shows where the blueprint is most permeable to inspiration that exceeds ordinary definition — and where the work is most likely to carry significance that outlasts its immediate moment.",
 };

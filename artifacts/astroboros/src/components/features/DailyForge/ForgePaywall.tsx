@@ -7,7 +7,7 @@ interface ForgePaywallProps {
 }
 
 const FEATURES = [
-  { icon: <Moon className="h-4 w-4" />, text: "Daily Moon processing layer — perception, house, and aspects" },
+  { icon: <Moon className="h-4 w-4" />, text: "Daily Moon receiving layer — environment, house, and aspects" },
   { icon: <Zap className="h-4 w-4" />, text: "Personalized transit activation report — your blueprint vs the live sky" },
   { icon: <LayoutGrid className="h-4 w-4" />, text: "House activation tracking — where the refinement is occurring" },
   { icon: <Flame className="h-4 w-4" />, text: "Forge Principle — a daily philosophical statement from the transit" },

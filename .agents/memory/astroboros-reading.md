@@ -11,17 +11,17 @@ These are the authoritative labels — used in section titles, aspect text, and 
 - mercury: "Translation" (Point 4)
 - jupiter: "Expansion" (Point 5)
 - venus: "Value" (Point 7)
-- saturn: "Consolidation" (Point 8)
+- saturn: "Structure" (Point 8)
 - pluto: "Transformation" (outer octave of Mars)
 - uranus: "Ingenuity" (outer octave of Mercury)
 - neptune: "Resonance" (outer octave of Venus)
 
-**Why:** The uploaded architecture spec defines these as the canonical point functions. Previous labels (Force, Expression, Foundation, Disruption, Dissolution, Perception) were replaced.
+**Why:** The uploaded architecture spec defines these as the canonical point functions. Previous labels (Force, Expression, Foundation, Disruption, Dissolution, Perception, and Consolidation) were replaced.
 
 ## Threshold sections (lib/reading.ts)
 - Point 3 — Impact: synthesis of Mars+Pluto (force/magnitude) + Mercury+Uranus (translation/ingenuity). Uses pluto, uranus sign placements. Subtitle: "Force · Intelligence → External Consequence"
 - Point 6 — Wealth: synthesis of Jupiter (expansion) + Venus+Neptune (value+resonance). Subtitle: "Expansion · Value → Accumulated Worth"
-- Point 9 — Actualization: synthesis of Sun (essence) + Saturn (structure/consolidation). Does NOT use Moon. Subtitle: "Essence · Structure → Embodied Expression"
+- Point 9 — Actualization: synthesis of Sun (essence) + Saturn (structure). Does NOT use Moon. Subtitle: "Essence · Structure → Embodied Expression"
 
 **Why:** Previous thresholds used wrong planetary inputs (Impact used Sun/Moon, Actualization used Moon) and wrong naming ("Being", "Will", "Retention", "Legacy").
 

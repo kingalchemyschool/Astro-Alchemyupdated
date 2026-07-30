@@ -1,5 +1,6 @@
 import type { ReportSection as Section } from "@/types/astro";
 import { cn } from "@/lib/utils";
+import NatalAspectCards from "@/components/features/NatalAspectCards";
 
 export default function ReportSection({ section }: { section: Section }) {
   const isThreshold = section.kind === "threshold";
@@ -48,6 +49,7 @@ export default function ReportSection({ section }: { section: Section }) {
           </p>
         ))}
       </div>
+      <NatalAspectCards cards={section.aspectCards} />
     </article>
   );
 }

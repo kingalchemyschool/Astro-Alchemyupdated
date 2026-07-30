@@ -26,3 +26,9 @@ Daily Forge aspect selection should use one box per transiting planet, with room
 **Why:** A single transit planet can aspect multiple natal planets and crowd out the rest of the sky, while a transit-by-transit Celestial State duplicated the information already visible in the boxes.
 
 **How to apply:** Deduplicate non-Moon transit planets during ranked aspect selection, preserve extra lunar coverage, and keep Celestial State at the level of energetic tone, processing, and response.
+
+Daily Forge’s visible field should carry the interpretation for each selected contact, while its summary should name only additional aspects not already shown in those cards. House context belongs in one metadata slot per contact, not repeated in both placement and activation labels.
+
+**Why:** Repeating selected aspects and house names makes the report feel mechanically assembled and obscures the distinction between the primary field and supporting contacts.
+
+**How to apply:** Compare supporting aspects against the selected planet/natal-planet/aspect tuple before listing them, and keep the natal placement line separate from the house activation line.

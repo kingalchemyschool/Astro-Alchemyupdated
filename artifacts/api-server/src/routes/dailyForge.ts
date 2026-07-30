@@ -102,7 +102,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v14";
+const REPORT_VERSION = "activation-v15";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -584,7 +584,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     return {
       planetaryAspect:       `${sp_tGlyph} ${sp_tName} ${ASPECT_LABEL_CAP[aspect.type]} Natal ${sp_nGlyph} ${sp_nName}`,
       transitPlacement:     `Transit ${sp_tSign} ${sp_tPos.degree}°${String(sp_tPos.minute ?? 0).padStart(2, "0")}′`,
-      natalPlacement:        `Natal ${sp_nSign} ${sp_nPos.degree}° · ${houseOrd(sp_nHouse)} house`,
+      natalPlacement:        `Natal ${sp_nSign} ${sp_nPos.degree}°`,
       houseActivation:       `${houseOrd(sp_nHouse)} house · ${sp_houseInfo.short}`,
       coreFunctionActivated: aspectBoxDescription(
         aspect,
@@ -629,12 +629,20 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     ],
   };
   const primaryThemeStr = pick(themes[aspectType], seed, 0);
-  // Cap the "Also active" list at 2 items to keep the theme readable
-  const themeSupporting = supporting.slice(0, 2);
+  // "Also active" should point to contacts that are not already represented by
+  // the visible field cards, rather than repeating the same selected aspects.
+  const unlistedAspects = transits.aspects.filter(aspect =>
+    !activeAspects.some(selected =>
+      selected.transitPlanet === aspect.transitPlanet &&
+      selected.natalPlanet === aspect.natalPlanet &&
+      selected.type === aspect.type,
+    ),
+  );
+  const themeSupporting = unlistedAspects.slice(0, 3);
   const todaysTheme = themeSupporting.length > 0
     ? `${primaryThemeStr} Also active: ${themeSupporting.map(a =>
         `${PLANET_NAMES[a.transitPlanet]} ${ASPECT_LABEL_CAP[a.type]} natal ${PLANET_NAMES[a.natalPlanet]}`
-      ).join(', ')}${supporting.length > 2 ? `, +${supporting.length - 2} more` : ''}.`
+      ).join(', ')}${unlistedAspects.length > themeSupporting.length ? `, +${unlistedAspects.length - themeSupporting.length} more` : ''}.`
     : primaryThemeStr;
 
   // ── CELESTIAL STATE ──────────────────────────────────────────────────────
@@ -699,10 +707,10 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     : '';
 
   const whatIsBeingRefinedTemplates = [
-    `What is being developed through today's planetary field is your ${refinement}. The primary driver is the ${aspectType} itself — ${aspectInfo.mechanism} — which produces ${aspectInfo.experiential}. ${aspectType === "square" ? "The square does not offer ease — it offers development. The tension you encounter is not interference; it is the resistance that builds strength." : aspectType === "opposition" ? "The opposition creates contrast you did not ask for. But contrast is one of the most direct forms of clarity — it shows you what you cannot see from inside your current position." : aspectType === "conjunction" ? "The conjunction intensifies — it does not allow the two forces to remain separate. That intensity is what drives the development." : aspectType === "trine" ? "The trine removes the resistance that usually slows this process. That does not make the work optional — it makes the opportunity for going further more available than usual." : "The sextile is cooperative but not automatic. It creates the opening; what you do within it determines what actually develops."}${supportingRefinementCtx} What develops through this pressure is a more capable, more deliberate expression of ${refinement2}. Real ability rarely comes from understanding. It comes from experience that demands more than the current version can handle.`,
-    `What is being worked on today follows three stages: the current state (${nDomain}, as it currently operates), the pressure being applied (the ${aspectType}: ${aspectInfo.mechanism}), and what is developing as a result (a more precise expression of ${refinement}).${supportingRefinementCtx} The ${houseLabel} House — covering ${nHouseMeaning.full} — is where this is happening. ${tName} in ${tSign} brings its ${tSignInfo.brief} quality to this process, shaping not just what is being developed but how that development is occurring.`,
-    `Today's planetary field is developing your ${refinement} — specifically in the area of ${nHouseMeaning.full}. The ${aspectType} is what is driving this: ${aspectInfo.mechanism}. This produces ${aspectInfo.experiential}. What is being tested is how ${nDomain} holds up under this kind of pressure.${supportingRefinementCtx} The opportunity — present in any real planetary contact — is to build ${refinement2} through deliberate engagement today, rather than waiting for easier conditions.`,
-    `What today is actually doing is building your ${refinement}. Not as an idea — as a demonstrated ability. The ${aspectType} between ${tName} and your natal ${nName} creates the specific pressure: ${aspectInfo.experiential}.${supportingRefinementCtx} What is being strengthened is how deliberately and precisely you operate in the area of ${nHouseMeaning.full}. What is being tested is any part of that which has been running on autopilot. Today is not a setback. It is a test of where you actually are.`,
+    `Today's field is developing your ${refinement} by bringing ${tName}'s ${tSignInfo.brief} energy into direct relationship with your natal ${nName}. In the ${houseLabel} House — ${nHouseMeaning.full} — the work is not abstract: it is how you handle real choices, resources, commitments, and consequences in that part of your life. The ${aspectType} sets the alchemical condition: ${aspectInfo.mechanism}, creating ${aspectInfo.experiential}. ${aspectType === "square" ? "Its friction supplies the pressure that makes the new capacity stronger." : aspectType === "opposition" ? "Its contrast gives you information your usual position cannot provide." : aspectType === "conjunction" ? "Its concentration makes the combined force impossible to keep separate." : aspectType === "trine" ? "Its ease gives the developing capacity more room to become deliberate and substantial." : "Its opening becomes developmental only when you choose to enter it."}${supportingRefinementCtx} What is being formed is not a conclusion about yourself, but a more capable expression of ${refinement2} that can be demonstrated in the way you meet today.`,
+    `The alchemical work today moves from contact to response to capacity. Your natal ${nName} carries ${nDomain}; transiting ${tName} brings a ${tSignInfo.brief} influence to it, and the ${aspectType} describes how those forces meet: ${aspectInfo.mechanism}. That meeting is happening through the ${houseLabel} House, ${nHouseMeaning.full}, so the development becomes visible in the way you act there rather than in what you merely understand.${supportingRefinementCtx} The capacity taking shape is ${refinement}, strengthened by one conscious response at a time.`,
+    `What is being refined today is your ${refinement} — the ability to meet ${nHouseMeaning.full} with more choice and less autopilot. The primary contact between ${tName} and your natal ${nName} supplies the central condition: ${aspectInfo.experiential}, because ${aspectInfo.mechanism}.${supportingRefinementCtx} Read the other contacts as contributing pressures and openings, not as a list to memorize. Together they describe the atmosphere in which ${refinement2} can become more precise.`,
+    `Today's planetary field is a practice ground for ${refinement}. It concentrates around your natal ${nName} in the ${houseLabel} House, where ${nHouseMeaning.full}, and asks you to experience the ${aspectType} rather than reduce it to a label: ${aspectInfo.mechanism}. The result is ${aspectInfo.experiential}.${supportingRefinementCtx} Real development arrives when this understanding changes one decision, boundary, conversation, or act of follow-through before the day is over.`,
   ];
 
   // ── FORGE PRINCIPLE ──────────────────────────────────────────────────────
@@ -835,10 +843,10 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
 
   // ── CLOSING REFLECTION ───────────────────────────────────────────────────
   const closingTemplates = [
-    `Today's sky is a temporary condition. What you build within it — the ${refinement} you develop through today's work — is not. Every transit creates conditions. What you do with those conditions becomes part of how you actually operate going forward. The ${houseLabel} House will be under pressure again. Your natal ${nName} will be reached by other transits. But the level at which you engage today determines what those next contacts find when they arrive. The sky changes. The chart remains. Development is the process connecting them.`,
-    `The ${aspectType} between ${tName} and your natal ${nName} will pass. The ${refinement} you build through it does not reset when it does. Daily Forge is built on this: the current sky conditions are temporary. What you build within them is not. Today has shown you specifically where ${nHouseMeaning.full} sits in your chart and what the current sky is pressing on. That clarity is yours to keep. What you choose to do with it — today, not someday — is what determines whether this contact produces growth or simply passes.`,
-    `Development in Daily Forge does not arrive after you understand something. It arrives through consistent engagement with exactly this — today's specific conditions, today's specific area, today's specific ability. Your natal ${nName} in the ${houseLabel} House is under real pressure right now. The ${aspectType} is the type of pressure. The quality of your response is what determines what comes out of it. The sky changes daily. The person you are building into, through each of these contacts, is the work that does not reset at midnight.`,
-    `The ${houseLabel} House covers ${nHouseMeaning.full}. That is not a temporary concern — it is a permanent part of your chart. What today is doing within it is building your ${refinement2} in a specific, traceable direction. You will not be able to see the full result immediately. But the effort itself — how deliberately you worked with today's ${aspectType} — becomes part of how your natal ${nName} holds up the next time it is under pressure. The sky is always temporary. The development it drives, when you show up for it, is not.`,
+    `The sky supplied today's conditions; your response is what gives them a lasting place in your life. Notice the one choice in ${nHouseMeaning.full} that became more deliberate because of this contact. That is where ${refinement} moved from interpretation into practice. The ${aspectType} will pass, but the way you handled it can become part of how your natal ${nName} meets the next demand.`,
+    `Do not measure this day by whether it felt easy or difficult. Measure it by whether you became more exact in ${nHouseMeaning.full}. The contact between ${tName} and your natal ${nName} offered a specific training ground for ${refinement2}; what remains is the response you practiced there, especially the one you would like to repeat without needing the sky to force it.`,
+    `A Daily Forge contact is complete when it changes the way you participate, not when you have explained it. Carry one observed truth from today into the next ordinary moment in ${nHouseMeaning.full}. That is how ${refinement} becomes reliable: not as a mood that disappears at midnight, but as a capacity you can bring forward on purpose.`,
+    `Today brought the work close enough to see. In ${nHouseMeaning.full}, what did you stop avoiding, overexplaining, rushing, or leaving to instinct? Let that answer become the quiet measure of this contact. The sky will keep changing; the more deliberate way you met it is the part that belongs to you.`,
   ];
   const closingReflection = pick(closingTemplates, seed, 8);
 

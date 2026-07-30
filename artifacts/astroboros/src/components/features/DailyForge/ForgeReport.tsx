@@ -142,7 +142,7 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
       {/* ── Celestial State ── */}
       <Section
         icon={<Globe2 className="h-4 w-4" />}
-        kicker="Active Transits"
+         kicker="Today's Energy"
         title="Celestial State"
         body={report.celestialState}
         multiParagraph

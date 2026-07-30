@@ -40,7 +40,7 @@ export default function FullBlueprint({ reading, premium, onUnlock }: Props) {
         <SectionHeader
           kicker="The Functions & Thresholds"
           title="Every function in the creation cycle, in order"
-          desc="Essence through Foundation — ten planets across the full cycle, with Pluto, Uranus, and Neptune read as standalone sections alongside their inner-planet counterparts."
+          desc="Essence through Structure — ten planets across the full cycle, with Pluto, Uranus, and Neptune read as standalone sections alongside their inner-planet counterparts."
         />
         {planetSections.map((s, i) => (
           <ReportSection key={i} section={s} />

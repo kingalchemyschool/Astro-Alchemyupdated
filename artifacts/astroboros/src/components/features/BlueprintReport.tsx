@@ -5,6 +5,7 @@ import HeroJourneyCard from "@/components/features/HeroJourneyCard";
 import { Button } from "@/components/common/Button";
 import { PLANET_META, SIGNS, ORDINALS } from "@/constants/astro";
 import { cn } from "@/lib/utils";
+import NatalAspectCards from "@/components/features/NatalAspectCards";
 
 interface Props {
   reading: Reading;
@@ -116,6 +117,7 @@ export default function BlueprintReport({ reading, premium, onUnlock, onBundle }
                   </p>
                 ))}
               </div>
+               {premium && <NatalAspectCards cards={section.aspectCards} />}
 
               {!premium && !isThreshold && hiddenCount > 0 && (
                 <p className="mt-3 text-sm italic text-muted-foreground/60">

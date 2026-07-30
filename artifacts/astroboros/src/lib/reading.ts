@@ -5,6 +5,7 @@ import type {
   Reading,
   Aspect,
   AspectType,
+  NatalAspectCard,
 } from "@/types/astro";
 import {
   SIGNS,
@@ -46,18 +47,18 @@ const BOTTLENECK: Record<Modality, string> = {
 // The energetic role each function plays in the creation cycle.
 const ROLE: Partial<Record<PlanetKey, string>> = {
   sun:     "This is where your creative system begins. Everything in the chart flows from this point — the sign it occupies is not just a quality you carry but the fundamental medium through which all creative energy passes before it reaches anything else.",
-  moon:    "Receiving the Essence your Sun establishes, this function converts it into felt reality — what registers as true, what the body knows before the mind names it, what shapes your perception of everything that enters the system.",
-  mars:    "With perception formed, this function delivers the first actual movement — the translation of interior awareness into outward force. It determines how energy crosses from intention into action, and how you meet the resistance that action inevitably produces.",
-  mercury: "Force must find expression to reach beyond its source. This function gives what Mars initiates the form through which it can be understood, shared, and built upon — the language, pattern, and authored signal that turns interior movement into something that exists in the world.",
+  moon:    "Receiving the essence your Sun establishes, this function takes in the environment and converts that incoming information into felt reality — what registers as true, what the body knows before the mind names it, and what begins to shape your response.",
+  mars:    "With experience received, this function delivers the first actual movement — the translation of inner awareness into directed action. It determines how energy crosses from intention into action, and how you meet the resistance that action inevitably produces.",
+  mercury: "Initiation must find translation to reach beyond its source. This function gives what Mars begins the form through which it can be understood, shared, and built upon — the language, pattern, and authored signal that turns inner movement into something that exists in the world.",
   jupiter: "Signal now seeks reach. This function takes what Mercury has articulated and extends its range — multiplying possibility, enlarging the field of what is available to work with, and bringing the philosophical dimension that asks what this is all actually for.",
   venus:   "Expansion creates abundance, but abundance requires selection. This function discerns what within Jupiter's expanded field is genuinely worth keeping — what has real value, what deserves sustained investment, what the system should retain and build on.",
-  saturn:  "Value must be given form to endure. This function provides the architecture, discipline, and structural integrity that allows what Venus has recognized as worth keeping to survive time — to become something durable rather than merely something that once mattered.",
+  saturn:  "Value must be given structure to endure. This function provides the architecture, discipline, and structural integrity that allows what Venus has recognized as worth keeping to survive time — to become something durable rather than merely something that once mattered.",
 };
 
 // Role descriptions for the outer planets as standalone functions.
 const OUTER_ROLE: Partial<Record<PlanetKey, string>> = {
   pluto:   "Pluto is the outer octave of Mars — where Mars initiates movement, Pluto drives regeneration at an evolutionary scale, the kind that requires the complete dismantling of what no longer serves before the new configuration can take shape. Its placement shows the arena of your life where this regenerative pressure is most consistently active, where your capacity for depth and total renewal is most concentrated, and where the quality of your presence carries the most evolutionary weight.",
-  uranus:  "Uranus is the outer octave of Mercury — where Mercury works within existing frameworks to communicate and connect, Uranus reorganizes the frameworks themselves through sudden insight, pattern-breaking perception, and the kind of original synthesis that arrives as recognition rather than construction. Its placement shows where you naturally see what others miss, where innovation is not a style but a necessity, and where the creative system is most regularly interrupted and renewed.",
+  uranus:  "Uranus is the outer octave of Mercury — where Mercury works within existing frameworks to communicate and connect, Uranus reorganizes the frameworks themselves through sudden insight, pattern-breaking awareness, and the kind of original synthesis that arrives as recognition rather than construction. Its placement shows where you naturally see what others miss, where innovation is not a style but a necessity, and where the creative system is most regularly interrupted and renewed.",
   neptune: "Neptune is the outer octave of Venus — where Venus selects what is personally worth keeping, Neptune draws discernment toward what carries meaning beyond the personal: ideal forms, collective imagination, the transcendent dimension of what is worth creating. Its placement shows where your creative system is most permeable to inspiration that exceeds ordinary definition, and where the work is most likely to carry significance that outlasts its immediate moment.",
 };
 
@@ -91,28 +92,63 @@ function aspectExperience(
   const otherName = PLANET_META[otherKey].name;
   const sign = SIGNS[chart.positions[key].signIndex].name;
   const otherSign = SIGNS[chart.positions[otherKey].signIndex].name;
-  const subjectHouse = ORDINALS[chart.positions[key].house - 1];
-  const otherHouse = ORDINALS[chart.positions[otherKey].house - 1];
   const contact = `${PLANET_META[key].name} in ${sign} and ${otherName} in ${otherSign}`;
   const signContext = `${PLANET_META[key].name}'s ${SIGN_QUALITY[chart.positions[key].signIndex]} style meets ${otherName}'s ${SIGN_QUALITY[chart.positions[otherKey].signIndex]} style`;
   const variation = (key.charCodeAt(0) + otherKey.charCodeAt(0)) % 3;
+  const article = type === "opposition" ? "an" : "a";
 
   switch (type) {
     case "conjunction":
-      return `At ${orb}°, this is a conjunction: ${contact} are close enough to act as one concentrated influence. Your ${subject} immediately activates your ${influence}, so what you want, notice, or decide tends to carry the other planet's intensity with it. ${signContext}; the result is powerful but not automatically coordinated. The strength is commitment and impact. The risk is mistaking intensity for certainty, so give the combined drive one clear target before acting.`;
+      return `One aspect is a conjunction between ${contact}, with the orb of influence at ${orb}°. They are close enough to act as one concentrated influence. Your ${subject} immediately activates your ${influence}, so what you want, notice, or decide tends to carry the other planet's intensity with it. ${signContext}; the result is powerful but not automatically coordinated. The strength is commitment and impact. The risk is mistaking intensity for certainty, so give the combined drive one clear target before acting.`;
     case "trine":
       return [
-        `At ${orb}°, this is a trine: the two planets are roughly 120° apart, so their drives can cooperate without constantly blocking one another. ${contact} connect ${subject} with ${influence}; ${signContext}. This can make it easier to trust an instinct, communicate what you mean, and move from intention into action. Treat that fluency as raw material: the skill appears when you give it a demanding use.`,
-        `At ${orb}°, this is a trine: the two planets are roughly 120° apart, allowing their drives to reinforce one another instead of competing for access. ${contact} connect ${subject} with ${influence}; ${signContext}. The natural rapport is valuable precisely because it frees attention for a more ambitious application.`,
-        `At ${orb}°, this is a trine: the two planets are roughly 120° apart, creating a channel where effort can travel between them with less friction. ${contact} connect ${subject} with ${influence}; ${signContext}. Notice what becomes possible when you stop spending energy on coordination and put that energy into depth.`,
+        `One aspect is a trine between ${contact}, with the orb of influence at ${orb}°. The two planets are roughly 120° apart, so their drives can cooperate without constantly blocking one another. They connect your ${subject} with your ${influence}; ${signContext}. This can make it easier to trust an instinct, communicate what you mean, and move from intention into action. Treat that fluency as raw material: the skill appears when you give it a demanding use.`,
+        `One aspect is a trine between ${contact}, with the orb of influence at ${orb}°. The two planets are roughly 120° apart, allowing their drives to reinforce one another instead of competing for access. They connect your ${subject} with your ${influence}; ${signContext}. The natural rapport is valuable precisely because it frees attention for a more ambitious application.`,
+        `One aspect is a trine between ${contact}, with the orb of influence at ${orb}°. The two planets are roughly 120° apart, creating a channel where effort can travel between them with less friction. They connect your ${subject} with your ${influence}; ${signContext}. Notice what becomes possible when you stop spending energy on coordination and put that energy into depth.`,
       ][variation];
     case "sextile":
-      return `At ${orb}°, this is a sextile: the planets are about 60° apart, creating an opportunity rather than an automatic flow. ${contact} give your ${subject} a usable opening into your ${influence}; ${signContext}. The benefit appears when you choose a specific action—otherwise the potential stays dormant.`;
+      return `One aspect is a sextile between ${contact}, with the orb of influence at ${orb}°. The planets are about 60° apart, creating an opportunity rather than an automatic flow. They give your ${subject} a usable opening into your ${influence}; ${signContext}. The benefit appears when you choose a specific action—otherwise the potential stays dormant.`;
     case "square":
-      return `At ${orb}°, this is a square: the planets are about 90° apart, so their demands arrive at cross-purposes. Your ${subject} wants to move one way while your ${influence} introduces a competing demand; ${signContext}. This can show up as urgency, overcorrection, defensiveness, or repeated pressure to revise your approach. The tension is productive only when you name both needs and build a response that honors them.`;
+      return `One aspect is a square between ${contact}, with the orb of influence at ${orb}°. The planets are about 90° apart, so their demands arrive at cross-purposes. Your ${subject} wants to move one way while your ${influence} introduces a competing demand; ${signContext}. This can show up as urgency, overcorrection, defensiveness, or repeated pressure to revise your approach. The tension is productive only when you name both needs and build a response that honors them.`;
     case "opposition":
-      return `At ${orb}°, this is an opposition: the planets face one another across the zodiac, so their needs become visible through contrast. ${contact} pull your ${subject} toward a conscious relationship with your ${influence}; ${signContext}. Other people, consequences, or external events may show you what your usual viewpoint leaves out. The work is negotiation rather than choosing one side—let the contrast refine your choices instead of turning it into projection or polarization.`;
+      return `One aspect is ${article} opposition between ${contact}, with the orb of influence at ${orb}°. The planets face one another across the zodiac, so their needs become visible through contrast. They pull your ${subject} toward a conscious relationship with your ${influence}; ${signContext}. Other people, consequences, or external events may show you what your usual viewpoint leaves out. The work is negotiation rather than choosing one side—let the contrast refine your choices instead of turning it into projection or polarization.`;
   }
+}
+
+function namedAspect(key: PlanetKey, otherKey: PlanetKey): string | undefined {
+  const moonPluto = (key === "moon" && otherKey === "pluto") ||
+    (key === "pluto" && otherKey === "moon");
+  // "Hades Moon" is an established name for a natal Moon–Pluto contact,
+  // including conjunctions, squares, trines, sextiles, and oppositions.
+  return moonPluto ? "Hades Moon" : undefined;
+}
+
+function aspectCardsFor(chart: NatalChart, key: PlanetKey): NatalAspectCard[] {
+  // Each natal aspect belongs to one card in the report. The chart's stored
+  // planet order gives it a stable home under the first planet in the pair,
+  // rather than repeating the same contact in both planet sections.
+  return aspectsFor(key, chart.aspects)
+    .filter((asp) => asp.a === key)
+    .slice(0, 5)
+    .map((asp) => {
+    const otherKey = asp.a === key ? asp.b : asp.a;
+    const subject = chart.positions[key];
+    const other = chart.positions[otherKey];
+    const title = `${PLANET_META[key].name} ${asp.type}`;
+    const subtitle =
+      `${PLANET_META[key].name} in ${SIGNS[subject.signIndex].name} · ` +
+      `${PLANET_META[otherKey].name} in ${SIGNS[other.signIndex].name} · ` +
+      `orb ${asp.orb}°`;
+    return {
+      title,
+      subtitle,
+      name: namedAspect(key, otherKey),
+      paragraphs: withoutRepeatedSentences([
+        aspectExperience(chart, key, otherKey, asp.type, String(asp.orb)),
+        houseAspectContext(chart, key, otherKey),
+      ]),
+    };
+    });
 }
 
 function houseAspectContext(
@@ -151,18 +187,6 @@ function richAspectParagraph(chart: NatalChart, key: PlanetKey): string | null {
   const harmoniousAspects = list.filter(a => ["conjunction", "sextile", "trine"].includes(a.type));
   const tensionAspects = list.filter(a => ["square", "opposition"].includes(a.type));
 
-  const lines = list.slice(0, 5).map((asp) => {
-    const otherKey = asp.a === key ? asp.b : asp.a;
-    const otherMeta = PLANET_META[otherKey];
-    const otherPos = chart.positions[otherKey];
-    const thisPos = chart.positions[key];
-    const otherSign = SIGNS[otherPos.signIndex].name;
-    const thisSign = SIGNS[thisPos.signIndex].name;
-
-    const baseText = aspectExperience(chart, key, otherKey, asp.type, String(asp.orb));
-    return `${baseText} ${houseAspectContext(chart, key, otherKey)}`;
-  });
-
   let synthesis: string;
   if (harmoniousAspects.length > 0 && tensionAspects.length > 0) {
     synthesis = `In total, ${meta.name} is simultaneously supported by ${harmoniousAspects.map(a => {
@@ -178,10 +202,25 @@ function richAspectParagraph(chart: NatalChart, key: PlanetKey): string | null {
     synthesis = `Taken together, these connections mean ${meta.name} has been consistently tested rather than smoothly supported — which is the precise condition through which its most durable and precise form is eventually developed.`;
   }
 
-   const intro = `${meta.name} is shaped by ${list.length === 1 ? "one major planetary relationship" : `${list.length} major planetary relationships`}. These contacts describe recognizable patterns in how you respond, choose, create, and handle consequences.`;
+   const intro = `${meta.name} is shaped by ${list.length === 1 ? "one major planetary relationship" : `${list.length} major planetary relationships`}. Each contact below names the planets, the aspect, the orb, and the life areas where the relationship becomes personal and observable.`;
 
-  return withoutRepeatedSentences([`${intro} ${lines.join(" ")} ${synthesis}`])[0] ?? "";
+  return withoutRepeatedSentences([`${intro} ${synthesis}`])[0] ?? "";
 }
+
+const SUN_RECEIVING: Record<string, string> = {
+  Aries: "Your Sun receives neutral ideas through active meditation: walking, moving, cleaning, playing, or doing something that lets thought arrive through motion.",
+  Taurus: "Your Sun receives neutral ideas through grounding and contact with nature: slow walks, cooking, gardening, music, or any practice that lets the body become quiet enough to notice.",
+  Gemini: "Your Sun receives neutral ideas through movement between inputs: writing, reading, talking, or changing environments until a useful connection appears.",
+  Cancer: "Your Sun receives neutral ideas through quiet emotional space: water, music, memory, cooking, or a private setting where your sensitivity can register without performing.",
+  Leo: "Your Sun receives neutral ideas through expressive play: creating, performing, dancing, or making something without asking it to prove its value first.",
+  Virgo: "Your Sun receives neutral ideas through attentive practice: organizing, walking, making, repairing, or refining a small process until the mind becomes clear.",
+  Libra: "Your Sun receives neutral ideas through beauty and balance: art, music, gentle movement, or a calm conversation that lets several possibilities remain in view.",
+  Scorpio: "Your Sun receives neutral ideas through depth and privacy: stillness, journaling, water, or focused solitude that allows what is beneath the surface to emerge.",
+  Sagittarius: "Your Sun receives neutral ideas through spaciousness: walking, travel, study, teaching, or any practice that opens the mind beyond its current frame.",
+  Capricorn: "Your Sun receives neutral ideas through disciplined stillness: walking with a question, working with your hands, or following a simple practice long enough for a larger structure to appear.",
+  Aquarius: "Your Sun receives neutral ideas through detached observation: walking, sketching systems, watching patterns, or giving the mind enough distance to see a new arrangement.",
+  Pisces: "Your Sun receives neutral ideas through receptive stillness: water, music, dreams, meditation, or creative practice that lets images arrive before you explain them.",
+};
 
 // ── Inner planet section ───────────────────────────────────────────────────────
 
@@ -205,6 +244,7 @@ function planetSection(chart: NatalChart, key: PlanetKey): ReportSection {
   const p0 =
     `${meta.glyph} ${meta.name} — governing ${meta.fn.toLowerCase()} in your alchemy — sits in ${sign.name} in the ${houseOrd} house, ${HOUSE_DOMAIN[hi]}. ` +
     `${ROLE[key] ?? ""} ` +
+    `${key === "sun" ? `${SUN_RECEIVING[sign.name]} ` : ""}` +
     `In ${sign.name}, that energy arrives ${sign.element === "fire" ? "as ignition" : sign.element === "earth" ? "as grounded, material contact" : sign.element === "air" ? "as connection and concept" : "as felt impression"} — ${SIGN_QUALITY[pos.signIndex]}.` +
     `${retroNote}`;
 
@@ -242,6 +282,7 @@ function planetSection(chart: NatalChart, key: PlanetKey): ReportSection {
     glyph: meta.glyph,
     planetKeys: meta.octave ? [key, meta.octave] : [key],
     paragraphs: withoutRepeatedSentences(paragraphs),
+    aspectCards: aspectCardsFor(chart, key),
   };
 }
 
@@ -309,6 +350,7 @@ function outerPlanetSection(chart: NatalChart, key: "pluto" | "uranus" | "neptun
     glyph: glyphMap[key],
     planetKeys: [key],
     paragraphs: withoutRepeatedSentences(paragraphs),
+    aspectCards: aspectCardsFor(chart, key),
   };
 }
 
@@ -374,8 +416,8 @@ function retentionThreshold(chart: NatalChart): ReportSection {
     paragraphs: [
       `The Actualization threshold is not a planet — it is the synthesis point where essence and structure converge. It is the final point in the refinement cycle, and it answers the deepest architectural question: how does this blueprint transform inherent essence into enduring, embodied expression?`,
       `The Sun in ${sun} in the ${sunHouse} house holds the originating essence — the fundamental creative pattern encoded within this blueprint, the core identity structure from which the entire architecture extends. This is not what the blueprint does. It is what the blueprint is. Point 0 holds the essence as it enters the cycle: unrefined, inherent, already present.`,
-      `Saturn in ${saturn} in the ${saturnHouse} house holds the consolidation function: the structure, discipline, and mastery required for what is inherent to become durable. Saturn does not generate the essence — it gives the essence architecture to stand within. It is the mechanism by which potential becomes embodiment, and by which expression outlasts the moments that produce it. The specific sign and house describe the precise conditions under which this blueprint builds what endures.`,
-      `The Actualization threshold is the expression of what this blueprint becomes when the full refinement cycle has operated with precision. Point 0 holds the original encoding. Point 9 holds the same essence after it has passed through reception, force, intelligence, expansion, cultivation, and consolidation. This threshold is not aspiration — it is the encoded endpoint of an architecture already in motion. What is being refined here is the capacity to fully embody what was always present: not to create the essence, but to develop the structure through which it can be expressed without remainder.`,
+      `Saturn in ${saturn} in the ${saturnHouse} house holds the structure function: the architecture, discipline, and mastery required for what is inherent to become durable. Saturn does not generate the essence — it gives the essence architecture to stand within. It is the mechanism by which potential becomes embodiment, and by which expression outlasts the moments that produce it. The specific sign and house describe the precise conditions under which this blueprint builds what endures.`,
+      `The Actualization threshold is the expression of what this blueprint becomes when the full refinement cycle has operated with precision. Point 0 holds the original encoding. Point 9 holds the same essence after it has passed through reception, initiation, translation, expansion, cultivation, and structure. This threshold is not aspiration — it is the encoded endpoint of an architecture already in motion. What is being refined here is the capacity to fully embody what was always present: not to create the essence, but to develop the structure through which it can be expressed without remainder.`,
     ],
   };
 }

@@ -83,6 +83,14 @@ export interface ReportSection {
   glyph: string;
   planetKeys: PlanetKey[];
   paragraphs: string[];
+  aspectCards?: NatalAspectCard[];
+}
+
+export interface NatalAspectCard {
+  title: string;
+  subtitle: string;
+  name?: string;
+  paragraphs: string[];
 }
 
 // The six Alchemist Archetype functions — each a fixed planet-pair relationship.

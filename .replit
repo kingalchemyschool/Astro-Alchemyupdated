@@ -45,3 +45,8 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[userenv]
+
+[userenv.shared]
+VITE_CLERK_PROXY_URL = "https://9acfbde6-efb2-497d-8973-7e4c501401a4-00-1bm1ipgvlpl9x.riker.replit.dev/api/__clerk"

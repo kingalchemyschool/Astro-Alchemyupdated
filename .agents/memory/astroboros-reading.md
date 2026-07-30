@@ -42,5 +42,6 @@ These are the authoritative labels — used in section titles, aspect text, and 
 ## Content rules
 - Never use "cardinal", "fixed", or "mutable" in output text
 - Blueprint Journey is a continuous, grounded developmental narrative; reveal the six archetype names only in the final paragraph
+- Blueprint aspect prose describes approximate angular distance in plain language and never exposes orb values
 - Forbidden hero journey openings: "Every hero...", "Once there was...", "Our story begins...", "Before doing anything..."
 - Thresholds use architecture language: "encoded", "inherent", "operating pattern", "refinement", "embodiment" — avoid manifestation language and personality traits

@@ -85,7 +85,6 @@ function aspectExperience(
   key: PlanetKey,
   otherKey: PlanetKey,
   type: AspectType,
-  orb: string,
 ): string {
   const subject = PLANET_EXPERIENCE[key];
   const influence = PLANET_EXPERIENCE[otherKey];
@@ -99,19 +98,19 @@ function aspectExperience(
 
   switch (type) {
     case "conjunction":
-      return `One aspect is a conjunction between ${contact}, with the orb of influence at ${orb}°. They are close enough to act as one concentrated influence. Your ${subject} immediately activates your ${influence}, so what you want, notice, or decide tends to carry the other planet's intensity with it. ${signContext}; the result is powerful but not automatically coordinated. The strength is commitment and impact. The risk is mistaking intensity for certainty, so give the combined drive one clear target before acting.`;
+      return `One aspect is a conjunction between ${contact}. The two planets are roughly 0 degrees apart, close enough to act as one concentrated influence. Your ${subject} immediately activates your ${influence}, so what you want, notice, or decide tends to carry the other planet's intensity with it. ${signContext}; the result is powerful but not automatically coordinated. The strength is commitment and impact. The risk is mistaking intensity for certainty, so give the combined drive one clear target before acting.`;
     case "trine":
       return [
-        `One aspect is a trine between ${contact}, with the orb of influence at ${orb}°. The two planets are roughly 120° apart, so their drives can cooperate without constantly blocking one another. They connect your ${subject} with your ${influence}; ${signContext}. This can make it easier to trust an instinct, communicate what you mean, and move from intention into action. Treat that fluency as raw material: the skill appears when you give it a demanding use.`,
-        `One aspect is a trine between ${contact}, with the orb of influence at ${orb}°. The two planets are roughly 120° apart, allowing their drives to reinforce one another instead of competing for access. They connect your ${subject} with your ${influence}; ${signContext}. The natural rapport is valuable precisely because it frees attention for a more ambitious application.`,
-        `One aspect is a trine between ${contact}, with the orb of influence at ${orb}°. The two planets are roughly 120° apart, creating a channel where effort can travel between them with less friction. They connect your ${subject} with your ${influence}; ${signContext}. Notice what becomes possible when you stop spending energy on coordination and put that energy into depth.`,
+        `One aspect is a trine between ${contact}. The two planets are roughly 120 degrees apart, so their drives can cooperate without constantly blocking one another. They connect your ${subject} with your ${influence}; ${signContext}. This can make it easier to trust an instinct, communicate what you mean, and move from intention into action. Treat that fluency as raw material: the skill appears when you give it a demanding use.`,
+        `One aspect is a trine between ${contact}. The two planets are roughly 120 degrees apart, allowing their drives to reinforce one another instead of competing for access. They connect your ${subject} with your ${influence}; ${signContext}. The natural rapport is valuable precisely because it frees attention for a more ambitious application.`,
+        `One aspect is a trine between ${contact}. The two planets are roughly 120 degrees apart, creating a channel where effort can travel between them with less friction. They connect your ${subject} with your ${influence}; ${signContext}. Notice what becomes possible when you stop spending energy on coordination and put that energy into depth.`,
       ][variation];
     case "sextile":
-      return `One aspect is a sextile between ${contact}, with the orb of influence at ${orb}°. The planets are about 60° apart, creating an opportunity rather than an automatic flow. They give your ${subject} a usable opening into your ${influence}; ${signContext}. The benefit appears when you choose a specific action—otherwise the potential stays dormant.`;
+      return `One aspect is a sextile between ${contact}. The two planets are roughly 60 degrees apart, creating an opportunity rather than an automatic flow. They give your ${subject} a usable opening into your ${influence}; ${signContext}. The benefit appears when you choose a specific action—otherwise the potential stays dormant.`;
     case "square":
-      return `One aspect is a square between ${contact}, with the orb of influence at ${orb}°. The planets are about 90° apart, so their demands arrive at cross-purposes. Your ${subject} wants to move one way while your ${influence} introduces a competing demand; ${signContext}. This can show up as urgency, overcorrection, defensiveness, or repeated pressure to revise your approach. The tension is productive only when you name both needs and build a response that honors them.`;
+      return `One aspect is a square between ${contact}. The two planets are roughly 90 degrees apart, so their demands arrive at cross-purposes. Your ${subject} wants to move one way while your ${influence} introduces a competing demand; ${signContext}. This can show up as urgency, overcorrection, defensiveness, or repeated pressure to revise your approach. The tension is productive only when you name both needs and build a response that honors them.`;
     case "opposition":
-      return `One aspect is ${article} opposition between ${contact}, with the orb of influence at ${orb}°. The planets face one another across the zodiac, so their needs become visible through contrast. They pull your ${subject} toward a conscious relationship with your ${influence}; ${signContext}. Other people, consequences, or external events may show you what your usual viewpoint leaves out. The work is negotiation rather than choosing one side—let the contrast refine your choices instead of turning it into projection or polarization.`;
+      return `One aspect is ${article} opposition between ${contact}. The two planets are roughly 180 degrees apart, facing one another across the zodiac, so their needs become visible through contrast. They pull your ${subject} toward a conscious relationship with your ${influence}; ${signContext}. Other people, consequences, or external events may show you what your usual viewpoint leaves out. The work is negotiation rather than choosing one side—let the contrast refine your choices instead of turning it into projection or polarization.`;
   }
 }
 
@@ -137,14 +136,13 @@ function aspectCardsFor(chart: NatalChart, key: PlanetKey): NatalAspectCard[] {
     const title = `${PLANET_META[key].name} ${asp.type}`;
     const subtitle =
       `${PLANET_META[key].name} in ${SIGNS[subject.signIndex].name} · ` +
-      `${PLANET_META[otherKey].name} in ${SIGNS[other.signIndex].name} · ` +
-      `orb ${asp.orb}°`;
+      `${PLANET_META[otherKey].name} in ${SIGNS[other.signIndex].name}`;
     return {
       title,
       subtitle,
       name: namedAspect(key, otherKey),
       paragraphs: withoutRepeatedSentences([
-        aspectExperience(chart, key, otherKey, asp.type, String(asp.orb)),
+        aspectExperience(chart, key, otherKey, asp.type),
         houseAspectContext(chart, key, otherKey),
       ]),
     };
@@ -202,7 +200,7 @@ function richAspectParagraph(chart: NatalChart, key: PlanetKey): string | null {
     synthesis = `Taken together, these connections mean ${meta.name} has been consistently tested rather than smoothly supported — which is the precise condition through which its most durable and precise form is eventually developed.`;
   }
 
-   const intro = `${meta.name} is shaped by ${list.length === 1 ? "one major planetary relationship" : `${list.length} major planetary relationships`}. Each contact below names the planets, the aspect, the orb, and the life areas where the relationship becomes personal and observable.`;
+   const intro = `${meta.name} is shaped by ${list.length === 1 ? "one major planetary relationship" : `${list.length} major planetary relationships`}. Each contact below names the planets, the aspect, the approximate angle between them, and the life areas where the relationship becomes personal and observable.`;
 
   return withoutRepeatedSentences([`${intro} ${synthesis}`])[0] ?? "";
 }

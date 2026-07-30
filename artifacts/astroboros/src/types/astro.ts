@@ -127,7 +127,7 @@ export interface PrimaryArchetype {
 
 export interface HeroJourney {
   title: string;
-  paragraphs: string[]; // paid, personalized fictional story
+  paragraphs: string[]; // paid, continuous developmental narrative plus final archetype reveal
 }
 
 export interface WealthStrength {
@@ -191,6 +191,6 @@ export interface Reading {
   planetSections: ReportSection[]; // paid — functions + thresholds woven in cycle order
   functions: ArchetypeFunction[]; // the six Alchemist Archetypes
   primary: PrimaryArchetype; // the freebie
-  heroJourney: HeroJourney; // paid
+  heroJourney: HeroJourney; // paid Blueprint Journey
   wealthBlueprint: WealthBlueprint; // paid — Conscious Wealth Blueprint
 }

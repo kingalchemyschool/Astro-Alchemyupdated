@@ -30,7 +30,7 @@ function SectionHeader({
 }
 
 // The paid layer: every function, the three thresholds, the six archetype deep
-// readings, and the hero's journey — behind a single unlock.
+// readings, and the Blueprint Journey — behind a single unlock.
 export default function FullBlueprint({ reading, premium, onUnlock }: Props) {
   const { planetSections, functions, heroJourney } = reading;
 
@@ -82,9 +82,9 @@ export default function FullBlueprint({ reading, premium, onUnlock }: Props) {
 
       <section className="space-y-6">
         <SectionHeader
-          kicker="Your Story"
-          title="A hero's journey from your chart"
-          desc="A short, personally inspired fable — fiction, built entirely from your placements."
+          kicker="Your Blueprint Journey"
+          title="The developmental story of your blueprint"
+          desc="A continuous, grounded narrative of how your capacities evolve and become integrated."
         />
         <HeroJourneyCard journey={heroJourney} />
       </section>
@@ -96,7 +96,7 @@ export default function FullBlueprint({ reading, premium, onUnlock }: Props) {
       premium={premium}
       onUnlock={onUnlock}
       title="Your Full Alchemical Blueprint"
-      description="The full enneagram map, deep readings for all six archetypes, and your personalized hero's journey."
+       description="The full enneagram map, deep readings for all six archetypes, and your personalized Blueprint Journey."
     >
       {content}
     </PremiumGate>

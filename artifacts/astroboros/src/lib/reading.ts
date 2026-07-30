@@ -444,7 +444,7 @@ export function generateReading(chart: NatalChart): Reading {
   add(outerPlanetSection(chart, "neptune")); // outer octave of Venus
   add(planetSection(chart, "saturn"));
 
-  const heroJourney = generateHeroJourney(chart, primary);
+  const heroJourney = generateHeroJourney(chart, functions);
   const wealthBlueprint = generateWealthBlueprint(chart);
 
   return {

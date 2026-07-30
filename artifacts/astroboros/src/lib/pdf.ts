@@ -151,7 +151,7 @@ export function exportReadingPdf(reading: Reading, includePremium: boolean) {
       for (const p of f.reading) para(p);
     }
 
-    // Hero's journey
+    // Blueprint Journey
     doc.addPage();
     y = margin;
     heading(heroJourney.title, 16);

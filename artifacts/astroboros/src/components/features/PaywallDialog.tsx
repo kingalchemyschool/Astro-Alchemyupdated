@@ -30,7 +30,7 @@ const COPY = {
       "Rich aspect synthesis for each planet",
       "All three threshold readings decoded",
       "Six Alchemist Archetype deep readings",
-      "Your personalised hero's journey",
+      "Your personalised Blueprint Journey",
     ],
   },
   wealth: {

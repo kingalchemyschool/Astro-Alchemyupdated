@@ -187,17 +187,17 @@ export default function BlueprintReport({ reading, premium, onUnlock, onBundle }
             </div>
           </section>
 
-          {/* Hero's Journey */}
+          {/* Blueprint Journey */}
           <section className="space-y-6">
             <div className="border-b border-border/60 pb-2">
               <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-accent mb-1">
                 <BookOpen className="h-3.5 w-3.5" /> Your Story
               </div>
               <h2 className="mt-1 font-serif text-2xl font-semibold">
-                A hero's journey from your chart
+                Your Blueprint Journey
               </h2>
               <p className="text-sm text-muted-foreground">
-                A short, personally inspired fable — fiction built entirely from your placements.
+                A continuous, grounded narrative of how your capacities evolve and become integrated.
               </p>
             </div>
             <HeroJourneyCard journey={heroJourney} />
@@ -230,7 +230,7 @@ export default function BlueprintReport({ reading, premium, onUnlock, onBundle }
                   "Outer-planet octave amplifier readings",
                   "All three threshold readings decoded",
                   "Six Alchemist Archetype deep readings",
-                  "Your personalised hero's journey",
+                  "Your personalised Blueprint Journey",
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2">
                     <span className="text-primary">✷</span>

@@ -25,14 +25,12 @@ export default function BlueprintPage() {
           <p className="mt-4 text-muted-foreground leading-relaxed max-w-lg mx-auto">
             A complete exploration of your personal blueprint, revealing the core patterns,
             strengths, and themes that shape how you think, create, relate, and build your life.
-            One insight per function, free. The complete multi-paragraph reading for every planet
-            unlocks with the full blueprint.
+            Full multi-paragraph readings for every function — including aspects and synthesis.
           </p>
-          <div className="mt-6 grid grid-cols-3 gap-3 max-w-sm mx-auto text-center">
+          <div className="mt-6 grid grid-cols-2 gap-3 max-w-xs mx-auto text-center">
             {[
               { n: "9", label: "Functions decoded" },
-              { n: "Free", label: "Preview reading" },
-              { n: "$44", label: "Full blueprint" },
+              { n: "Full", label: "Aspects & synthesis" },
             ].map((s) => (
               <div key={s.label} className="rounded-xl border border-border/60 bg-card/40 p-3">
                 <p className="font-serif text-xl font-semibold text-primary">{s.n}</p>

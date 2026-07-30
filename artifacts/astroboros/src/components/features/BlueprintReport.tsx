@@ -64,8 +64,7 @@ export default function BlueprintReport({ reading, premium, onUnlock, onBundle }
           const planetKey = section.planetKeys[0];
           const pos = planetKey ? chart.positions[planetKey] : null;
           const meta = planetKey ? PLANET_META[planetKey] : null;
-          const visibleParagraphs = premium ? section.paragraphs : [section.paragraphs[0]];
-          const hiddenCount = section.paragraphs.length - 1;
+          const visibleParagraphs = section.paragraphs;
 
           return (
             <article
@@ -117,13 +116,7 @@ export default function BlueprintReport({ reading, premium, onUnlock, onBundle }
                   </p>
                 ))}
               </div>
-               {premium && <NatalAspectCards cards={section.aspectCards} />}
-
-              {!premium && !isThreshold && hiddenCount > 0 && (
-                <p className="mt-3 text-sm italic text-muted-foreground/60">
-                  + {hiddenCount} deeper insight{hiddenCount > 1 ? "s" : ""} — including aspects &amp; synthesis — in the full blueprint.
-                </p>
-              )}
+               <NatalAspectCards cards={section.aspectCards} />
             </article>
           );
         })}

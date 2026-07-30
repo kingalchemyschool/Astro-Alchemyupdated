@@ -82,9 +82,9 @@ export default function FullBlueprint({ reading, premium, onUnlock }: Props) {
 
       <section className="space-y-6">
         <SectionHeader
-          kicker="Your Blueprint Journey"
-          title="The developmental story of your blueprint"
-          desc="A continuous, grounded narrative of how your capacities evolve and become integrated."
+          kicker="The Alchemist's Journey"
+          title="The story your blueprint tells"
+          desc="A continuous developmental narrative — how your capacities form, transform, and become integrated over time."
         />
         <HeroJourneyCard journey={heroJourney} />
       </section>
@@ -96,7 +96,7 @@ export default function FullBlueprint({ reading, premium, onUnlock }: Props) {
       premium={premium}
       onUnlock={onUnlock}
       title="Your Full Alchemical Blueprint"
-       description="The full enneagram map, deep readings for all six archetypes, and your personalized Blueprint Journey."
+       description="The full enneagram map, deep readings for all six archetypes, and your Alchemist's Journey."
     >
       {content}
     </PremiumGate>

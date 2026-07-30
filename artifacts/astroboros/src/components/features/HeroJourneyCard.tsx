@@ -11,7 +11,7 @@ export default function HeroJourneyCard({ journey }: { journey: HeroJourney }) {
         </span>
         <div>
           <div className="font-mono text-xs uppercase tracking-widest text-accent">
-            A continuous developmental reading
+            The Alchemist's Journey
           </div>
           <h3 className="font-serif text-2xl font-semibold">{journey.title}</h3>
         </div>

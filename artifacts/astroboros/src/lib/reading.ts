@@ -13,6 +13,7 @@ import {
   PLANET_META,
   SIGN_QUALITY,
   HOUSE_DOMAIN,
+  HOUSE_EXCHANGE,
   HOUSE_THROUGH,
   PLANET_HOUSE,
 } from "@/constants/astro";
@@ -162,12 +163,17 @@ function houseAspectContext(
   const otherDomain = HOUSE_DOMAIN[otherHouse - 1];
   const keyThrough = HOUSE_THROUGH[keyHouse - 1];
   const otherThrough = HOUSE_THROUGH[otherHouse - 1];
+  const keyExchange = HOUSE_EXCHANGE[keyHouse - 1];
+  const otherExchange = HOUSE_EXCHANGE[otherHouse - 1];
 
   if (keyHouse === otherHouse) {
-    return `Both planets work through the ${keyOrd} house, ${keyDomain}. That gives this relationship one shared outlet: it is likely to surface through ${keyThrough}. Purpose, feeling, and response are therefore tested in the same concrete area rather than being kept in separate compartments; choices made there quickly reveal whether the two drives are actually cooperating.`;
+    return `Both planets work through the ${keyOrd} house, ${keyDomain}. The relationship gathers ${keyExchange.contribution} into one shared outlet: ${keyExchange.transformation}. It works best when that material is given enough structure to become ${keyThrough}, allowing both planetary drives to develop through the same concrete area rather than pulling in separate directions.`;
   }
 
-  return `This relationship connects the ${keyOrd} house, ${keyDomain}, with the ${otherOrd} house, ${otherDomain}. In practice, it links ${keyThrough} with ${otherThrough}: developments in one arena change the demands placed on the other. The aspect becomes useful when you make decisions with that exchange in mind, rather than solving one area while creating a new problem in the other.`;
+  return `This relationship connects the ${keyOrd} house arena of ${keyDomain.replace("the arena of ", "")} with the ${otherOrd} house arena of ${otherDomain.replace("the arena of ", "")}. ` +
+    `The ${keyOrd} house provides ${keyExchange.contribution}. This becomes the foundation for ${otherExchange.transformation} in the ${otherOrd} house. ` +
+    `The ${otherOrd} house expands and transforms this by ${otherExchange.returnFlow}, which then changes how the ${keyOrd} house operates: ${keyExchange.returnFlow}. ` +
+    `The relationship works best when ${keyThrough} actively feeds ${otherThrough}, allowing ${keyExchange.transformation} and ${otherExchange.transformation} to develop together. When one side develops without the other, ${keyExchange.imbalance}.`;
 }
 
 // ── Aspect synthesis paragraph ────────────────────────────────────────────────

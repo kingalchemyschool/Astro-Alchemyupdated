@@ -241,6 +241,91 @@ export const HOUSE_WORK: string[] = [
   "drawing material from the hidden and unformed",
 ];
 
+export interface HouseExchange {
+  contribution: string;
+  transformation: string; // what this house does with material arriving from the other house
+  returnFlow: string;
+  imbalance: string;
+}
+
+// The living exchange each house creates when paired with another house.
+// These are intentionally written as movements rather than definitions so
+// house-aspect prose explains what passes between the two arenas.
+export const HOUSE_EXCHANGE: HouseExchange[] = [
+  {
+    contribution: "a direct sense of self, initiative, and embodied presence",
+    transformation: "makes incoming material personal and embodied, turning it into a way of entering life and beginning from the self",
+    returnFlow: "requires the self to become more responsive to how others receive what it initiates",
+    imbalance: "self-expression can remain untested, while activity in the other arena can lose the personal force that makes it meaningful",
+  },
+  {
+    contribution: "the resources, standards, and sense of worth you have learned to build around",
+    transformation: "tests incoming material against standards of worth, turning it into an investment, commitment, or form of value",
+    returnFlow: "teaches you to revise what you value according to what actually grows, holds, or serves a larger purpose",
+    imbalance: "resources can accumulate without direction, while the other arena can consume value without developing a stable base",
+  },
+  {
+    contribution: "questions, observations, language, and the small pieces of knowledge gathered through daily exchange",
+    transformation: "translates incoming material into language, questions, and usable understanding that can travel between people",
+    returnFlow: "introduces new people, perspectives, and possibilities that change what you notice and the questions you are willing to ask",
+    imbalance: "knowledge can remain isolated, while participation in the other arena can become disconnected from personal thought",
+  },
+  {
+    contribution: "memory, belonging, emotional history, and the private ground from which you operate",
+    transformation: "roots incoming material in memory, belonging, and a private foundation strong enough to hold it",
+    returnFlow: "forces the private foundation to adapt as the outer work asks for greater capacity, visibility, or responsibility",
+    imbalance: "the inner life can become sealed off from growth, while outer achievement can lose the rootedness that makes it sustainable",
+  },
+  {
+    contribution: "creative risk, play, desire, and the willingness to make something distinctly your own",
+    transformation: "turns incoming material into authored expression, play, and a form that carries your unmistakable imprint",
+    returnFlow: "asks creativity to become more precise, responsible, and attentive to what the work actually produces",
+    imbalance: "expression can seek attention without development, while useful work can become efficient but lifeless",
+  },
+  {
+    contribution: "skill, routine, attention to detail, and the practical habits that make improvement possible",
+    transformation: "puts incoming material into practice, routine, and refinement until it becomes useful and repeatable",
+    returnFlow: "changes daily practice by revealing which habits genuinely serve the people, agreements, or systems involved",
+    imbalance: "refinement can become private perfectionism, while partnership or shared work can rely on goodwill without dependable craft",
+  },
+  {
+    contribution: "the capacity to meet another person, negotiate, and see yourself through relationship",
+    transformation: "holds incoming material in dialogue, negotiation, and mutual recognition so neither side remains unchanged",
+    returnFlow: "asks your relationships to become more honest about power, trust, dependence, and what each person is actually offering",
+    imbalance: "connection can remain on the surface, while intensity or merging can develop without the mutuality that keeps it healthy",
+  },
+  {
+    contribution: "intimacy, shared power, vulnerability, and the willingness to let an old form end",
+    transformation: "takes incoming material into depth, where it can be merged, released, and transformed into a new form",
+    returnFlow: "expands what you are willing to trust, release, and understand beyond the immediate crisis or bond",
+    imbalance: "depth can become entanglement or guardedness, while broad belief can float free of the experience that should give it weight",
+  },
+  {
+    contribution: "experience, belief, study, travel, and the search for a wider pattern of meaning",
+    transformation: "places incoming material inside a wider pattern of meaning, turning experience into perspective, belief, or teaching",
+    returnFlow: "tests your beliefs against consequences, standards, and the actual responsibilities of making something real",
+    imbalance: "meaning can remain abstract, while achievement can become efficient but disconnected from a guiding vision",
+  },
+  {
+    contribution: "ambition, discipline, public responsibility, and the work you are willing to make visible",
+    transformation: "gives incoming material public form through work, responsibility, status, and a contribution that can be recognized",
+    returnFlow: "changes what success means by measuring public work against the people, systems, and future it affects",
+    imbalance: "status can become an end in itself, while collective involvement can lack the structure needed to become durable",
+  },
+  {
+    contribution: "connections, allies, shared ideals, and a vision of the future you want to participate in",
+    transformation: "places incoming material in networks, alliances, and collective vision, turning personal understanding into shared contribution",
+    returnFlow: "asks you to revise your public vision according to what your private life can genuinely sustain and what your intuition receives",
+    imbalance: "social contribution can become diffuse or performative, while retreat can become detached from the people and future it could serve",
+  },
+  {
+    contribution: "solitude, imagination, unconscious material, and the sensitivity to what has not yet taken form",
+    transformation: "absorbs incoming material into imagination, solitude, and the deeper patterns that operate before conscious explanation",
+    returnFlow: "requires the inner world to take shape through choices, boundaries, and a visible way of moving through the world",
+    imbalance: "the unseen can remain ungrounded or overwhelming, while outward identity can become cut off from the source of its originality",
+  },
+];
+
 // Planet × house matrix: how each function operates in each house's territory.
 // Indexed [houseIndex 0–11]. Seven core planets only (octaves handled separately).
 export const PLANET_HOUSE: Partial<Record<PlanetKey, string[]>> = {

@@ -7,4 +7,4 @@ Reader-facing activation and blueprint copy should describe the lived experience
 
 **Why:** Repeating internal labels such as Essence, Perception, Force, and Structure makes otherwise detailed readings feel like system documentation and forces the reader to translate the meaning themselves.
 
-**How to apply:** Use planet-specific human domains with aspect-specific explanations for conjunction, trine, sextile, square, and opposition. Keep placement context tied to real life arenas. Version report caches when generated wording changes.
+**How to apply:** Use planet-specific human domains with aspect-specific explanations for conjunction, trine, sextile, square, and opposition. Keep placement context tied to real life arenas. For the Daily Forge alchemy lesson, name the concrete house focus, describe how the two forces interact, and do not name or list the aspects. Version report caches when generated wording changes.

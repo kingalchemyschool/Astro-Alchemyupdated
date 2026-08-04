@@ -102,7 +102,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v19";
+const REPORT_VERSION = "activation-v20";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -724,18 +724,18 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     ? PLANET_NAMES[moonAspectForState.natalPlanet]
     : null;
   const fieldReading = hasEase && hasFriction
-    ? "Different parts of your experience are pulling in different directions today. Some situations may move easily, while others expose a limit or ask you to see beyond your usual perspective. Let the tension show you what needs your attention before you rush to fix it."
+    ? "Different parts of your experience are pulling in different directions today. Some moments may feel easy while others ask you to reconsider your usual approach. Let the tension show you what deserves attention before you try to fix anything."
     : hasFriction
-      ? "The day may feel more demanding than usual. The pressure is pointing to a pattern, boundary, or choice that needs your attention; notice what it reveals before you try to push past it."
+      ? "The day may feel more demanding than usual. The pressure is pointing toward something that needs your attention. Notice what it reveals before you try to push past it."
       : hasEase
-        ? "The day offers movement and support, but ease is most useful when you give it somewhere to go. Notice where things are opening, then take one deliberate step."
+        ? "The day offers movement and support, but ease is most useful when you give it somewhere to go. Notice where a door is open, then take one deliberate step."
         : "The day is asking you to stay present with one area of life rather than spread your attention too widely.";
   const celestialState = [
     `Today's energy is ${energyTone}. ${fieldReading}`,
     moonAspectForState
       ? `The Moon is processing experience through a ${moonInfo.style} lens — ${moonInfo.lens} — while its contact with natal ${moonNatalName} gives that inner weather a particular place to work itself out. Let the emotional signal inform your timing without allowing it to make every decision for you.`
       : `The Moon is processing experience through a ${moonInfo.style} lens — ${moonInfo.lens}. Let that immediate inner weather inform your timing without allowing it to define the whole day.`,
-    `Process the field by moving from sensation to choice: notice what is being opened, pressured, or intensified; name the response it is inviting; then give that response one concrete expression. The value of today's energy is not in predicting what will happen, but in becoming more deliberate about how you meet what does.`,
+    `Process the field by turning sensation into a deliberate choice. Notice what is changing and decide how you want to meet it. The value of today's energy is not in predicting what will happen. It is in becoming more deliberate about how you respond.`,
   ].join("\n\n");
 
   // ── BLUEPRINT ACTIVATION ─────────────────────────────────────────────────

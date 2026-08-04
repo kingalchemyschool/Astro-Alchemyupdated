@@ -1,0 +1,280 @@
+# Daily Forge Generation Rules
+
+The Daily Forge is not a list of transit interpretations. It is a synthesis of the day's celestial field into one coherent narrative. Every section should be generated from the chart as a whole rather than from individual aspects.
+
+## Overall Structure
+
+1. Today's Theme
+2. Celestial Field
+3. Today's Energy
+4. What Is Being Refined
+5. Forge Principle
+6. Journal Prompt
+7. Daily Application
+8. Closing Reflection
+
+---
+
+# Generation Order
+
+Before writing any text, calculate the following:
+
+## Step 1 — Rank the dominant influences
+
+Determine the day's hierarchy using objective criteria.
+
+Rank by:
+
+* Number of transits affecting the same natal house.
+* Number of transits affecting the same natal planet.
+* Exactness of aspect (orb).
+* Aspect type (conjunctions generally outweigh sextiles, etc.).
+* Repetition of the same planetary archetype.
+* Repetition of the same life arena (house).
+* Whether a transit is selected as Primary.
+
+This hierarchy determines the report.
+
+Do not simply describe every transit equally.
+
+---
+
+## Step 2 — Identify the dominant house
+
+If multiple significant transits occur within the same natal house, generate a single synthesis describing that house.
+
+Do not repeat the house description inside every transit.
+
+Instead display:
+
+**Dominant Arena**
+
+House name
+
+Short description
+
+Number of significant activations.
+
+Example:
+
+2nd House · Value
+
+Four major transits converge here today, making resources, security, material foundations, and self-worth the primary arena of development.
+
+---
+
+## Step 3 — Identify dominant planetary themes
+
+Look for repeated activation of the same natal planets.
+
+Example:
+
+Moon + Saturn
+
+Moon + Sun
+
+Mercury + Saturn
+
+Instead of interpreting them separately, determine what common developmental process they describe.
+
+Generate one synthesis.
+
+---
+
+# Celestial Field
+
+Display the strongest individual aspects.
+
+Each aspect should contain only information unique to that aspect.
+
+Do not repeat house explanations.
+
+Do not repeat planet definitions.
+
+Example:
+
+Moon Conjunct Natal Saturn
+
+Emotion illuminates where stronger structure is needed.
+
+Mercury Square Natal Saturn
+
+Mental friction exposes assumptions that require refinement.
+
+Mars Sextile Natal Sun
+
+Purpose receives practical momentum.
+
+---
+
+# Today's Theme
+
+Generate one concise sentence (10–18 words).
+
+It should summarize the entire field rather than any individual transit.
+
+Examples:
+
+Build what lasts.
+
+Strengthen foundations before seeking expansion.
+
+Consistency becomes more valuable than intensity.
+
+Gather scattered effort into lasting form.
+
+---
+
+# Today's Energy
+
+This section explains why the day feels the way it does.
+
+Use synthesis.
+
+Do not summarize every transit.
+
+Instead answer:
+
+Why does today feel this way?
+
+What general rhythm emerges from the entire chart?
+
+Mention only the dominant planets or houses responsible.
+
+Target length:
+
+120–180 words.
+
+---
+
+# What Is Being Refined
+
+Generate one coherent alchemical metaphor.
+
+This section represents the developmental process produced by the entire field.
+
+Rules:
+
+Only one metaphor.
+
+Do not repeat the same symbolic idea using different language.
+
+Avoid looping descriptions.
+
+Build toward one concluding insight.
+
+Target:
+
+180–250 words.
+
+---
+
+# Forge Principle
+
+Generate one memorable sentence.
+
+Requirements:
+
+Under 12 words.
+
+Not motivational.
+
+State a durable principle.
+
+Examples:
+
+Structure gives ambition somewhere to stand.
+
+Attention becomes capacity through repetition.
+
+Clarity grows where resistance is examined.
+
+What is sustained becomes stronger.
+
+---
+
+# Journal Prompt
+
+Generate exactly one reflective question.
+
+It must arise naturally from the dominant house and overall synthesis.
+
+Do not simply restate the house description.
+
+---
+
+# Daily Application
+
+Generate three sections.
+
+## Do
+
+One concrete action.
+
+Specific.
+
+Observable.
+
+Measurable.
+
+## Avoid
+
+One common behavior that disperses today's strongest potential.
+
+## Practice
+
+One repeatable exercise that develops today's dominant capacity.
+
+Each should be under 50 words.
+
+---
+
+# Closing Reflection
+
+End the report by translating today's celestial field into an enduring developmental principle.
+
+Do not summarize the report.
+
+Do not restate the transits.
+
+Leave the reader with one idea they can continue practicing after today ends.
+
+Target:
+
+60–90 words.
+
+---
+
+# Writing Rules
+
+Avoid repeating:
+
+* House meanings
+* Planet definitions
+* Sign definitions
+* The same developmental idea across multiple sections
+* The same metaphor more than once
+
+Every section must introduce new information.
+
+Each section should answer a different question.
+
+Theme:
+What is today's essence?
+
+Energy:
+Why does today feel this way?
+
+Refinement:
+What inner capacity is being developed?
+
+Principle:
+What universal truth emerges?
+
+Application:
+How should this be lived?
+
+Reflection:
+What should remain after the day ends?
+
+The report should read as one continuous progression rather than a collection of independently generated interpretations.

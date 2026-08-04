@@ -25,6 +25,12 @@ export interface ForgeReport {
     house: number;
   }>;
   celestialField: CelestialFieldEntry[];
+  dominantArena?: {
+    house: number;
+    label: string;
+    description: string;
+    activationCount: number;
+  };
   todaysTheme: string;
   celestialState: string;
   blueprintActivation?: string;

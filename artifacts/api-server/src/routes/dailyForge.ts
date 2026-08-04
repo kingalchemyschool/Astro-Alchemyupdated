@@ -72,6 +72,12 @@ export interface ForgeReport {
     houseActivation: string;
     coreFunctionActivated: string;
   }>;
+  dominantArena?: {
+    house: number;
+    label: string;
+    description: string;
+    activationCount: number;
+  };
   todaysTheme: string;
   celestialState: string;
   blueprintActivation: string;
@@ -102,7 +108,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v21";
+const REPORT_VERSION = "activation-v22";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -165,16 +171,16 @@ const HOUSE_MEANING: Record<number, { short: string; full: string }> = {
 };
 
 const HOUSE_JOURNAL_FOCUS: Record<number, string> = {
-  1:  "how you show up in the world",
-  2:  "money, values, and self-worth",
-  3:  "communication and learning",
-  4:  "home and emotional grounding",
-  5:  "creative life and pleasure",
-  6:  "daily routines and wellbeing",
+  1:  "how you show up",
+  2:  "security and self-worth",
+  3:  "communication",
+  4:  "home and belonging",
+  5:  "creative life",
+  6:  "daily routines",
   7:  "close relationships",
-  8:  "shared ties and deep change",
+  8:  "shared ties and change",
   9:  "beliefs and direction",
-  10: "work and public contribution",
+  10: "work and contribution",
   11: "community and future plans",
   12: "your inner life",
 };
@@ -401,7 +407,7 @@ function aspectBoxDescription(
     ],
   };
   const effect = effects[aspect.type][variant % effects[aspect.type].length];
-  return `${effect} This is showing up in your ${houseOrd(natalPosition.house)} House — ${houseInfo.full}.`;
+  return effect;
 }
 
 const SIGN_QUALITY: Record<string, { brief: string; operative: string }> = {
@@ -609,9 +615,44 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   // Fill unused boxes with social planets and any remaining strongest contact.
   for (const aspect of rankedAspects) addAspect(aspect);
 
+  // Build the report around the life arena receiving the most significant
+  // activations. Individual contacts stay visible, but the narrative belongs
+  // to the pattern they create together.
+  const houseScores = new Map<number, { count: number; score: number }>();
+  for (const aspect of activeAspects) {
+    const house = natal.positions[aspect.natalPlanet]?.house ?? 1;
+    const existing = houseScores.get(house) ?? { count: 0, score: 0 };
+    houseScores.set(house, {
+      count: existing.count + 1,
+      score: existing.score + aspect.score + (3 - aspect.orb) + (aspect.type === "conjunction" ? 2 : 0),
+    });
+  }
+  const dominantHouseEntry = [...houseScores.entries()].sort((a, b) =>
+    (b[1].count - a[1].count) || (b[1].score - a[1].score) || (a[0] - b[0])
+  )[0];
+  const dominantHouseNumber = dominantHouseEntry?.[0] ?? 1;
+  const dominantHouseMeaning = HOUSE_MEANING[dominantHouseNumber] ?? HOUSE_MEANING[1];
+  const dominantActivationCount = dominantHouseEntry?.[1].count ?? 0;
+  const dominantArena = {
+    house: dominantHouseNumber,
+    label: dominantHouseMeaning.short,
+    description: `${dominantActivationCount} significant ${dominantActivationCount === 1 ? "contact returns" : "contacts return"} your attention to this house today, making ${dominantHouseMeaning.short.toLowerCase()} the central arena of development. Strengthen what already supports you before reaching for something new.`,
+    activationCount: dominantActivationCount,
+  };
+  const dominantAspects = activeAspects.filter(aspect =>
+    (natal.positions[aspect.natalPlanet]?.house ?? 1) === dominantHouseNumber
+  );
+  const date = transits.date;
+  const dominantFocus = HOUSE_JOURNAL_FOCUS[dominantHouseNumber] ?? "the part of life asking for attention";
+  const dominantCurrent = dominantAspects[0] ?? activeAspects[0];
+  const secondaryCurrent = dominantAspects[1];
+  const synthesisTransitName = PLANET_NAMES[dominantCurrent.transitPlanet];
+  const synthesisTransitQuality = TRANSIT_QUALITY[dominantCurrent.transitPlanet];
+  const synthesisNatalFocus = NATAL_FOCUS[dominantCurrent.natalPlanet];
+  const synthesisRefinement = pick(REFINEMENT_NOUN[dominantCurrent.natalPlanet], hashSeed(date, "synthesis", String(dominantHouseNumber)), 0);
+
   const top       = activeAspects[0];
   const supporting = activeAspects.slice(1);
-  const date = transits.date;
 
   const tPlanet    = top.transitPlanet;
   const nPlanet    = top.natalPlanet;
@@ -668,59 +709,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     };
   });
 
-  // ── TODAY'S THEME ────────────────────────────────────────────────────────
-  const themes: Record<AspectType, string[]> = {
-    conjunction: [
-      `Concentrating ${refinement} through direct pressure from ${tName}.`,
-      `${cap(refinement)} and ${tName}'s influence merge into a single point of focus.`,
-      `Deepening ${refinement} through focused, undivided engagement.`,
-      `${tName} intensifies your ${refinement} — the work is concentration.`,
-    ],
-    trine: [
-      `Amplifying ${refinement} through natural alignment with ${tName}.`,
-      `${cap(refinement)} flows more easily today — the work is to direct that flow deliberately.`,
-      `Natural momentum supports the development of ${refinement}.`,
-      `${tName} opens a path for ${refinement} to deepen without resistance.`,
-    ],
-    sextile: [
-      `An opening for ${refinement} — initiated by ${tName}, activated by you.`,
-      `${cap(refinement)} advances today if you choose to move through the cooperative opening available.`,
-      `The conditions favor ${refinement}. The initiative is yours.`,
-      `${tName} creates the opening. What you do with it determines the outcome.`,
-    ],
-    square: [
-      `Strengthening ${refinement} through the productive friction of ${tName}.`,
-      `${cap(refinement)} is being built — not through ease, but through direct engagement with what resists.`,
-      `The tension between ${tName} and your natal design is developing ${refinement}.`,
-      `Development of ${refinement} arrives through productive difficulty today.`,
-    ],
-    opposition: [
-      `Clarifying ${refinement} through the contrast ${tName} is creating.`,
-      `${cap(refinement)} comes into focus through contrast — what stands across from you reveals what you could not see from the inside.`,
-      `${tName} illuminates ${refinement} from the outside.`,
-      `Clarifying ${refinement} through what today's contrast makes visible.`,
-    ],
-  };
-  const primaryThemeStr = pick(themes[aspectType], seed, 0);
-  // "Also active" should point to contacts that are not already represented by
-  // the visible field cards, rather than repeating the same selected aspects.
-  const unlistedAspects = transits.aspects.filter(aspect =>
-    !activeAspects.some(selected =>
-      selected.transitPlanet === aspect.transitPlanet &&
-      selected.natalPlanet === aspect.natalPlanet &&
-      selected.type === aspect.type,
-    ),
-  );
-  const themeSupporting = unlistedAspects.slice(0, 3);
-  const todaysTheme = themeSupporting.length > 0
-    ? `${primaryThemeStr} Also active: ${themeSupporting.map(a =>
-        `${PLANET_NAMES[a.transitPlanet]} ${ASPECT_LABEL_CAP[a.type]} natal ${PLANET_NAMES[a.natalPlanet]}`
-      ).join(', ')}${unlistedAspects.length > themeSupporting.length ? `, +${unlistedAspects.length - themeSupporting.length} more` : ''}.`
-    : primaryThemeStr;
-
   // ── CELESTIAL STATE ──────────────────────────────────────────────────────
-  // Synthesize the selected boxes into today's energetic weather instead of
-  // repeating each transit a second time.
   const typeCounts = activeAspects.reduce<Record<AspectType, number>>((counts, aspect) => {
     counts[aspect.type] += 1;
     return counts;
@@ -734,23 +723,20 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
       : typeCounts.conjunction > 0
         ? "concentrated and demanding of presence"
         : "open and forward-moving";
-  const moonAspectForState = activeAspects.find(aspect => aspect.transitPlanet === "moon");
-  const moonNatalName = moonAspectForState
-    ? PLANET_NAMES[moonAspectForState.natalPlanet]
-    : null;
-  const fieldReading = hasEase && hasFriction
-    ? "Different parts of your experience are pulling in different directions today. Some moments may feel easy while others ask you to reconsider your usual approach. Let the tension show you what deserves attention before you try to fix anything."
-    : hasFriction
-      ? "The day may feel more demanding than usual. The pressure is pointing toward something that needs your attention. Notice what it reveals before you try to push past it."
-      : hasEase
-        ? "The day offers movement and support, but ease is most useful when you give it somewhere to go. Notice where a door is open, then take one deliberate step."
-        : "The day is asking you to stay present with one area of life rather than spread your attention too widely.";
+  const todaysTheme = pick([
+    `Strengthen what already supports you in ${dominantFocus} before reaching for something new.`,
+    `Bring scattered effort back to ${dominantFocus} and make what matters more reliable.`,
+    `Build lasting capacity in ${dominantFocus} through one deliberate commitment today.`,
+    `Let ${dominantFocus} become stronger before you ask it to carry more.`,
+  ], seed, 0);
+
+  const secondarySynthesis = secondaryCurrent
+    ? `A second influence adds ${TRANSIT_QUALITY[secondaryCurrent.transitPlanet]} to the same area, so the day is asking for an adjustment that can hold up in practice.`
+    : `The remaining contacts add context, but they keep returning the day's attention to this same question.`;
   const celestialState = [
-    `Today's energy is ${energyTone}. ${fieldReading}`,
-    moonAspectForState
-      ? `The Moon is processing experience through a ${moonInfo.style} lens — ${moonInfo.lens} — while its contact with natal ${moonNatalName} gives that inner weather a particular place to work itself out. Let the emotional signal inform your timing without allowing it to make every decision for you.`
-      : `The Moon is processing experience through a ${moonInfo.style} lens — ${moonInfo.lens}. Let that immediate inner weather inform your timing without allowing it to define the whole day.`,
-    `Process the field by turning sensation into a deliberate choice. Notice what is changing and decide how you want to meet it. The value of today's energy is not in predicting what will happen. It is in becoming more deliberate about how you respond.`,
+    `Today's chart concentrates attention in ${dominantFocus}. ${dominantActivationCount} significant ${dominantActivationCount === 1 ? "contact returns" : "contacts return"} you to this area, making it less useful to chase new demands than to examine what your current commitments can actually support.`,
+    `${synthesisTransitName} brings ${synthesisTransitQuality} into ${synthesisNatalFocus}. ${secondarySynthesis} ${hasFriction ? "Some pressure is exposing where the existing structure needs to become more dependable." : hasEase ? "The available ease gives you room to strengthen that structure without forcing a dramatic change." : "The concentrated quality of the day favors staying with the work until its next step is clear."}`,
+    `The rhythm favors deliberate effort over constant activity. This is not a day for doing more. It is a day for making one important part of your life stronger. Choose the place where a small act of consistency would make tomorrow easier, and let that be enough.`,
   ].join("\n\n");
 
   // ── BLUEPRINT ACTIVATION ─────────────────────────────────────────────────
@@ -942,6 +928,31 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   ];
   const closingReflection = pick(closingTemplates, seed, 8);
 
+  // Final report sections follow the whole-field synthesis rather than the
+  // primary aspect. Keep each section distinct so the report progresses from
+  // arena, to energy, to refinement, to practice.
+  const synthesizedForgePrinciple = pick([
+    "What is sustained becomes stronger.",
+    "Consistency transforms intention into something reliable.",
+    "Attention becomes capacity through repetition.",
+    "Clarity grows where resistance is examined.",
+  ], seed, 3);
+  const synthesizedJournalPrompt =
+    `Which commitment in ${dominantFocus} would create the greatest long-term stability if you strengthened it today?`;
+  const synthesizedAlchemicalProcess = [
+    `In metallurgy, repeated heating and compression remove weakness from a material until its internal structure is stronger than when it began. Today's field follows a similar process. It keeps returning your attention to ${dominantFocus}, where ${synthesisRefinement} is being tested as something you can rely on rather than merely intend.`,
+    `The pressure is not asking you to acquire a new quality. It is revealing where the structure already in place needs more consistency. Some influences make the next step easier; others show what cannot yet carry the weight you are asking it to hold. Together, they turn a vague desire for improvement into a specific question: what needs to become more dependable in this part of your life?`,
+    `The work is discipline, understood as reliability rather than restriction. A foundation becomes trustworthy because it continues to support weight over time. The same is true of any capacity you want to keep. What you strengthen through repeated attention today becomes easier to return to tomorrow, until it no longer depends on mood or pressure to exist.`,
+    `The finished material is not created by one dramatic effort. It is formed by returning to the same work with enough care that weakness has fewer places to hide. What becomes stronger in ${dominantFocus} today can therefore outlast the immediate conditions. The lasting change is not a feeling of certainty, but a structure that has learned how to hold.`,
+  ].join("\n\n");
+  const synthesizedDailyApplication = [
+    `DO: Complete one meaningful task in ${dominantFocus} that strengthens the foundation you are trying to build before turning to less important work.`,
+    `AVOID: Scattering your attention across lower-priority demands simply because each one feels urgent.`,
+    `PRACTICE: Before beginning a significant task, ask whether it strengthens what you want to rely on later. If it does, give it your full attention.`,
+  ].join("\n\n");
+  const synthesizedClosingReflection =
+    `Every day strengthens something, whether intentionally or by habit. Today's field keeps returning you to ${dominantFocus}, where a small act of consistency can change what you are able to rely on later. Do not measure the day by intensity. Measure it by whether you gave sustained attention to what matters. The structure you reinforce now will make future choices easier, because capacity is built through what you continue to practice after the pressure has passed.`;
+
   return {
     date,
     zodiac: transits.zodiac as "tropical" | "sidereal",
@@ -961,14 +972,15 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
       house:         natal.positions[a.natalPlanet]?.house ?? 1,
     })),
     celestialField,
+    dominantArena,
     todaysTheme,
     celestialState,
     blueprintActivation: pick(blueprintActivationTemplates,  seed, 1),
-    whatIsBeingRefined:  pick(whatIsBeingRefinedByAspect[aspectType], seed, 2),
-    forgePrinciple,
-    journalPrompt,
-    dailyApplication,
-    closingReflection,
+    whatIsBeingRefined: synthesizedAlchemicalProcess,
+    forgePrinciple: synthesizedForgePrinciple,
+    journalPrompt: synthesizedJournalPrompt,
+    dailyApplication: synthesizedDailyApplication,
+    closingReflection: synthesizedClosingReflection,
   };
 }
 

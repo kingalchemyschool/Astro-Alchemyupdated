@@ -128,6 +128,27 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
           </div>
         </div>
 
+        {/* Dominant Arena */}
+        {report.dominantArena && (
+          <div className="mt-5 rounded-xl border border-[#8B9EE8]/20 bg-[#0D1220]/70 px-4 py-4">
+            <p className="font-mono text-[9px] tracking-widest uppercase text-[#6B7A99] mb-2">
+              Dominant Arena
+            </p>
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className="font-serif text-lg font-semibold text-[#E8E4D8]">
+                {houseOrd(report.dominantArena.house)} House · {report.dominantArena.label}
+              </h2>
+              <span className="font-mono text-[9px] tracking-widest uppercase text-[#8B9EE8] shrink-0">
+                {report.dominantArena.activationCount}{" "}
+                {report.dominantArena.activationCount === 1 ? "activation" : "activations"}
+              </span>
+            </div>
+            <p className="mt-2 text-[13px] leading-relaxed text-[#9AA3B8]">
+              {report.dominantArena.description}
+            </p>
+          </div>
+        )}
+
         {/* Today's Theme */}
         {report.todaysTheme && (
           <div className="mt-5 border-l-2 border-[#8B9EE8]/40 pl-4">

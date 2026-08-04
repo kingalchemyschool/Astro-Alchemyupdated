@@ -16,11 +16,20 @@ export interface TransitAspect {
   score: number; // higher = more significant
 }
 
+export interface TransitLocation {
+  label: string;
+  lat: number;
+  lon: number;
+  tz: number;
+  tzName?: string;
+}
+
 export interface TransitData {
   date: string;
   zodiac: "tropical" | "sidereal";
   positions: Record<PlanetKey, PlanetPosition>;
   aspects: TransitAspect[];
+  location: TransitLocation;
 }
 
 const ALL_KEYS: PlanetKey[] = [
@@ -100,17 +109,25 @@ export function computeTransits(
   natal: NatalChart,
   zodiac: "tropical" | "sidereal" = natal.zodiac,
   date = todayDateString(),
+  location?: TransitLocation,
 ): TransitData {
+  const transitLocation: TransitLocation = location ?? {
+    label: natal.input.place,
+    lat: natal.input.lat,
+    lon: natal.input.lon,
+    tz: natal.input.tz,
+    tzName: natal.input.tzName,
+  };
   const transitInput: BirthInput = {
     date,
     // Use a stable daily reference time rather than the current clock. The
     // date and time together identify the same daily sky for every refresh.
     time: dailyTransitTime(),
-    place: natal.input.place,
-    lat: natal.input.lat,
-    lon: natal.input.lon,
-    tz: natal.input.tz,
-    tzName: natal.input.tzName,
+    place: transitLocation.label,
+    lat: transitLocation.lat,
+    lon: transitLocation.lon,
+    tz: transitLocation.tz,
+    tzName: transitLocation.tzName,
     zodiac,
   };
 
@@ -163,6 +180,7 @@ export function computeTransits(
     zodiac,
     positions: transitChart.positions,
     aspects: balanced.slice(0, 24),
+    location: transitLocation,
   };
 }
 

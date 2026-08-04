@@ -31,6 +31,14 @@ interface TransitAspect {
   score: number;
 }
 
+interface TransitLocation {
+  label: string;
+  lat: number;
+  lon: number;
+  tz: number;
+  tzName?: string;
+}
+
 interface DailyForgeRequest {
   token: string;
   natal: {
@@ -44,6 +52,7 @@ interface DailyForgeRequest {
     positions: Record<PlanetKey, PlanetSummary>;
     aspects: TransitAspect[];
     zodiac: string;
+    location?: TransitLocation;
   };
 }
 
@@ -115,10 +124,26 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v24";
+const REPORT_VERSION = "activation-v26";
 
-function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
-  return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
+function transitLocationFingerprint(location?: TransitLocation): string {
+  if (!location) return "birth-location";
+  return [
+    location.label,
+    location.lat.toFixed(4),
+    location.lon.toFixed(4),
+    location.tzName ?? location.tz.toFixed(2),
+  ].join(":");
+}
+
+function cacheKey(
+  jti: string,
+  date: string,
+  zodiac: string,
+  natal: DailyForgeRequest["natal"],
+  location?: TransitLocation,
+): string {
+  return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}:${transitLocationFingerprint(location)}`;
 }
 
 // ─── Vocabulary ───────────────────────────────────────────────────────────────
@@ -304,7 +329,7 @@ const NATAL_FUNCTION: Record<PlanetKey, string> = {
 // lighter than the explanatory framework used elsewhere in the report.
 const TRANSIT_QUALITY: Record<PlanetKey, string> = {
   sun:     "clarity and vitality",
-  moon:    "emotional responsiveness",
+  moon:    "felt awareness",
   mercury: "curiosity and mental movement",
   venus:   "receptivity and a sense of value",
   mars:    "urgency and drive",
@@ -314,6 +339,25 @@ const TRANSIT_QUALITY: Record<PlanetKey, string> = {
   neptune: "sensitivity and imagination",
   pluto:   "depth and transformation",
 };
+
+// The Moon changes its lived expression depending on the aspect it forms.
+// Keep several options per relationship so multiple lunar contacts do not
+// collapse into the same phrase across the Celestial Field and Forge.
+const MOON_TRANSIT_QUALITY: Record<AspectType, string[]> = {
+  conjunction: ["felt immediacy", "emotional presence", "instinctive awareness"],
+  trine:       ["responsive ease", "emotional coherence", "felt attunement"],
+  sextile:     ["receptive openness", "emotional availability", "instinctive opportunity"],
+  square:      ["reactive pressure", "mood friction", "emotional strain"],
+  opposition:  ["emotional contrast", "instinctive perspective", "felt tension"],
+};
+
+function transitQualityFor(aspect: TransitAspect, variant = 0): string {
+  if (aspect.transitPlanet === "moon") {
+    const qualities = MOON_TRANSIT_QUALITY[aspect.type];
+    return qualities[variant % qualities.length];
+  }
+  return TRANSIT_QUALITY[aspect.transitPlanet];
+}
 
 const NATAL_FOCUS: Record<PlanetKey, string> = {
   sun:     "your sense of purpose and self-expression",
@@ -384,7 +428,7 @@ function aspectBoxDescription(
   const natalPosition = natal.positions[aspect.natalPlanet];
   const houseInfo = HOUSE_MEANING[natalPosition.house] ?? { short: "Life", full: "a key area of your life" };
   const transitName = PLANET_NAMES[aspect.transitPlanet];
-  const transitQuality = TRANSIT_QUALITY[aspect.transitPlanet];
+  const transitQuality = transitQualityFor(aspect, variant);
   const natalFocus = NATAL_FOCUS[aspect.natalPlanet];
   const effects: Record<AspectType, string[]> = {
     conjunction: [
@@ -670,7 +714,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   const dominantCurrent = dominantAspects[0] ?? activeAspects[0];
   const secondaryCurrent = dominantAspects[1];
   const synthesisTransitName = PLANET_NAMES[dominantCurrent.transitPlanet];
-  const synthesisTransitQuality = TRANSIT_QUALITY[dominantCurrent.transitPlanet];
+  const synthesisTransitQuality = transitQualityFor(dominantCurrent, dominantAspects.indexOf(dominantCurrent));
   const synthesisNatalFocus = NATAL_FOCUS[dominantCurrent.natalPlanet];
   const synthesisRefinement = pick(REFINEMENT_NOUN[dominantCurrent.natalPlanet], hashSeed(date, "synthesis", String(dominantHouseNumber)), 0);
 
@@ -763,11 +807,13 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   ], seed, 0);
 
   const secondarySynthesis = secondaryCurrent
-    ? `A second influence adds ${TRANSIT_QUALITY[secondaryCurrent.transitPlanet]} to the same area, so the day is asking for an adjustment that can hold up in practice.`
+    ? `A second influence adds ${transitQualityFor(secondaryCurrent, dominantAspects.indexOf(secondaryCurrent))} to the same area, so the day is asking for an adjustment that can hold up in practice.`
     : `The remaining contacts add context, but they keep returning the day's attention to this same question.`;
   const patternTransitPlanets = [...new Set(dominantAspects.slice(0, 4).map(aspect => PLANET_NAMES[aspect.transitPlanet]))];
   const patternNatalPlanets = [...new Set(dominantAspects.slice(0, 4).map(aspect => PLANET_NAMES[aspect.natalPlanet]))];
-  const patternTransitQualities = [...new Set(dominantAspects.slice(0, 4).map(aspect => TRANSIT_QUALITY[aspect.transitPlanet]))];
+  const patternTransitQualities = [...new Set(dominantAspects.slice(0, 4).map(aspect =>
+    transitQualityFor(aspect, dominantAspects.indexOf(aspect))
+  ))];
   const patternNatalFocuses = [...new Set(dominantAspects.slice(0, 4).map(aspect => NATAL_FOCUS[aspect.natalPlanet]))];
   const planetaryPattern = [
     `The planetary pattern is carried by ${joinNames(patternTransitPlanets.map(name => `transiting ${name}`))} meeting ${joinNames(patternNatalPlanets.map(name => `your natal ${name}`))}. Together, these influences bring ${joinNames(patternTransitQualities)} into contact with ${joinNames(patternNatalFocuses)} — not as separate tasks, but as one question of how to make ${dominantFocus} more dependable.`,
@@ -1119,7 +1165,7 @@ router.post("/daily-forge/report", forgeLimiter, async (req: any, res) => {
     });
   }
 
-  const key = cacheKey(tokenJti, date, zodiac, body.natal);
+  const key = cacheKey(tokenJti, date, zodiac, body.natal, body.transits.location);
   const cached = reportCache.get(key);
   if (cached && cached.date === date) {
     return res.json({ report: cached.report, cached: true });

@@ -26,9 +26,16 @@ interface Props {
   cached?: boolean;
   zodiac?: "tropical" | "sidereal";
   onToggleZodiac?: () => void;
+  transitLocationLabel?: string;
 }
 
-export default function ForgeReport({ report, cached, zodiac = "tropical", onToggleZodiac }: Props) {
+export default function ForgeReport({
+  report,
+  cached,
+  zodiac = "tropical",
+  onToggleZodiac,
+  transitLocationLabel,
+}: Props) {
   const { primaryTransit: pt } = report;
 
   const dateLabel = new Date(report.date + "T12:00:00").toLocaleDateString("en-US", {
@@ -63,6 +70,11 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
             <p className="mt-1 text-[10px] font-mono uppercase tracking-widest text-[#6B7A99]">
               {zodiac === "sidereal" ? "Sidereal · Lahiri" : "Tropical"} · {report.referenceTime ?? "Daily reference"}
             </p>
+            {transitLocationLabel && (
+              <p className="mt-1 text-[10px] font-mono uppercase tracking-widest text-[#4A5470]">
+                Transit location · {transitLocationLabel}
+              </p>
+            )}
           </div>
           <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
             <button

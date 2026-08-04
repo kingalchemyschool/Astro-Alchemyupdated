@@ -102,7 +102,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v16";
+const REPORT_VERSION = "activation-v17";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -173,33 +173,33 @@ const ASPECT_MEANING: Record<AspectType, {
 }> = {
   conjunction: {
     mechanism:    "two planetary forces occupying the same point — they merge and amplify each other rather than operating separately",
-    experiential: "an intensity of focus in one area of your life that cannot be split between two directions",
-    demand:       "direct the combined force — conjunction energy dissipates when scattered but becomes precise when concentrated",
-    doNot:        "splitting your attention between this area and everything else, which dilutes the concentrated force available",
+    experiential: "two parts of your experience becoming inseparable for a time, so that what changes one also changes the other",
+    demand:       "notice what the merger is producing and let the combined pattern become visible through one sustained priority",
+    doNot:        "treating the two influences as separate problems when their meaning is emerging from the way they operate together",
   },
   trine: {
     mechanism:    "two planetary forces moving in the same direction — they work together naturally and effort moves between them without resistance",
-    experiential: "a clear, responsive exchange in which one influence gives the other room to express itself",
-    demand:       "notice what becomes possible when the two influences cooperate, then let that shared movement change something real",
-    doNot:        "assuming the ease means no engagement is required — flow without direction is just motion",
+    experiential: "a responsive exchange in which one influence releases a quality the other already knows how to use",
+    demand:       "follow the behavior that becomes more natural when these two parts of your life support one another",
+    doNot:        "mistaking a lack of resistance for a lack of significance — ease can reveal a great deal when you pay attention to what it enables",
   },
   sextile: {
     mechanism:    "two planetary forces in a cooperative position — the path between them is open, but it requires you to take a deliberate first step",
-    experiential: "an opening that rewards initiative — the conditions are right, but they need you to move",
-    demand:       "initiate something specific in this area rather than waiting for momentum to appear on its own",
-    doNot:        "waiting for the right moment — in a sextile, the right moment is now, and passing it is the only way to miss it",
+    experiential: "a meeting point where an available influence can enter an established part of your life and alter its next move",
+    demand:       "recognize the point of entry and allow the new influence to participate in what is already developing",
+    doNot:        "confusing an available pathway with a completed transformation — the opening changes nothing until the two sides meet",
   },
   square: {
     mechanism:    "two planetary forces at a 90-degree angle — neither can operate without creating friction against the other",
-    experiential: "productive tension that demands resolution — something in this area of your life cannot be avoided or deferred",
-    demand:       "engage directly with what is creating resistance rather than routing around it, because the engagement is the development",
-    doNot:        "interpreting the friction as a sign something is wrong — the square's discomfort is not dysfunction, it is development under load",
+    experiential: "friction between an established response and a new demand that exposes where the old pattern is no longer sufficient",
+    demand:       "study the exact point of resistance and adjust the pattern that is meeting the pressure",
+    doNot:        "calling the difficulty a failure before asking what it is revealing about the structure you are relying on",
   },
   opposition: {
     mechanism:    "two planetary forces at maximum distance, pulling in opposite directions — they create contrast rather than conflict",
-    experiential: "a heightened clarity about something you cannot see from within your usual perspective",
-    demand:       "hold both sides of the tension in view at the same time rather than collapsing into the more comfortable position",
-    doNot:        "choosing a side when the real work is holding both — what stands across from you today is not your obstacle, it is your next development",
+    experiential: "a change in perspective that makes the limits of your familiar position easier to see",
+    demand:       "let the view from across the situation add information before you decide what the situation means",
+    doNot:        "reducing the contrast to a contest between right and wrong when each side is carrying part of the picture",
   },
 };
 
@@ -278,21 +278,21 @@ function activationDescription(aspect: TransitAspect, variant = 0): string {
 
   switch (aspect.type) {
     case "conjunction":
-      return `The current transit brings ${transit} into direct contact with ${natal}. What surfaces wants your full attention rather than a quick reaction.`;
+      return `The current transit brings ${transit} into direct contact with ${natal}. Their meeting makes one part of your experience more concentrated, and what surfaces is showing you how those two functions affect each other.`;
     case "trine": {
       const trineClosings = [
-        "The moving influence gives the natal pattern room to express itself; notice what it can do when it is not being defended or forced.",
-        "One influence is opening the way while the other shows what is ready to move through it. Let their cooperation reveal the next useful step.",
-        "The ease is information: it shows where your established pattern can receive something new without having to break first.",
-        "What comes naturally today is showing you how these two parts of your experience can support one another instead of competing for control.",
+        "The moving influence gives the natal pattern room to express itself, revealing a capability that is easier to access than usual.",
+        "One influence lends motion while the other supplies direction; together they show how this part of your life can respond without strain.",
+        "The ease reveals compatibility between the two functions — something new can enter without forcing the established pattern to break.",
+        "What comes naturally today shows these two parts of your experience cooperating instead of competing for control.",
       ];
       return `The current transit lets ${transit} move more easily through ${natal}. ${trineClosings[variant % trineClosings.length]}`;
     }
     case "sextile":
       return [
-        `The current transit opens a practical opportunity to develop ${natal} through ${transit}. Make the first move concrete enough to be completed today.`,
-        `The current transit gives ${transit} a useful entry point into ${natal}. Potential becomes progress only after you choose where to apply it.`,
-        `The current transit creates room for ${natal} to grow through ${transit}. Do not wait for momentum to appear; create it with one deliberate action.`,
+        `The current transit opens a practical route for ${transit} to enter the way you use ${natal}. The important change begins at the point where the two functions make contact.`,
+        `The current transit gives ${transit} an entry point into ${natal}. Watch what shifts when an unfamiliar quality is allowed into an established pattern.`,
+        `The current transit creates room for ${natal} to receive something from ${transit}. The relationship is reciprocal: the opening changes the expression, and the natal function gives it a place to work.`,
       ][variant % 3];
     case "square": {
       const squareClosings: Partial<Record<PlanetKey, string>> = {
@@ -308,13 +308,13 @@ function activationDescription(aspect: TransitAspect, variant = 0): string {
         pluto:   "What is being pressured is precisely what requires transformation rather than adjustment.",
       };
       const closing = squareClosings[aspect.natalPlanet] ?? "The friction shows where a familiar response is ready to become more capable.";
-      return `The current transit puts ${transit} under pressure from ${natal}. ${closing}`;
+      return `The current transit puts ${transit} under pressure from ${natal}. The friction identifies a specific limit in the way these two functions currently meet. ${closing}`;
     }
     case "opposition":
       return [
-        `The current transit places ${transit} across from ${natal}. The tension reveals what your usual perspective leaves out.`,
-        `The current transit puts ${transit} in direct contrast with ${natal}. Let the other side of the situation become information rather than an enemy.`,
-        `The current transit draws ${transit} and ${natal} into opposing view. Hold the contrast long enough to discover the option neither side offers alone.`,
+        `The current transit places ${transit} across from ${natal}. The distance between them makes the assumptions of your usual perspective easier to recognize.`,
+        `The current transit puts ${transit} in direct contrast with ${natal}. Each side is clarifying what the other takes for granted.`,
+        `The current transit draws ${transit} and ${natal} into opposing view. The useful information lies in the difference between what each one can see.`,
       ][variant % 3];
   }
 }
@@ -335,11 +335,34 @@ function aspectBoxDescription(
     operative: "deliberate engagement",
   };
   const meaning = ASPECT_MEANING[aspect.type];
-  const practicalClose = [
-    `In the ${houseOrd(natalPosition.house)} House, let this show up as a specific choice rather than an abstract feeling.`,
-    `The useful response is to work with this in the area of ${houseInfo.full}, where the pattern can become observable and actionable.`,
-    `Give this contact a real-world outlet in ${houseInfo.full}; that is where its potential becomes something you can develop.`,
-  ][variant % 3];
+  const practicalCloses: Record<AspectType, string[]> = {
+    conjunction: [
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — notice what becomes fused: a priority, a need, or a way of responding that can no longer be treated separately.`,
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — watch for the two influences showing up in the same situation. Their overlap is the experience to study.`,
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — the contact is clearest where one change immediately alters the other.`,
+    ],
+    trine: [
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — notice what becomes easier to express, receive, or understand because these two functions are cooperating.`,
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — look for a response that feels both natural and useful. That response shows the exchange at work.`,
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — the interaction is visible in what moves forward without the usual negotiation between competing needs.`,
+    ],
+    sextile: [
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — look for the moment an available quality can enter an existing pattern and change its direction.`,
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — the opening is real where the established function has somewhere to receive the new influence.`,
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — notice what becomes possible at the meeting point between the familiar and the newly available.`,
+    ],
+    square: [
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — identify the exact behavior that stops working under pressure. That is where the refinement is taking place.`,
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — the lesson lives at the point where your usual method meets a demand it was not built to handle.`,
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — pay attention to the response that keeps creating more difficulty. It is showing you what needs to be reworked.`,
+    ],
+    opposition: [
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — compare what your familiar position notices with what the farther view makes visible.`,
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — the interaction appears in the gap between your first interpretation and the information that challenges it.`,
+      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — let each side describe the situation in its own terms before deciding which meaning is complete.`,
+    ],
+  };
+  const practicalClose = practicalCloses[aspect.type][variant % practicalCloses[aspect.type].length];
 
   return `${activationDescription(aspect, variant)} ${transitName} brings ${signInfo.operative} to ${natalName}, while this ${aspect.type} produces ${meaning.experiential}. ${meaning.demand}. ${practicalClose} Watch for ${meaning.doNot}.`;
 }

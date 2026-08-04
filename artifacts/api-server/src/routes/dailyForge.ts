@@ -102,7 +102,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v17";
+const REPORT_VERSION = "activation-v18";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -272,6 +272,34 @@ const NATAL_FUNCTION: Record<PlanetKey, string> = {
   pluto:   "your relationship to power, endings, and deep transformation",
 };
 
+// Short reader-facing phrases for the Celestial Field. These are intentionally
+// lighter than the explanatory framework used elsewhere in the report.
+const TRANSIT_QUALITY: Record<PlanetKey, string> = {
+  sun:     "clarity and vitality",
+  moon:    "emotional responsiveness",
+  mercury: "curiosity and mental movement",
+  venus:   "receptivity and a sense of value",
+  mars:    "urgency and drive",
+  jupiter: "confidence and possibility",
+  saturn:  "structure and restraint",
+  uranus:  "disruption and originality",
+  neptune: "sensitivity and imagination",
+  pluto:   "depth and transformation",
+};
+
+const NATAL_FOCUS: Record<PlanetKey, string> = {
+  sun:     "your sense of purpose and self-expression",
+  moon:    "your emotional needs and instinctive responses",
+  mercury: "your thinking and communication",
+  venus:   "your values and relationships",
+  mars:    "your will and way of taking action",
+  jupiter: "your beliefs and capacity for growth",
+  saturn:  "your standards and long-term commitments",
+  uranus:  "your originality and relationship to change",
+  neptune: "your sensitivity and imagination",
+  pluto:   "your capacity for deep change",
+};
+
 function activationDescription(aspect: TransitAspect, variant = 0): string {
   const transit = TRANSIT_FUNCTION[aspect.transitPlanet];
   const natal = NATAL_FUNCTION[aspect.natalPlanet];
@@ -325,46 +353,40 @@ function aspectBoxDescription(
   transits: DailyForgeRequest["transits"],
   variant: number,
 ): string {
-  const transitName = PLANET_NAMES[aspect.transitPlanet];
-  const natalName = PLANET_NAMES[aspect.natalPlanet];
   const natalPosition = natal.positions[aspect.natalPlanet];
-  const transitPosition = transits.positions[aspect.transitPlanet];
   const houseInfo = HOUSE_MEANING[natalPosition.house] ?? { short: "Life", full: "a key area of your life" };
-  const signInfo = SIGN_QUALITY[sign(transitPosition.signIndex)] ?? {
-    brief: "purposeful",
-    operative: "deliberate engagement",
-  };
-  const meaning = ASPECT_MEANING[aspect.type];
-  const practicalCloses: Record<AspectType, string[]> = {
+  const transitName = PLANET_NAMES[aspect.transitPlanet];
+  const transitQuality = TRANSIT_QUALITY[aspect.transitPlanet];
+  const natalFocus = NATAL_FOCUS[aspect.natalPlanet];
+  const effects: Record<AspectType, string[]> = {
     conjunction: [
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — notice what becomes fused: a priority, a need, or a way of responding that can no longer be treated separately.`,
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — watch for the two influences showing up in the same situation. Their overlap is the experience to study.`,
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — the contact is clearest where one change immediately alters the other.`,
+      `${transitName} brings ${transitQuality} directly into ${natalFocus}.`,
+      `${transitName} puts ${transitQuality} at the center of ${natalFocus}.`,
+      `${natalFocus} is carrying a stronger charge of ${transitQuality} today.`,
     ],
     trine: [
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — notice what becomes easier to express, receive, or understand because these two functions are cooperating.`,
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — look for a response that feels both natural and useful. That response shows the exchange at work.`,
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — the interaction is visible in what moves forward without the usual negotiation between competing needs.`,
+      `${transitName} lets ${transitQuality} support ${natalFocus} with less resistance.`,
+      `${transitName} makes ${natalFocus} easier to access through ${transitQuality}.`,
+      `${transitQuality} is working with ${natalFocus} rather than getting in its way today.`,
     ],
     sextile: [
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — look for the moment an available quality can enter an existing pattern and change its direction.`,
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — the opening is real where the established function has somewhere to receive the new influence.`,
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — notice what becomes possible at the meeting point between the familiar and the newly available.`,
+      `${transitName} opens a new way for ${transitQuality} to work through ${natalFocus}.`,
+      `${transitQuality} gives ${natalFocus} a useful opening today.`,
+      `${transitName} is creating room for ${natalFocus} to develop in a different direction.`,
     ],
     square: [
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — identify the exact behavior that stops working under pressure. That is where the refinement is taking place.`,
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — the lesson lives at the point where your usual method meets a demand it was not built to handle.`,
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — pay attention to the response that keeps creating more difficulty. It is showing you what needs to be reworked.`,
+      `${transitName} is testing how you handle ${natalFocus} through ${transitQuality}.`,
+      `${transitQuality} is pressing on the part of ${natalFocus} that needs strengthening.`,
+      `${transitName} is exposing where your usual approach to ${natalFocus} has reached its limit.`,
     ],
     opposition: [
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — compare what your familiar position notices with what the farther view makes visible.`,
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — the interaction appears in the gap between your first interpretation and the information that challenges it.`,
-      `In the ${houseOrd(natalPosition.house)} House — ${houseInfo.full} — let each side describe the situation in its own terms before deciding which meaning is complete.`,
+      `${transitName} is showing you ${natalFocus} from another angle through ${transitQuality}.`,
+      `${transitQuality} is bringing a perspective on ${natalFocus} that your usual approach may miss.`,
+      `${transitName} is revealing what your familiar way of handling ${natalFocus} leaves out.`,
     ],
   };
-  const practicalClose = practicalCloses[aspect.type][variant % practicalCloses[aspect.type].length];
-
-  return `${activationDescription(aspect, variant)} ${transitName} brings ${signInfo.operative} to ${natalName}, while this ${aspect.type} produces ${meaning.experiential}. ${meaning.demand}. ${practicalClose} Watch for ${meaning.doNot}.`;
+  const effect = effects[aspect.type][variant % effects[aspect.type].length];
+  return `${effect} This is showing up in your ${houseOrd(natalPosition.house)} House — ${houseInfo.full}.`;
 }
 
 const SIGN_QUALITY: Record<string, { brief: string; operative: string }> = {

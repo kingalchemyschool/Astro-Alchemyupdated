@@ -115,7 +115,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v23";
+const REPORT_VERSION = "activation-v24";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -515,6 +515,12 @@ function cap(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+function joinNames(names: string[]): string {
+  if (names.length <= 1) return names[0] ?? "the active influences";
+  if (names.length === 2) return `${names[0]} and ${names[1]}`;
+  return `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
+}
+
 // ─── Formatting ───────────────────────────────────────────────────────────────
 
 function sign(index: number): string { return SIGNS[index] ?? "Unknown"; }
@@ -651,7 +657,6 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   )[0];
   const dominantHouseNumber = dominantHouseEntry?.[0] ?? 1;
   const dominantHouseMeaning = HOUSE_MEANING[dominantHouseNumber] ?? HOUSE_MEANING[1];
-  const dominantActivationCount = dominantHouseEntry?.[1].count ?? 0;
   const dominantArena = {
     house: dominantHouseNumber,
     label: dominantHouseMeaning.short,
@@ -760,9 +765,18 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   const secondarySynthesis = secondaryCurrent
     ? `A second influence adds ${TRANSIT_QUALITY[secondaryCurrent.transitPlanet]} to the same area, so the day is asking for an adjustment that can hold up in practice.`
     : `The remaining contacts add context, but they keep returning the day's attention to this same question.`;
+  const patternTransitPlanets = [...new Set(dominantAspects.slice(0, 4).map(aspect => PLANET_NAMES[aspect.transitPlanet]))];
+  const patternNatalPlanets = [...new Set(dominantAspects.slice(0, 4).map(aspect => PLANET_NAMES[aspect.natalPlanet]))];
+  const patternTransitQualities = [...new Set(dominantAspects.slice(0, 4).map(aspect => TRANSIT_QUALITY[aspect.transitPlanet]))];
+  const patternNatalFocuses = [...new Set(dominantAspects.slice(0, 4).map(aspect => NATAL_FOCUS[aspect.natalPlanet]))];
+  const planetaryPattern = [
+    `The planetary pattern is carried by ${joinNames(patternTransitPlanets.map(name => `transiting ${name}`))} meeting ${joinNames(patternNatalPlanets.map(name => `your natal ${name}`))}. Together, these influences bring ${joinNames(patternTransitQualities)} into contact with ${joinNames(patternNatalFocuses)} — not as separate tasks, but as one question of how to make ${dominantFocus} more dependable.`,
+    `${synthesisTransitName} supplies ${synthesisTransitQuality}, while ${synthesisNatalFocus} shows where that quality has to become useful. ${secondaryCurrent ? `${PLANET_NAMES[secondaryCurrent.transitPlanet]} adds another layer to the same process, widening the conversation without changing its center.` : "The surrounding planets reinforce the same developmental direction rather than pulling the day toward a different priority."}`,
+  ].join("\n\n");
   const forge = [
-    `Today's chart concentrates attention in ${dominantFocus}. ${dominantActivationCount} significant ${dominantActivationCount === 1 ? "contact returns" : "contacts return"} you to this area, making it less useful to chase new demands than to examine what your current commitments can actually support.`,
-    `${synthesisTransitName} brings ${synthesisTransitQuality} into ${synthesisNatalFocus}. ${secondarySynthesis} ${hasFriction ? "Some pressure is exposing where the existing structure needs to become more dependable." : hasEase ? "The available ease gives you room to strengthen that structure without forcing a dramatic change." : "The concentrated quality of the day favors staying with the work until its next step is clear."}`,
+    `Today's chart concentrates attention in ${dominantFocus}, making it less useful to chase new demands than to examine what your current commitments can actually support.`,
+    planetaryPattern,
+    `${secondarySynthesis} ${hasFriction ? "Some pressure is exposing where the existing structure needs to become more dependable." : hasEase ? "The available ease gives you room to strengthen that structure without forcing a dramatic change." : "The concentrated quality of the day favors staying with the work until its next step is clear."}`,
     `The rhythm favors deliberate effort over constant activity. This is not a day for doing more. It is a day for making one important part of your life stronger. Choose the place where a small act of consistency would make tomorrow easier, and let that be enough.`,
   ].join("\n\n");
 

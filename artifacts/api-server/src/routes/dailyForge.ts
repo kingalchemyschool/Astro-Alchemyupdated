@@ -102,7 +102,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v18";
+const REPORT_VERSION = "activation-v19";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -723,20 +723,15 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   const moonNatalName = moonAspectForState
     ? PLANET_NAMES[moonAspectForState.natalPlanet]
     : null;
-  const dominantMovement = hasFriction
-    ? "stay close to what the tension is revealing before trying to resolve it"
-    : hasEase
-      ? "give the available ease a direction so it becomes progress rather than pleasant drift"
-      : "keep your attention on the one area asking for the most complete engagement";
-  const aspectMix = [
-    typeCounts.conjunction ? `${typeCounts.conjunction} concentrated contact${typeCounts.conjunction > 1 ? "s" : ""}` : "",
-    typeCounts.trine ? `${typeCounts.trine} flowing connection${typeCounts.trine > 1 ? "s" : ""}` : "",
-    typeCounts.sextile ? `${typeCounts.sextile} opening${typeCounts.sextile > 1 ? "s" : ""}` : "",
-    typeCounts.square ? `${typeCounts.square} point${typeCounts.square > 1 ? "s" : ""} of productive friction` : "",
-    typeCounts.opposition ? `${typeCounts.opposition} contrast${typeCounts.opposition > 1 ? "s" : ""}` : "",
-  ].filter(Boolean).join(", ");
+  const fieldReading = hasEase && hasFriction
+    ? "Different parts of your experience are pulling in different directions today. Some situations may move easily, while others expose a limit or ask you to see beyond your usual perspective. Let the tension show you what needs your attention before you rush to fix it."
+    : hasFriction
+      ? "The day may feel more demanding than usual. The pressure is pointing to a pattern, boundary, or choice that needs your attention; notice what it reveals before you try to push past it."
+      : hasEase
+        ? "The day offers movement and support, but ease is most useful when you give it somewhere to go. Notice where things are opening, then take one deliberate step."
+        : "The day is asking you to stay present with one area of life rather than spread your attention too widely.";
   const celestialState = [
-    `Today's energy is ${energyTone}. The active field combines ${aspectMix}, so the day is asking for both awareness and response rather than a single fixed mood. ${dominantMovement}.`,
+    `Today's energy is ${energyTone}. ${fieldReading}`,
     moonAspectForState
       ? `The Moon is processing experience through a ${moonInfo.style} lens — ${moonInfo.lens} — while its contact with natal ${moonNatalName} gives that inner weather a particular place to work itself out. Let the emotional signal inform your timing without allowing it to make every decision for you.`
       : `The Moon is processing experience through a ${moonInfo.style} lens — ${moonInfo.lens}. Let that immediate inner weather inform your timing without allowing it to define the whole day.`,

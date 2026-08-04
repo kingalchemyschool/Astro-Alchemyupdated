@@ -29,10 +29,19 @@ export interface ForgeReport {
     house: number;
     label: string;
     description: string;
-    activationCount: number;
+  };
+  currentMoon?: {
+    sign: string;
+    degree: number;
+    minute: number;
+    house: number;
+    phase: string;
+    description: string;
   };
   todaysTheme: string;
-  celestialState: string;
+  forge: string;
+  /** @deprecated use forge */
+  celestialState?: string;
   blueprintActivation?: string;
   whatIsBeingRefined: string;
   /** @deprecated use whatIsBeingRefined */

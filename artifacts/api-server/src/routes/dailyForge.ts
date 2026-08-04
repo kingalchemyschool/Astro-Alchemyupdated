@@ -76,10 +76,17 @@ export interface ForgeReport {
     house: number;
     label: string;
     description: string;
-    activationCount: number;
+  };
+  currentMoon: {
+    sign: string;
+    degree: number;
+    minute: number;
+    house: number;
+    phase: string;
+    description: string;
   };
   todaysTheme: string;
-  celestialState: string;
+  forge: string;
   blueprintActivation: string;
   whatIsBeingRefined: string;
   forgePrinciple: string;
@@ -108,7 +115,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v22";
+const REPORT_VERSION = "activation-v23";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -520,6 +527,18 @@ function formatDeg(p: PlanetSummary): string {
   return `${p.degree}° ${sign(p.signIndex)}${p.retrograde ? " Rx" : ""}`;
 }
 
+function moonPhase(sunLongitude: number, moonLongitude: number): string {
+  const elongation = (moonLongitude - sunLongitude + 360) % 360;
+  if (elongation < 22.5 || elongation >= 337.5) return "New Moon";
+  if (elongation < 67.5) return "Waxing Crescent";
+  if (elongation < 112.5) return "First Quarter";
+  if (elongation < 157.5) return "Waxing Gibbous";
+  if (elongation < 202.5) return "Full Moon";
+  if (elongation < 247.5) return "Waning Gibbous";
+  if (elongation < 292.5) return "Last Quarter";
+  return "Waning Crescent";
+}
+
 function angularSeparation(a: number, b: number): number {
   const raw = Math.abs(a - b) % 360;
   return raw > 180 ? 360 - raw : raw;
@@ -636,8 +655,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   const dominantArena = {
     house: dominantHouseNumber,
     label: dominantHouseMeaning.short,
-    description: `${dominantActivationCount} significant ${dominantActivationCount === 1 ? "contact returns" : "contacts return"} your attention to this house today, making ${dominantHouseMeaning.short.toLowerCase()} the central arena of development. Strengthen what already supports you before reaching for something new.`,
-    activationCount: dominantActivationCount,
+    description: `Several significant contacts return your attention to this house today, making ${dominantHouseMeaning.short.toLowerCase()} the central arena of development. The repeated emphasis suggests refinement over expansion — strengthen what already supports you before reaching for something new.`,
   };
   const dominantAspects = activeAspects.filter(aspect =>
     (natal.positions[aspect.natalPlanet]?.house ?? 1) === dominantHouseNumber
@@ -668,11 +686,20 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   const nSign   = sign(nPos.signIndex);
   const nHouse  = nPos.house;
   const moonSign = sign(moonT.signIndex);
+  const moonPhaseName = moonPhase(transits.positions.sun.longitude, moonT.longitude);
+  const moonInfo       = MOON_PROCESSING[moonSign] ?? { style: "present and attentive", lens: "filtering through current awareness" };
+  const currentMoon = {
+    sign: moonSign,
+    degree: moonT.degree,
+    minute: moonT.minute ?? 0,
+    house: moonT.house,
+    phase: moonPhaseName,
+    description: `The Moon is ${moonPhaseName.toLowerCase()} in ${moonSign}, moving through your ${houseOrd(moonT.house)} House. The day's emotional field is ${moonInfo.style}; experience is being filtered through ${moonInfo.lens}.`,
+  };
 
   const nHouseMeaning  = HOUSE_MEANING[nHouse] ?? { short: "Life", full: "a key area of your life" };
   const aspectInfo     = ASPECT_MEANING[aspectType];
   const tSignInfo      = SIGN_QUALITY[tSign] ?? { brief: "purposeful", operative: "deliberate engagement" };
-  const moonInfo       = MOON_PROCESSING[moonSign] ?? { style: "present and attentive", lens: "filtering through current awareness" };
   const nDomain        = PLANET_DOMAIN[nPlanet];
 
   const seed        = hashSeed(date, tPlanet, nPlanet, aspectType);
@@ -733,7 +760,7 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   const secondarySynthesis = secondaryCurrent
     ? `A second influence adds ${TRANSIT_QUALITY[secondaryCurrent.transitPlanet]} to the same area, so the day is asking for an adjustment that can hold up in practice.`
     : `The remaining contacts add context, but they keep returning the day's attention to this same question.`;
-  const celestialState = [
+  const forge = [
     `Today's chart concentrates attention in ${dominantFocus}. ${dominantActivationCount} significant ${dominantActivationCount === 1 ? "contact returns" : "contacts return"} you to this area, making it less useful to chase new demands than to examine what your current commitments can actually support.`,
     `${synthesisTransitName} brings ${synthesisTransitQuality} into ${synthesisNatalFocus}. ${secondarySynthesis} ${hasFriction ? "Some pressure is exposing where the existing structure needs to become more dependable." : hasEase ? "The available ease gives you room to strengthen that structure without forcing a dramatic change." : "The concentrated quality of the day favors staying with the work until its next step is clear."}`,
     `The rhythm favors deliberate effort over constant activity. This is not a day for doing more. It is a day for making one important part of your life stronger. Choose the place where a small act of consistency would make tomorrow easier, and let that be enough.`,
@@ -973,8 +1000,9 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     })),
     celestialField,
     dominantArena,
+    currentMoon,
     todaysTheme,
-    celestialState,
+    forge,
     blueprintActivation: pick(blueprintActivationTemplates,  seed, 1),
     whatIsBeingRefined: synthesizedAlchemicalProcess,
     forgePrinciple: synthesizedForgePrinciple,

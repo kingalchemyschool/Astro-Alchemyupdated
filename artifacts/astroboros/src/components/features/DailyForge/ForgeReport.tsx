@@ -84,11 +84,52 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
           </div>
         </div>
 
+        {/* Current Moon */}
+        {report.currentMoon && (
+          <div className="mt-5 rounded-xl border border-[#8B9EE8]/20 bg-[#0D1220]/70 px-4 py-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Moon className="h-4 w-4 text-[#8B9EE8]" />
+              <p className="font-mono text-[9px] tracking-widest uppercase text-[#6B7A99]">
+                Current Moon
+              </p>
+            </div>
+            <div className="flex items-baseline justify-between gap-3">
+              <h2 className="font-serif text-lg font-semibold text-[#E8E4D8]">
+                ☽ {report.currentMoon.sign} {report.currentMoon.degree}°{String(report.currentMoon.minute).padStart(2, "0")}′
+              </h2>
+              <span className="font-mono text-[9px] tracking-widest uppercase text-[#8B9EE8] shrink-0">
+                {report.currentMoon.phase}
+              </span>
+            </div>
+            <p className="mt-1 text-[11px] font-mono uppercase tracking-widest text-[#6B7A99]">
+              {houseOrd(report.currentMoon.house)} House · {HOUSE_SHORT[report.currentMoon.house] ?? "Life"}
+            </p>
+            <p className="mt-2 text-[13px] leading-relaxed text-[#9AA3B8]">
+              {report.currentMoon.description}
+            </p>
+          </div>
+        )}
+
+        {/* Dominant Arena */}
+        {report.dominantArena && (
+          <div className="mt-5 rounded-xl border border-[#8B9EE8]/20 bg-[#0D1220]/70 px-4 py-4">
+            <p className="font-mono text-[9px] tracking-widest uppercase text-[#6B7A99] mb-2">
+              Dominant Arena
+            </p>
+            <h2 className="font-serif text-lg font-semibold text-[#E8E4D8]">
+              {houseOrd(report.dominantArena.house)} House · {report.dominantArena.label}
+            </h2>
+            <p className="mt-2 text-[13px] leading-relaxed text-[#9AA3B8]">
+              {report.dominantArena.description}
+            </p>
+          </div>
+        )}
+
         {/* Celestial Field */}
         <div className="mt-5">
-            <p className="font-mono text-[9px] tracking-widest uppercase text-[#6B7A99] mb-3">
-              Celestial Field
-            </p>
+          <p className="font-mono text-[9px] tracking-widest uppercase text-[#6B7A99] mb-3">
+            Celestial Field
+          </p>
           <div className="space-y-2">
             {celestialField.map((entry, i) => (
               <div
@@ -128,27 +169,6 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
           </div>
         </div>
 
-        {/* Dominant Arena */}
-        {report.dominantArena && (
-          <div className="mt-5 rounded-xl border border-[#8B9EE8]/20 bg-[#0D1220]/70 px-4 py-4">
-            <p className="font-mono text-[9px] tracking-widest uppercase text-[#6B7A99] mb-2">
-              Dominant Arena
-            </p>
-            <div className="flex items-baseline justify-between gap-3">
-              <h2 className="font-serif text-lg font-semibold text-[#E8E4D8]">
-                {houseOrd(report.dominantArena.house)} House · {report.dominantArena.label}
-              </h2>
-              <span className="font-mono text-[9px] tracking-widest uppercase text-[#8B9EE8] shrink-0">
-                {report.dominantArena.activationCount}{" "}
-                {report.dominantArena.activationCount === 1 ? "activation" : "activations"}
-              </span>
-            </div>
-            <p className="mt-2 text-[13px] leading-relaxed text-[#9AA3B8]">
-              {report.dominantArena.description}
-            </p>
-          </div>
-        )}
-
         {/* Today's Theme */}
         {report.todaysTheme && (
           <div className="mt-5 border-l-2 border-[#8B9EE8]/40 pl-4">
@@ -160,12 +180,12 @@ export default function ForgeReport({ report, cached, zodiac = "tropical", onTog
         )}
       </div>
 
-      {/* ── Celestial State ── */}
+      {/* ── The Forge ── */}
       <Section
         icon={<Globe2 className="h-4 w-4" />}
-         kicker="Today's Energy"
-        title="Celestial State"
-        body={report.celestialState}
+        kicker="Today's Energy"
+        title="The Forge"
+        body={report.forge ?? report.celestialState ?? ""}
         multiParagraph
       />
 

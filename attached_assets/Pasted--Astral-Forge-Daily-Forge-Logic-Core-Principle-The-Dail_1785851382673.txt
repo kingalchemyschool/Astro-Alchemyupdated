@@ -1,0 +1,269 @@
+# Astral Forge Daily Forge Logic
+
+## Core Principle
+
+The Daily Forge is a synthesis engine, not a transit list.
+
+The system should analyze the entire celestial field first, determine the dominant developmental process, and then generate the report.
+
+Individual transits provide evidence for the interpretation. They are not the interpretation itself.
+
+---
+
+# Internal Calculation Layer
+
+Before generating text, calculate:
+
+## 1. Dominant Arena
+
+Rank houses by:
+
+* Number of significant transit activations
+* Exactness of aspects
+* Planetary importance
+* Repetition of themes
+* Presence of conjunctions/oppositions
+* Natal sensitivity
+
+Select the highest-weighted house.
+
+Do not display activation counts.
+
+---
+
+## 2. Dominant Planetary Pattern
+
+Identify repeated planetary themes.
+
+Example:
+
+Moon + Saturn + Mercury
+
+Possible synthesis:
+emotion + structure + mental refinement
+
+Do not interpret planets individually first.
+
+Find the shared developmental process.
+
+---
+
+## 3. Developmental Process
+
+Convert the planetary pattern into one capacity being refined.
+
+Examples:
+
+Saturn emphasis:
+discipline, durability, responsibility
+
+Mars emphasis:
+direction, execution, initiative
+
+Mercury emphasis:
+translation, understanding, decision-making
+
+Venus emphasis:
+value, attraction, cultivation
+
+Jupiter emphasis:
+growth, expansion, capacity
+
+Moon emphasis:
+processing, responsiveness, integration
+
+Sun emphasis:
+identity, purpose, expression
+
+---
+
+# Reader-Facing Structure
+
+## 1. Dominant Arena
+
+Must appear before aspects.
+
+Format:
+
+House Name · Archetypal Function
+
+2–3 sentence synthesis.
+
+Rules:
+
+* Explain why this area dominates.
+* Do not mention activation numbers.
+* Do not repeat house meaning under every aspect.
+
+---
+
+# 2. Celestial Field
+
+List significant aspects.
+
+Each aspect requires:
+
+Planetary Contact
+
+Short Archetypal Title
+
+One or two sentence interpretation.
+
+Format:
+
+Moon Conjunct Natal Saturn
+
+**Emotion meets structure.**
+
+Interpretation.
+
+Rules:
+
+* Avoid "Moon brings..."
+* Avoid dictionary definitions.
+* Explain the interaction between forces.
+* Avoid repeating house meanings.
+
+---
+
+# 3. Today's Theme
+
+Generate one sentence.
+
+Requirements:
+
+* 8–15 words
+* Describes the entire day
+* No astrology terminology
+* Memorable and practical
+
+Example:
+
+Build lasting capacity through focused commitment.
+
+---
+
+# 4. The Forge
+
+This replaces "Celestial State."
+
+Purpose:
+
+Explain how the entire chart works together.
+
+Answer:
+
+"What is the central developmental tension today?"
+
+Rules:
+
+* 150–200 words
+* Reference only dominant influences
+* No transit-by-transit summary
+* No repeated definitions
+
+---
+
+# 5. What Is Being Refined
+
+Purpose:
+
+Translate astrology into alchemical development.
+
+Rules:
+
+* One metaphor only.
+* Connect to the dominant capacity.
+* Avoid excessive symbolism.
+* End with a practical insight.
+
+Length:
+
+150–250 words.
+
+---
+
+# 6. Forge Principle
+
+One sentence.
+
+Requirements:
+
+* Under 10 words preferred.
+* Universal principle.
+* Not motivational language.
+
+Examples:
+
+Structure creates lasting capacity.
+
+Attention becomes ability through repetition.
+
+---
+
+# 7. Journal Prompt
+
+One question.
+
+Must connect:
+
+Dominant House + Developmental Process
+
+Avoid generic reflection questions.
+
+---
+
+# 8. Daily Application
+
+Three sections:
+
+## Do
+
+Concrete action.
+
+## Avoid
+
+Behavior that disperses the day's potential.
+
+## Practice
+
+Repeatable behavior that develops the capacity.
+
+Each under 40 words.
+
+---
+
+# 9. Closing Reflection
+
+Purpose:
+
+Leave the user with the enduring lesson.
+
+Rules:
+
+* Do not summarize transits.
+* Do not repeat the theme.
+* Do not explain astrology.
+* End with the capacity being carried forward.
+
+---
+
+# Style Rules
+
+Avoid:
+
+* "The universe wants..."
+* "You are being asked..."
+* "This energy means..."
+* Excessive mystical language
+* Transit dictionary explanations
+* Repeating the same idea in multiple sections
+
+Prefer:
+
+* "The field emphasizes..."
+* "The pattern favors..."
+* "The tension reveals..."
+* "The process develops..."
+
+The final report should feel like an alchemical practice journal, not an astrology forecast.

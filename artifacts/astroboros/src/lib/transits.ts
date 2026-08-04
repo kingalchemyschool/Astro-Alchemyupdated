@@ -28,19 +28,20 @@ const ALL_KEYS: PlanetKey[] = [
   "jupiter", "saturn", "uranus", "neptune", "pluto",
 ];
 
-// Transit planet priority: personal and social planets lead; Moon provides
-// emotional context but should not dominate — capped to 2 aspects below.
+// Transit planet priority for a daily report. Faster-moving planets are
+// intentionally weighted ahead of slower ones, while the server separately
+// preserves room for deep outer-planet contacts.
 const PLANET_PRIORITY: Record<PlanetKey, number> = {
-  sun:     9,
+  moon:    14,
+  sun:     11,
+  mercury: 10,
+  venus:   9,
   mars:    8,
-  mercury: 7,
-  venus:   7,
   jupiter: 6,
-  saturn:  6,
-  moon:    5,   // reduced — fast-mover; useful for tone, not always primary
+  saturn:  5,
   uranus:  4,
   neptune: 3,
-  pluto:   3,
+  pluto:   2,
 };
 
 // Aspect type priority: conjunction highest, sextile lowest
@@ -146,12 +147,12 @@ export function computeTransits(
   // Sort by score descending — highest relevance first
   aspects.sort((a, b) => b.score - a.score);
 
-  // Cap Moon transits at 2 — they provide emotional context but the fast
-  // lunar movement would otherwise crowd out slower, more meaningful transits.
+  // Keep several lunar contacts available for the daily layer. The server
+  // still reserves room for the deeper outer-planet contacts.
   let moonCount = 0;
   const balanced = aspects.filter(a => {
     if (a.transitPlanet === "moon") {
-      if (moonCount >= 2) return false;
+      if (moonCount >= 3) return false;
       moonCount++;
     }
     return true;

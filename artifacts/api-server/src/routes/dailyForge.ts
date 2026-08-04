@@ -102,7 +102,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v15";
+const REPORT_VERSION = "activation-v16";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -497,46 +497,58 @@ function validateTransitAspects(req: DailyForgeRequest): string | null {
 function generateReport(req: DailyForgeRequest): ForgeReport {
   const { natal, transits } = req;
 
-  // Take up to five aspects, but only one box per transiting planet. This keeps
-  // a busy transit such as Sun trining two natal planets from crowding out
-  // other planetary voices. Moon is guaranteed when available.
-  const MAX_ASPECTS = 5;
+  // Daily Forge is led by the fast-moving sky, especially the Moon, while
+  // retaining a deliberate place for the deeper Uranus/Neptune/Pluto contacts.
+  // There can be up to eight field boxes: three lunar, three faster personal
+  // planets, and two deep outer-planet contacts, with remaining slots filled
+  // by the strongest available aspects.
+  const MAX_ASPECTS = 8;
+  const MAX_MOON_ASPECTS = 3;
+  const MAX_FAST_ASPECTS = 3;
+  const MAX_DEEP_OUTER_ASPECTS = 2;
+  const FAST_TRANSIT_PLANETS = new Set<PlanetKey>(["sun", "mercury", "venus", "mars"]);
+  const DEEP_OUTER_PLANETS = new Set<PlanetKey>(["uranus", "neptune", "pluto"]);
+  const rankedAspects = [...transits.aspects].sort((a, b) => {
+    const planetPriority: Record<PlanetKey, number> = {
+      moon: 14, sun: 11, mercury: 10, venus: 9, mars: 8,
+      jupiter: 6, saturn: 5, uranus: 4, neptune: 3, pluto: 2,
+    };
+    return (planetPriority[b.transitPlanet] - planetPriority[a.transitPlanet])
+      || (b.score - a.score)
+      || (a.orb - b.orb);
+  });
   const activeAspects: TransitAspect[] = [];
   const selectedTransitPlanets = new Set<PlanetKey>();
-  const selectedMoonAspects: TransitAspect[] = [];
-  for (const aspect of transits.aspects) {
-    if (aspect.transitPlanet === "moon") {
-      if (selectedMoonAspects.length >= 2) continue;
-      selectedMoonAspects.push(aspect);
-    } else if (selectedTransitPlanets.has(aspect.transitPlanet)) {
-      continue;
-    }
+  const addAspect = (aspect: TransitAspect) => {
+    if (activeAspects.length >= MAX_ASPECTS) return false;
+    if (
+      aspect.transitPlanet !== "moon"
+      && selectedTransitPlanets.has(aspect.transitPlanet)
+    ) return false;
+    if (
+      aspect.transitPlanet === "moon"
+      && activeAspects.filter(a => a.transitPlanet === "moon").length >= MAX_MOON_ASPECTS
+    ) return false;
     activeAspects.push(aspect);
     selectedTransitPlanets.add(aspect.transitPlanet);
-    if (activeAspects.length === MAX_ASPECTS) break;
+    return true;
+  };
+
+  // Put the short-lived daily signal first, then preserve a visible deep layer.
+  for (const aspect of rankedAspects.filter(a => a.transitPlanet === "moon")) {
+    addAspect(aspect);
   }
-  const moonAspect = selectedMoonAspects[0] ?? transits.aspects.find(a => a.transitPlanet === "moon");
-  if (moonAspect && !selectedTransitPlanets.has("moon")) {
-    if (activeAspects.length === MAX_ASPECTS) {
-      selectedTransitPlanets.delete(activeAspects[activeAspects.length - 1].transitPlanet);
-      activeAspects[activeAspects.length - 1] = moonAspect;
-    } else {
-      activeAspects.push(moonAspect);
-    }
-    selectedTransitPlanets.add("moon");
+  for (const aspect of rankedAspects.filter(a => FAST_TRANSIT_PLANETS.has(a.transitPlanet))) {
+    if (activeAspects.filter(a => FAST_TRANSIT_PLANETS.has(a.transitPlanet)).length >= MAX_FAST_ASPECTS) break;
+    addAspect(aspect);
   }
-  // If the ranked list only surfaced one Moon aspect, make room for a second
-  // lunar contact before keeping another duplicate planetary voice.
-  const selectedMoonCount = activeAspects.filter(a => a.transitPlanet === "moon").length;
-  const nextMoonAspect = transits.aspects.find(
-    aspect => aspect.transitPlanet === "moon" && !activeAspects.includes(aspect),
-  );
-  if (selectedMoonCount < 2 && nextMoonAspect) {
-    const replaceIndex = activeAspects.findIndex(
-      (aspect, index) => index > 0 && aspect.transitPlanet !== "moon",
-    );
-    if (replaceIndex >= 0) activeAspects[replaceIndex] = nextMoonAspect;
+  for (const aspect of rankedAspects.filter(a => DEEP_OUTER_PLANETS.has(a.transitPlanet))) {
+    if (activeAspects.filter(a => DEEP_OUTER_PLANETS.has(a.transitPlanet)).length >= MAX_DEEP_OUTER_ASPECTS) break;
+    addAspect(aspect);
   }
+  // Fill unused boxes with social planets and any remaining strongest contact.
+  for (const aspect of rankedAspects) addAspect(aspect);
+
   const top       = activeAspects[0];
   const supporting = activeAspects.slice(1);
   const date = transits.date;

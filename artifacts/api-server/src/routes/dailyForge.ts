@@ -124,7 +124,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v26";
+const REPORT_VERSION = "activation-v27";
 
 function transitLocationFingerprint(location?: TransitLocation): string {
   if (!location) return "birth-location";
@@ -811,12 +811,8 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
     : `The remaining contacts add context, but they keep returning the day's attention to this same question.`;
   const patternTransitPlanets = [...new Set(dominantAspects.slice(0, 4).map(aspect => PLANET_NAMES[aspect.transitPlanet]))];
   const patternNatalPlanets = [...new Set(dominantAspects.slice(0, 4).map(aspect => PLANET_NAMES[aspect.natalPlanet]))];
-  const patternTransitQualities = [...new Set(dominantAspects.slice(0, 4).map(aspect =>
-    transitQualityFor(aspect, dominantAspects.indexOf(aspect))
-  ))];
-  const patternNatalFocuses = [...new Set(dominantAspects.slice(0, 4).map(aspect => NATAL_FOCUS[aspect.natalPlanet]))];
   const planetaryPattern = [
-    `The planetary pattern is carried by ${joinNames(patternTransitPlanets.map(name => `transiting ${name}`))} meeting ${joinNames(patternNatalPlanets.map(name => `your natal ${name}`))}. Together, these influences bring ${joinNames(patternTransitQualities)} into contact with ${joinNames(patternNatalFocuses)} — not as separate tasks, but as one question of how to make ${dominantFocus} more dependable.`,
+    `${joinNames(patternTransitPlanets)} are activating your natal ${joinNames(patternNatalPlanets)}. Rather than pulling you in separate directions, they concentrate the day on how your responses, decisions, and actions can support ${dominantFocus}.`,
     `${synthesisTransitName} supplies ${synthesisTransitQuality}, while ${synthesisNatalFocus} shows where that quality has to become useful. ${secondaryCurrent ? `${PLANET_NAMES[secondaryCurrent.transitPlanet]} adds another layer to the same process, widening the conversation without changing its center.` : "The surrounding planets reinforce the same developmental direction rather than pulling the day toward a different priority."}`,
   ].join("\n\n");
   const forge = [

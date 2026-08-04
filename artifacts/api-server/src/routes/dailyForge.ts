@@ -102,7 +102,7 @@ function natalFingerprint(natal: DailyForgeRequest["natal"]): string {
   ].join(":");
 }
 
-const REPORT_VERSION = "activation-v20";
+const REPORT_VERSION = "activation-v21";
 
 function cacheKey(jti: string, date: string, zodiac: string, natal: DailyForgeRequest["natal"]): string {
   return `${REPORT_VERSION}:${jti}:${date}:${zodiac}:${natalFingerprint(natal)}`;
@@ -162,6 +162,21 @@ const HOUSE_MEANING: Record<number, { short: string; full: string }> = {
   10: { short: "Contribution",   full: "your long-term direction, your public contribution, and the reputation you are building through consistent action" },
   11: { short: "Networks",       full: "your communities, your vision for the future, and the people who share or challenge your direction" },
   12: { short: "Integration",    full: "what you are processing beneath the surface — the unseen patterns that shape your experience from within" },
+};
+
+const HOUSE_JOURNAL_FOCUS: Record<number, string> = {
+  1:  "how you show up in the world",
+  2:  "money, values, and self-worth",
+  3:  "communication and learning",
+  4:  "home and emotional grounding",
+  5:  "creative life and pleasure",
+  6:  "daily routines and wellbeing",
+  7:  "close relationships",
+  8:  "shared ties and deep change",
+  9:  "beliefs and direction",
+  10: "work and public contribution",
+  11: "community and future plans",
+  12: "your inner life",
 };
 
 // Aspect — what it means experientially
@@ -797,31 +812,32 @@ function generateReport(req: DailyForgeRequest): ForgeReport {
   );
 
   // ── JOURNAL PROMPT ───────────────────────────────────────────────────────
+  const journalFocus = HOUSE_JOURNAL_FOCUS[nHouse] ?? "the part of life asking for attention";
   const journalPromptsByAspect: Record<AspectType, string[]> = {
     conjunction: [
-      `Your thinking today runs ${moonInfo.style} — ${moonInfo.lens}. In the area of ${nHouseMeaning.full}, where is your ${refinement} most concentrated right now, and what would it look like to direct that concentration more deliberately rather than let it find its own level?`,
-      `Your thinking today runs ${moonInfo.style}. In the area of ${nHouseMeaning.full}, what part of your ${refinement} have you been splitting between two separate efforts when it actually needs to go into one focused approach?`,
-      `Your thinking today is ${moonInfo.style} (${moonInfo.lens}). In the area of ${nHouseMeaning.full}, what is the one thing holding back your ${refinement} — not because you lack the ability, but because you have not focused on it as a single priority?`,
+      `In ${journalFocus}, what deserves your full attention today? What would change if you stopped dividing it between competing priorities?`,
+      `Where in ${journalFocus} are you feeling the strongest pull to act? What would a focused response look like?`,
+      `What is becoming impossible to ignore in ${journalFocus}? Write about the response you want to choose rather than the one you usually default to.`,
     ],
     trine: [
-      `Your thinking today runs ${moonInfo.style} — ${moonInfo.lens}. In the area of ${nHouseMeaning.full}, where is your ${refinement} already working most naturally, and what would it take to push that further than your usual stopping point?`,
-      `Your thinking today runs ${moonInfo.style}. In the area of ${nHouseMeaning.full}, what goal have you been treating as something for later that today's conditions actually make available now?`,
-      `Your thinking today is ${moonInfo.style}. In the area of ${nHouseMeaning.full}, where is your ${refinement} coming most easily — and what would it look like to build something real and lasting within that ease, rather than just riding it?`,
+      `What is working more naturally than usual in ${journalFocus}? How could you make better use of that ease today?`,
+      `What have you been postponing in ${journalFocus} even though the next step is already clear?`,
+      `Where in ${journalFocus} do you feel supported? What would you like to build from that support?`,
     ],
     sextile: [
-      `Your thinking today runs ${moonInfo.style} — ${moonInfo.lens}. In the area of ${nHouseMeaning.full}, what specific step related to your ${refinement} has been waiting for better conditions — and what is the smallest version of that step you could take right now?`,
-      `Your thinking today runs ${moonInfo.style}. In the area of ${nHouseMeaning.full}, what are you most aware of not starting — and what assumption about timing or readiness is behind that hesitation?`,
-      `Your thinking today is ${moonInfo.style}. In the area of ${nHouseMeaning.full}, where do you notice an opening that was not there last week — and what would it take to move through it before it closes?`,
+      `What small opening do you notice in ${journalFocus}? What would taking it look like today?`,
+      `What have you been waiting to begin in ${journalFocus}? What is the smallest honest first step?`,
+      `Where in ${journalFocus} is there more possibility than you expected? Write about one way you could meet it with action.`,
     ],
     square: [
-      `Your thinking today runs ${moonInfo.style} — ${moonInfo.lens}. In the area of ${nHouseMeaning.full}, where is your ${refinement} running into the most resistance — and if you treated that resistance as specific information about what still needs work, what would it be telling you?`,
-      `Your thinking today runs ${moonInfo.style}. In the area of ${nHouseMeaning.full}, what are you most tempted to avoid — and what would it reveal about your ${refinement} if you engaged with it directly instead?`,
-      `Your thinking today is ${moonInfo.style}. In the area of ${nHouseMeaning.full}, where is the gap between your current approach and what is being asked of you widest — and what one specific adjustment, not a workaround, would close that gap most?`,
+      `What feels hardest in ${journalFocus} right now? What might that difficulty be trying to show you?`,
+      `What are you tempted to avoid in ${journalFocus}? What would become clearer if you faced it directly?`,
+      `Where has your usual approach stopped working in ${journalFocus}? What could you try instead?`,
     ],
     opposition: [
-      `Your thinking today runs ${moonInfo.style} — ${moonInfo.lens}. In the area of ${nHouseMeaning.full}, what angle on your ${refinement} does today's contrast give you that your usual point of view cannot?`,
-      `Your thinking today runs ${moonInfo.style}. In the area of ${nHouseMeaning.full}, what about your current approach becomes most visible when you look at it from the position that is most directly opposite to where you usually stand?`,
-      `Your thinking today is ${moonInfo.style}. In the area of ${nHouseMeaning.full}, what do you notice when you hold both your current position and its opposite at the same time — not choosing between them, but keeping both in view at once?`,
+      `What does the other side of the situation reveal about your usual view of ${journalFocus}?`,
+      `Where in ${journalFocus} are you holding two different needs at once? What does each one know?`,
+      `What becomes visible in ${journalFocus} when you pause before choosing a side?`,
     ],
   };
   const journalPrompt = pick(journalPromptsByAspect[aspectType], seed, 4);

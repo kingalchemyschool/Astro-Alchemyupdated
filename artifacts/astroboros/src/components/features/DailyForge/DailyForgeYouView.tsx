@@ -14,6 +14,7 @@ import type {
 } from "@/lib/transits";
 import { HOUSE_DOMAIN, HOUSE_WORK, PLANET_META, SIGNS, SIGN_QUALITY } from "@/constants/astro";
 import { houseOf } from "@/lib/houses";
+import { computeChart } from "@/lib/ephemeris";
 import ForgeReportView from "@/components/features/DailyForge/ForgeReport";
 
 type DetailAspect = TransitAspect | TransitAdditionalAspect | TransitAngleAspect;
@@ -112,6 +113,7 @@ interface TransitEntry {
   aspect: DetailAspect;
   title: string;
   timing: string;
+  durationDays: number;
   glyphs: string;
   houseLabel: string;
   transitSign: string;
@@ -201,9 +203,7 @@ function buildTransitEntries(
       return true;
     })
     .sort((a, b) => {
-      const aLong = ["jupiter", "saturn", "uranus", "neptune", "pluto"].includes(a.aspect.transitPlanet) || "natalAngle" in a.aspect;
-      const bLong = ["jupiter", "saturn", "uranus", "neptune", "pluto"].includes(b.aspect.transitPlanet) || "natalAngle" in b.aspect;
-      return Number(aLong) - Number(bLong);
+      return a.durationDays - b.durationDays || b.aspect.score - a.aspect.score;
     });
 }
 
@@ -253,6 +253,7 @@ function makeEntry(aspect: DetailAspect, transitData: TransitData, natal: NatalC
   const meaning = `${transitMeta.name} brings ${transitMeta.fn.toLowerCase()} into ${domain}. The ${ASPECT_LABEL[aspect.type].toLowerCase()} contact makes that process more noticeable through ${targetName || targetSign}; in ${SIGNS[transit.signIndex].name}, the tone is ${quality}.`;
   const application = `${planetApplication(aspect.transitPlanet)} ${HOUSE_WORK[(targetHouse ?? transit.house) - 1] ? `Favor ${HOUSE_WORK[(targetHouse ?? transit.house) - 1]}.` : ""}`;
   const aspectDetail = `${ASPECT_LABEL[aspect.type]} ${ASPECT_GLYPH[aspect.type]} · ${aspect.orb.toFixed(1)}° from exact`;
+  const durationDays = daysRemaining(aspect, transitData, natal);
   const id = "natalPlanet" in aspect
     ? `${aspect.transitPlanet}-${aspect.natalPlanet}-${aspect.type}`
     : "natalPoint" in aspect
@@ -263,7 +264,8 @@ function makeEntry(aspect: DetailAspect, transitData: TransitData, natal: NatalC
     id,
     aspect,
     title,
-    timing: timingFor(aspect.transitPlanet),
+    timing: timingLabel(durationDays),
+    durationDays,
     glyphs: `${transitMeta.glyph} ${ASPECT_GLYPH[aspect.type]} ${targetGlyph(aspect, natal)}`,
     houseLabel,
     transitSign,
@@ -279,14 +281,76 @@ function makeEntry(aspect: DetailAspect, transitData: TransitData, natal: NatalC
   };
 }
 
-function timingFor(planet: PlanetKey) {
-  if (planet === "moon") return "Today";
-  if (["sun", "mercury", "venus", "mars"].includes(planet)) return "This week";
-  if (planet === "jupiter") return "19 days left";
-  if (planet === "saturn") return "81 days left";
-  if (planet === "uranus") return "210 days left";
-  if (planet === "neptune") return "299 days left";
-  return "Long term";
+function timingLabel(days: number) {
+  return `${days} ${days === 1 ? "day" : "days"} left`;
+}
+
+const ASPECT_ANGLES: Record<string, number> = {
+  conjunction: 0,
+  sextile: 60,
+  square: 90,
+  trine: 120,
+  opposition: 180,
+};
+
+function daysRemaining(
+  aspect: DetailAspect,
+  transitData: TransitData,
+  natal: NatalChart,
+) {
+  const positionCache = new Map<number, NatalChart>();
+  const step = ["sun", "mercury", "venus", "mars"].includes(aspect.transitPlanet) ? 1 : 3;
+  const maxDays = 1460;
+
+  const chartAt = (days: number) => {
+    const cached = positionCache.get(days);
+    if (cached) return cached;
+    const chart = computeChart({
+      date: addDays(transitData.date, days),
+      time: "12:00",
+      place: transitData.location.label,
+      lat: transitData.location.lat,
+      lon: transitData.location.lon,
+      tz: transitData.location.tz,
+      tzName: transitData.location.tzName,
+      zodiac: transitData.zodiac,
+    });
+    positionCache.set(days, chart);
+    return chart;
+  };
+
+  const activeAt = (days: number) => {
+    const chart = chartAt(days);
+    const transitLongitude = chart.positions[aspect.transitPlanet].longitude;
+    const natalLongitude = "natalPlanet" in aspect
+      ? natal.positions[aspect.natalPlanet].longitude
+      : "natalPoint" in aspect
+        ? natal.additionalPoints[aspect.natalPoint].longitude
+        : natal.angles[aspect.natalAngle].longitude;
+    let separation = Math.abs(transitLongitude - natalLongitude);
+    if (separation > 180) separation = 360 - separation;
+    return Math.abs(separation - ASPECT_ANGLES[aspect.type]) <= 3;
+  };
+
+  for (let probe = step; probe <= maxDays; probe += step) {
+    if (!activeAt(probe)) {
+      for (let day = Math.max(1, probe - step + 1); day <= probe; day += 1) {
+        if (!activeAt(day)) return day;
+      }
+    }
+  }
+
+  return maxDays;
+}
+
+function addDays(date: string, amount: number) {
+  const [year, month, day] = date.split("-").map(Number);
+  const next = new Date(Date.UTC(year, month - 1, day + amount));
+  return [
+    next.getUTCFullYear(),
+    String(next.getUTCMonth() + 1).padStart(2, "0"),
+    String(next.getUTCDate()).padStart(2, "0"),
+  ].join("-");
 }
 
 function degreeLabel(degree: number, minute: number) {

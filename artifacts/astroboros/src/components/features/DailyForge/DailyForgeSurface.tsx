@@ -235,48 +235,38 @@ function WorldView({ world, zodiac, today }: { world: WorldSky; zodiac: "tropica
       <section className="rounded-2xl border border-[#3B4B8C]/35 bg-[#080B18] p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B9EE8]">World transits</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B9EE8]">World Moon</p>
             <h2 className="mt-1 font-serif text-2xl font-semibold text-[#E8E4D8]">
               {SIGNS[moon.signIndex].name} Moon · {moon.degree}°
             </h2>
             <p className="mt-1 text-sm leading-relaxed text-[#9AA3B8]">
-              The collective atmosphere is read from the sky itself: planetary relationships, sign movement, and the angles that frame the day.
+              The Moon sets the immediate emotional weather for the collective sky. Its house shows where the day is most receptive and changeable.
             </p>
           </div>
           <Moon className="mt-1 h-8 w-8 shrink-0 text-[#e8e4d8]" />
         </div>
-        <div className="mt-5 space-y-2">
-          {world.events.map((event) => <SkyEventCard key={event.id} event={event} />)}
-        </div>
       </section>
+
       <PlanetTransitCards
         chart={world.chart}
-        title="Every planet, in the world"
-        subtitle="The collective sky translated into the arenas of the Greenwich world chart."
+        title="Current planets"
+        subtitle="Each planet’s current sign, sky house, collective function, and practical expression."
         mode="world"
       />
-      <section className="rounded-2xl border border-[#1E2640]/80 bg-[#080B18] p-5">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#6B7A99]">Planets in signs</p>
-            <h3 className="mt-1 font-serif text-xl font-semibold text-[#E8E4D8]">The sky’s current placements</h3>
-          </div>
-          <Link to="/daily-forge/calendar" className="text-xs text-[#8B9EE8] hover:text-[#E8E4D8]">View calendar →</Link>
+
+      <section className="rounded-2xl border border-[#3B4B8C]/35 bg-[#080B18] p-5">
+        <div className="mb-4">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B9EE8]">World transits</p>
+          <h3 className="mt-1 font-serif text-2xl font-semibold text-[#E8E4D8]">The sky in motion</h3>
+          <p className="mt-1 text-sm leading-relaxed text-[#9AA3B8]">
+            Planetary relationships and sign movement shaping the collective field today.
+          </p>
         </div>
-        <div className="mt-4 grid gap-x-4 sm:grid-cols-2">
-          {DAILY_KEYS.map((key) => {
-            const position = world.chart.positions[key];
-            return (
-              <div key={key} className="flex items-center justify-between border-b border-[#1E2640]/60 py-3">
-                <span className="flex items-center gap-2 text-sm text-[#C4CADC]">
-                  <span className="glyph text-[#d8b86a]">{PLANET_META[key].glyph}</span>{PLANET_META[key].name}
-                </span>
-                <span className="font-mono text-[10px] text-[#6B7A99]">{SIGNS[position.signIndex].name} {position.degree}°</span>
-              </div>
-            );
-          })}
+        <div className="space-y-2">
+          {world.events.filter((event) => event.type !== "moon").map((event) => (
+            <SkyEventCard key={event.id} event={event} />
+          ))}
         </div>
-        <p className="mt-4 text-[10px] font-mono uppercase tracking-widest text-[#4A5470]">{zodiac === "sidereal" ? "Sidereal · Lahiri" : "Tropical"} · {today}</p>
       </section>
     </div>
   );

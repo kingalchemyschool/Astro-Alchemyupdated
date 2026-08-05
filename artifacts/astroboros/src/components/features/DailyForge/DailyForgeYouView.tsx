@@ -6,7 +6,6 @@ import {
   CircleDollarSign,
   Heart,
   Leaf,
-  Moon,
   Sparkles,
   UserRound,
   UsersRound,
@@ -21,6 +20,7 @@ import type {
   TransitData,
 } from "@/lib/transits";
 import { HOUSE_DOMAIN, HOUSE_WORK, PLANET_META, SIGNS, SIGN_QUALITY } from "@/constants/astro";
+import ForgeReportView from "@/components/features/DailyForge/ForgeReport";
 
 type CategoryKey = "self" | "health" | "work" | "love" | "money" | "family";
 type DetailAspect = TransitAspect | TransitAdditionalAspect | TransitAngleAspect;
@@ -52,13 +52,15 @@ const CATEGORY_META: Array<{
   label: string;
   icon: typeof UserRound;
   color: string;
+  houses: number[];
+  description: string;
 }> = [
-  { key: "self", label: "Self", icon: UserRound, color: "#E8E4D8" },
-  { key: "health", label: "Health", icon: Leaf, color: "#9FC9A5" },
-  { key: "work", label: "Work", icon: BriefcaseBusiness, color: "#D8B86A" },
-  { key: "love", label: "Love", icon: Heart, color: "#D88AA4" },
-  { key: "money", label: "Money", icon: CircleDollarSign, color: "#D8B86A" },
-  { key: "family", label: "Family", icon: UsersRound, color: "#8BC6C8" },
+  { key: "self", label: "Self", icon: UserRound, color: "#E8E4D8", houses: [1, 5, 9], description: "identity, confidence, and personal direction" },
+  { key: "health", label: "Health", icon: Leaf, color: "#9FC9A5", houses: [1, 6, 12], description: "body, rhythm, recovery, and sustainable effort" },
+  { key: "work", label: "Work", icon: BriefcaseBusiness, color: "#D8B86A", houses: [2, 6, 10, 11], description: "craft, contribution, visibility, and useful alliances" },
+  { key: "love", label: "Love", icon: Heart, color: "#D88AA4", houses: [5, 7, 8], description: "desire, partnership, intimacy, and creative exchange" },
+  { key: "money", label: "Money", icon: CircleDollarSign, color: "#D8B86A", houses: [2, 8, 10, 11], description: "resources, value, shared power, and long-term security" },
+  { key: "family", label: "Family", icon: UsersRound, color: "#8BC6C8", houses: [3, 4, 7], description: "home, roots, communication, and relational care" },
 ];
 
 interface Props {
@@ -83,22 +85,21 @@ export default function DailyForgeYouView({
   const [category, setCategory] = useState<CategoryKey>("self");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const natal = reading.chart;
+  const categoryMeta = CATEGORY_META.find((item) => item.key === category) ?? CATEGORY_META[0];
 
-  const moonAspects = useMemo(
-    () => transitData.aspects.filter((aspect) => aspect.transitPlanet === "moon"),
-    [transitData.aspects],
-  );
   const shortTerm = useMemo(
-    () => buildTransitEntries(transitData, natal, "short").filter((entry) => entry.aspect.transitPlanet !== "moon"),
-    [transitData, natal],
+    () => buildTransitEntries(transitData, natal, "short", categoryMeta.houses),
+    [transitData, natal, categoryMeta.houses],
   );
   const longTerm = useMemo(
-    () => buildTransitEntries(transitData, natal, "long"),
-    [transitData, natal],
+    () => buildTransitEntries(transitData, natal, "long", categoryMeta.houses),
+    [transitData, natal, categoryMeta.houses],
   );
-  const primary = transitData.aspects[0] ?? transitData.angleAspects[0] ?? transitData.additionalAspects[0];
-  const moon = transitData.positions.moon;
-  const categoryMeta = CATEGORY_META.find((item) => item.key === category) ?? CATEGORY_META[0];
+  const primary = shortTerm[0]?.aspect ?? longTerm[0]?.aspect;
+  const categoryReport = useMemo(
+    () => tailorReport(report, categoryMeta, primary, natal),
+    [report, categoryMeta, primary, natal],
+  );
 
   return (
     <div className="space-y-5">
@@ -109,37 +110,38 @@ export default function DailyForgeYouView({
         report={report}
         primary={primary}
         natal={natal}
-        moon={moon}
         zodiac={zodiac}
         locationMode={locationMode}
         transitLocationLabel={transitLocationLabel}
         onToggleZodiac={onToggleZodiac}
-      />
-
-      <MoonSection
-        moon={moon}
-        report={report}
-        aspects={moonAspects}
-        transitData={transitData}
-        natal={natal}
-        expandedId={expandedId}
-        onExpand={setExpandedId}
+        categoryDescription={categoryMeta.description}
       />
 
       <TransitGroup
-        label="Transits affecting you: short term"
+        label={`${categoryMeta.label} · short-term transits`}
         entries={shortTerm}
         expandedId={expandedId}
         onExpand={setExpandedId}
-        emptyText="No additional short-term contacts are tight enough to foreground today."
+        emptyText={`No short-term contacts currently activate ${categoryMeta.description}.`}
       />
 
       <TransitGroup
-        label="Transits affecting you: long term"
+        label={`${categoryMeta.label} · long-term transits`}
         entries={longTerm}
         expandedId={expandedId}
         onExpand={setExpandedId}
-        emptyText="No long-term contacts are currently within the active orb."
+        emptyText={`No long-term contacts currently activate ${categoryMeta.description}.`}
+      />
+
+      <ForgeReportView
+        report={categoryReport}
+        cached={false}
+        zodiac={zodiac}
+        onToggleZodiac={onToggleZodiac}
+        transitLocationLabel={transitLocationLabel}
+        showMoon={false}
+        showCelestialField={false}
+        lifeArea={categoryMeta.label}
       />
 
       <p className="px-2 pb-2 text-center font-mono text-[10px] uppercase tracking-widest text-[#3A4460]">
@@ -179,25 +181,25 @@ function DailySummaryCard({
   report,
   primary,
   natal,
-  moon,
   zodiac,
   locationMode,
   transitLocationLabel,
   onToggleZodiac,
+  categoryDescription,
 }: {
   category: CategoryKey;
   report: ForgeReport;
   primary?: DetailAspect;
   natal: NatalChart;
-  moon: TransitData["positions"]["moon"];
   zodiac: "tropical" | "sidereal";
   locationMode: "birth" | "current";
   transitLocationLabel: string;
   onToggleZodiac: () => void;
+  categoryDescription: string;
 }) {
   const meta = CATEGORY_META.find((item) => item.key === category) ?? CATEGORY_META[0];
   const title = summaryTitle(category, primary, natal);
-  const body = summaryBody(category, primary, natal, moon, report);
+  const body = summaryBody(category, primary, natal, report, categoryDescription);
   return (
     <section className="relative overflow-hidden rounded-2xl border border-[#535B70] bg-[#101113] px-5 py-6 shadow-[0_12px_40px_rgba(0,0,0,0.16)] sm:px-6">
       <div
@@ -225,61 +227,6 @@ function DailySummaryCard({
       <p className="relative mt-4 text-[10px] uppercase tracking-widest text-[#6B7285]">
         Transit location · {locationMode === "current" ? "Current" : "Birth"} · {transitLocationLabel}
       </p>
-    </section>
-  );
-}
-
-function MoonSection({
-  moon,
-  report,
-  aspects,
-  transitData,
-  natal,
-  expandedId,
-  onExpand,
-}: {
-  moon: TransitData["positions"]["moon"];
-  report: ForgeReport;
-  aspects: TransitAspect[];
-  transitData: TransitData;
-  natal: NatalChart;
-  expandedId: string | null;
-  onExpand: (id: string | null) => void;
-}) {
-  return (
-    <section className="rounded-2xl border border-[#3B4B8C]/40 bg-[#080B18] p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B9EE8]">The Moon</p>
-          <h2 className="mt-1 font-serif text-2xl font-semibold text-[#F0EADB]">
-            Moon in {SIGNS[moon.signIndex].name}
-          </h2>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-[#6B7285]">
-            {moon.degree}°{String(moon.minute).padStart(2, "0")}′ · {report.currentMoon?.phase ?? "Today"} · {ordinal(moon.house)} house
-          </p>
-        </div>
-        <Moon className="h-9 w-9 text-[#E8E4D8]" />
-      </div>
-      <p className="mt-4 text-[15px] leading-relaxed text-[#C4CADC]">
-        {report.currentMoon?.description ?? `The Moon in ${SIGNS[moon.signIndex].name} brings ${SIGN_QUALITY[moon.signIndex]} into the emotional weather of the day.`}
-      </p>
-      {aspects.length > 0 && (
-        <div className="mt-4 border-t border-[#1E2640] pt-2">
-          {aspects.slice(0, 3).map((aspect) => {
-            const id = `moon-${aspect.natalPlanet}-${aspect.type}`;
-            const entry = makeEntry(aspect, transitData, natal);
-            return (
-              <TransitDetailCard
-                key={id}
-                entry={entry}
-                expanded={expandedId === id}
-                onClick={() => onExpand(expandedId === id ? null : id)}
-                compact
-              />
-            );
-          })}
-        </div>
-      )}
     </section>
   );
 }
@@ -327,6 +274,9 @@ interface TransitEntry {
   natalPlacement: string;
   meaning: string;
   application: string;
+  transitHouse: number;
+  targetHouse?: number;
+  orb: number;
 }
 
 function TransitDetailCard({
@@ -365,7 +315,7 @@ function TransitDetailCard({
       {expanded && (
         <div className="border-t border-[#263152] px-5 pb-5 pt-4">
           <div className="grid gap-3 sm:grid-cols-2">
-            <DetailBlock label="Transit placement" text={`${entry.transitSign} · ${entry.houseLabel}`} />
+            <DetailBlock label="Transit placement" text={`${entry.transitSign} · ${entry.houseLabel} · ${entry.orb.toFixed(1)}° orb`} />
             <DetailBlock label="Natal contact" text={entry.natalPlacement} />
             <DetailBlock label="Meaning" text={entry.meaning} />
             <DetailBlock label="Daily application" text={entry.application} accent />
@@ -389,6 +339,7 @@ function buildTransitEntries(
   transitData: TransitData,
   natal: NatalChart,
   group: "short" | "long",
+  focusHouses: number[],
 ): TransitEntry[] {
   const all: TransitEntry[] = [
     ...transitData.aspects.map((aspect) => makeEntry(aspect, transitData, natal)),
@@ -401,8 +352,11 @@ function buildTransitEntries(
       const planet = entry.aspect.transitPlanet;
       const long = ["jupiter", "saturn", "uranus", "neptune", "pluto"].includes(planet);
       const angle = "natalAngle" in entry.aspect;
-      const keep = group === "long" ? long || angle : !long && !angle;
-      if (!keep || seen.has(entry.id)) return false;
+      const relevant = focusHouses.includes(entry.transitHouse)
+        || (entry.targetHouse !== undefined && focusHouses.includes(entry.targetHouse));
+      const keep = entry.aspect.transitPlanet !== "moon"
+        && (group === "long" ? long || angle : !long && !angle);
+      if (!keep || !relevant || seen.has(entry.id)) return false;
       seen.add(entry.id);
       return true;
     })
@@ -465,6 +419,9 @@ function makeEntry(aspect: DetailAspect, transitData: TransitData, natal: NatalC
     natalPlacement,
     meaning,
     application,
+    transitHouse: transit.house,
+    targetHouse,
+    orb: aspect.orb,
   };
 }
 
@@ -520,13 +477,39 @@ function summaryTitle(category: CategoryKey, primary: DetailAspect | undefined, 
   return categoryTitles[category];
 }
 
-function summaryBody(category: CategoryKey, primary: DetailAspect | undefined, natal: NatalChart, moon: TransitData["positions"]["moon"], report: ForgeReport) {
-  const moonText = report.currentMoon?.description ?? `The Moon in ${SIGNS[moon.signIndex].name} brings ${SIGN_QUALITY[moon.signIndex]} into the day.`;
+function summaryBody(category: CategoryKey, primary: DetailAspect | undefined, natal: NatalChart, report: ForgeReport, categoryDescription: string) {
+  const theme = report.todaysTheme || report.forge || "The sky is asking for a deliberate response.";
   if (primary && "natalPlanet" in primary) {
     const target = natal.positions[primary.natalPlanet];
-    return `Your inner and outer timing meet through ${PLANET_META[primary.transitPlanet].name} ${ASPECT_LABEL[primary.type].toLowerCase()} your natal ${PLANET_META[primary.natalPlanet].name} in the ${ordinal(target.house)} house. ${moonText} Let the ${category} question become one specific action rather than another layer of interpretation.`;
+    return `Your inner and outer timing meet through ${PLANET_META[primary.transitPlanet].name} ${ASPECT_LABEL[primary.type].toLowerCase()} your natal ${PLANET_META[primary.natalPlanet].name} in the ${ordinal(target.house)} house. ${theme} Read the day through ${categoryDescription}, then make one specific adjustment.`;
   }
-  return `${moonText} The most useful ${category} move today is to notice the signal, name the arena it belongs to, and make one deliberate adjustment before adding more effort.`;
+  return `${theme} The most useful ${category} move today is to notice the signal, name the arena it belongs to, and make one deliberate adjustment before adding more effort.`;
+}
+
+function tailorReport(
+  report: ForgeReport,
+  category: (typeof CATEGORY_META)[number],
+  primary: DetailAspect | undefined,
+  natal: NatalChart,
+): ForgeReport {
+  const house = primary && "natalPlanet" in primary ? natal.positions[primary.natalPlanet].house : category.houses[0];
+  const area = category.description;
+  const planet = primary ? PLANET_META[primary.transitPlanet].name : "The current sky";
+  return {
+    ...report,
+    dominantArena: {
+      house,
+      label: category.label,
+      description: `This reading is filtered through ${area}. ${planet} gives the focus a specific timing signal rather than a general forecast.`,
+    },
+    todaysTheme: `${category.label}: ${report.todaysTheme || `work with ${area}`}`,
+    forge: `For ${category.label.toLowerCase()}, ${report.forge || report.celestialState || `stay attentive to ${area}`}`,
+    whatIsBeingRefined: report.whatIsBeingRefined || report.alchemicalProcess || `Your relationship with ${area}.`,
+    forgePrinciple: `${category.label}: ${report.forgePrinciple}`,
+    journalPrompt: `${report.journalPrompt} How does this change when you look specifically at ${area}?`,
+    dailyApplication: `${report.dailyApplication}\n\nPRACTICE: Apply this to ${area} before extending the lesson to anything else.`,
+    closingReflection: `${report.closingReflection} Return to ${area} as the place where the reading becomes real.`,
+  };
 }
 
 function additionalLabel(key: AdditionalPointKey) {

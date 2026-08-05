@@ -27,6 +27,9 @@ interface Props {
   zodiac?: "tropical" | "sidereal";
   onToggleZodiac?: () => void;
   transitLocationLabel?: string;
+  showMoon?: boolean;
+  showCelestialField?: boolean;
+  lifeArea?: string;
 }
 
 export default function ForgeReport({
@@ -35,6 +38,9 @@ export default function ForgeReport({
   zodiac = "tropical",
   onToggleZodiac,
   transitLocationLabel,
+  showMoon = true,
+  showCelestialField = true,
+  lifeArea,
 }: Props) {
   const { primaryTransit: pt } = report;
 
@@ -75,6 +81,11 @@ export default function ForgeReport({
                 Transit location · {transitLocationLabel}
               </p>
             )}
+            {lifeArea && (
+              <p className="mt-2 text-[10px] font-mono uppercase tracking-widest text-[#d8b86a]">
+                Focused life area · {lifeArea}
+              </p>
+            )}
           </div>
           <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
             <button
@@ -97,7 +108,7 @@ export default function ForgeReport({
         </div>
 
         {/* Current Moon */}
-        {report.currentMoon && (
+        {showMoon && report.currentMoon && (
           <div className="mt-5 rounded-xl border border-[#8B9EE8]/20 bg-[#0D1220]/70 px-4 py-4">
             <div className="flex items-center gap-2 mb-3">
               <Moon className="h-4 w-4 text-[#8B9EE8]" />
@@ -138,7 +149,7 @@ export default function ForgeReport({
         )}
 
         {/* Celestial Field */}
-        <div className="mt-5">
+        {showCelestialField && <div className="mt-5">
           <p className="font-mono text-[9px] tracking-widest uppercase text-[#6B7A99] mb-3">
             Celestial Field
           </p>
@@ -179,7 +190,7 @@ export default function ForgeReport({
               </div>
             ))}
           </div>
-        </div>
+        </div>}
 
         {/* Today's Theme */}
         {report.todaysTheme && (

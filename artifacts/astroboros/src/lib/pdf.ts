@@ -254,6 +254,20 @@ export function exportLabPdf(c: Comparison) {
   for (const p of c.summary) para(p);
   y += 8;
 
+  // ── Complete sidereal synastry matrix ──────────────────────────────────────
+  doc.addPage(); y = margin;
+  label("Complete Sidereal Synastry — Exact Cross-Chart Matrix");
+  sub("Both Ascendants and all ten planetary points. Each contact includes its exact orb, sidereal placements, observable effect, and operational recommendation.");
+  for (const entry of c.synastryMatrix) {
+    ensure(70);
+    heading(`${entry.aPoint}  ${entry.aspect}  ${entry.bPoint}`, 11.5);
+    sub(`${entry.aPlacement}  x  ${entry.bPlacement}  |  orb ${entry.orb.toFixed(1)}°`);
+    para(entry.interpretation);
+    kv("Observable Effect", entry.observableEffect);
+    kv("Recommendation", entry.recommendation);
+    y += 4;
+  }
+
   // ── Experimental Summary ───────────────────────────────────────────────────
   rule();
   label("Experimental Summary");

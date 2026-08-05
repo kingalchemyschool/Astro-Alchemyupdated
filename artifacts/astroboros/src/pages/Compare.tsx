@@ -25,6 +25,7 @@ import {
   type Amplifier,
   type Constraint,
   type PlanetPairNote,
+  type SynastryMatrixEntry,
 } from "@/lib/compare";
 import { SIGNS, PLANET_META } from "@/constants/astro";
 import BirthDataForm from "@/components/features/BirthDataForm";
@@ -283,6 +284,22 @@ function Result({
         </div>
       </section>
 
+      {/* ── Complete sidereal synastry matrix ── */}
+      <section className="mt-12">
+        <div className="mb-6 border-b border-border/60 pb-2">
+          <SectionLabel>Complete Sidereal Synastry</SectionLabel>
+          <h2 className="mt-1 font-serif text-2xl font-semibold">Every qualifying cross-chart contact</h2>
+          <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+            Exact aspects between both Ascendants and all ten planetary points. Orbs are calculated from the displayed sidereal longitudes; the cards translate each contact into observable partnership behavior.
+          </p>
+        </div>
+        <div className="space-y-3">
+          {c.synastryMatrix.map((entry, i) => (
+            <SynastryMatrixCard key={`${entry.aPoint}-${entry.bPoint}-${entry.aspect}-${i}`} entry={entry} />
+          ))}
+        </div>
+      </section>
+
       {/* ── Creation Cycle Analysis ── */}
       <section className="mt-12">
         <div className="mb-6 border-b border-border/60 pb-2">
@@ -437,6 +454,50 @@ function FunctionCard({ pair }: { pair: PlanetPairNote }) {
           <p className="text-sm leading-relaxed text-foreground/80">{pair.experiment}</p>
         </div>
       )}
+    </article>
+  );
+}
+
+function SynastryMatrixCard({ entry }: { entry: SynastryMatrixEntry }) {
+  const isChallenging = entry.aspect === "square" || entry.aspect === "opposite" || entry.aspect === "quincunx";
+  return (
+    <article className={`rounded-xl border p-5 sm:p-6 ${
+      isChallenging
+        ? "border-amber-500/20 bg-amber-500/[0.035]"
+        : "border-primary/20 bg-primary/[0.025]"
+    }`}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h4 className="font-serif text-lg font-semibold">
+            {entry.aPoint} <span className="text-muted-foreground">{entry.aspect}</span> {entry.bPoint}
+          </h4>
+          <div className="mt-1 flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
+            <span>{entry.aPlacement}</span>
+            <span className="text-border">×</span>
+            <span>{entry.bPlacement}</span>
+            <span className="text-border">·</span>
+            <span>{entry.orb.toFixed(1)}° orb</span>
+          </div>
+        </div>
+        <span className={`rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest ${
+          isChallenging
+            ? "border-amber-500/30 bg-amber-500/10 text-amber-400"
+            : "border-primary/25 bg-primary/10 text-primary"
+        }`}>
+          {isChallenging ? "Constraint" : "Resource"}
+        </span>
+      </div>
+      <p className="mt-4 text-sm leading-relaxed text-foreground/85">{entry.interpretation}</p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-lg border border-border/50 bg-muted/10 px-4 py-3">
+          <div className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-accent">Observable Effect</div>
+          <p className="text-sm leading-relaxed text-foreground/80">{entry.observableEffect}</p>
+        </div>
+        <div className="rounded-lg border border-primary/20 bg-primary/[0.05] px-4 py-3">
+          <div className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-primary/70">Recommendation</div>
+          <p className="text-sm leading-relaxed text-foreground/80">{entry.recommendation}</p>
+        </div>
+      </div>
     </article>
   );
 }

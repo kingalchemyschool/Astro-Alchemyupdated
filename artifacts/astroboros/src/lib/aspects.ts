@@ -62,27 +62,57 @@ export function aspectBetween(
 }
 
 // Cross-chart (synastry) aspects between two sets of positions, for the
-// laboratory comparison. Only the seven core functions are compared.
+// laboratory comparison. The functional Lab layer uses seven planets, while
+// the full matrix includes all planets and both Ascendants.
 const CORE: PlanetKey[] = [
   "sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn",
 ];
 
+const ALL_SYNASTRY_POINTS: PlanetKey[] = [
+  "sun", "moon", "mercury", "venus", "mars",
+  "jupiter", "saturn", "uranus", "neptune", "pluto",
+];
+
+export type SynastryPointKey = PlanetKey | "ascendant";
+export type SynastryAspectType = AspectType | "quincunx";
+type LongitudePoint = { longitude: number };
+
 export interface CrossAspect {
-  a: PlanetKey; // from chart A
-  b: PlanetKey; // from chart B
-  type: AspectType;
+  a: SynastryPointKey; // from chart A
+  b: SynastryPointKey; // from chart B
+  type: SynastryAspectType;
   orb: number;
 }
 
 export function crossAspects(
   posA: Record<PlanetKey, PlanetPosition>,
-  posB: Record<PlanetKey, PlanetPosition>
+  posB: Record<PlanetKey, PlanetPosition>,
+  ascA?: LongitudePoint,
+  ascB?: LongitudePoint,
 ): CrossAspect[] {
   const out: CrossAspect[] = [];
-  for (const ka of CORE) {
-    for (const kb of CORE) {
-      const diff = separation(posA[ka].longitude, posB[kb].longitude);
-      for (const def of DEFS) {
+  const pointsA: Partial<Record<SynastryPointKey, LongitudePoint>> = { ...posA };
+  const pointsB: Partial<Record<SynastryPointKey, LongitudePoint>> = { ...posB };
+  const includeFullMatrix = Boolean(ascA && ascB);
+  if (ascA && ascB) {
+    pointsA.ascendant = ascA;
+    pointsB.ascendant = ascB;
+  }
+  const pointKeys: SynastryPointKey[] = includeFullMatrix
+    ? [...ALL_SYNASTRY_POINTS, "ascendant"]
+    : CORE;
+  const definitions: Array<{ type: SynastryAspectType; angle: number; orb: number }> =
+    includeFullMatrix
+      ? [...DEFS, { type: "quincunx", angle: 150, orb: 3 }]
+      : DEFS;
+
+  for (const ka of pointKeys) {
+    for (const kb of pointKeys) {
+      const pointA = pointsA[ka];
+      const pointB = pointsB[kb];
+      if (!pointA || !pointB) continue;
+      const diff = separation(pointA.longitude, pointB.longitude);
+      for (const def of definitions) {
         const orb = Math.abs(diff - def.angle);
         if (orb <= def.orb) {
           out.push({ a: ka, b: kb, type: def.type, orb: Math.round(orb * 10) / 10 });
@@ -94,8 +124,8 @@ export function crossAspects(
   return out.sort((x, y) => x.orb - y.orb);
 }
 
-export const HARMONIOUS: AspectType[] = ["conjunction", "sextile", "trine"];
-export const CHALLENGING: AspectType[] = ["square", "opposition"];
+export const HARMONIOUS: Array<AspectType | "quincunx"> = ["conjunction", "sextile", "trine"];
+export const CHALLENGING: Array<AspectType | "quincunx"> = ["square", "opposition", "quincunx"];
 
 // Plain, exact aspect words — never vague ("fused", etc.).
 export const ASPECT_WORD: Record<AspectType, string> = {
@@ -104,6 +134,11 @@ export const ASPECT_WORD: Record<AspectType, string> = {
   square: "square",
   trine: "trine",
   opposition: "opposite",
+};
+
+export const SYNASTRY_ASPECT_WORD: Record<SynastryAspectType, string> = {
+  ...ASPECT_WORD,
+  quincunx: "quincunx",
 };
 
 export const ASPECT_VERB_LONG: Record<AspectType, string> = {

@@ -4,8 +4,9 @@ import {
   crossAspects,
   HARMONIOUS,
   CHALLENGING,
-  ASPECT_WORD,
+  SYNASTRY_ASPECT_WORD,
   type CrossAspect,
+  type SynastryPointKey,
 } from "@/lib/aspects";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -77,12 +78,25 @@ export interface Comparison {
   summary: string[];
   experimentalSummary: ExperimentalSummary;
   planetPairs: PlanetPairNote[];
+  synastryMatrix: SynastryMatrixEntry[];
   archetype: { a: string; b: string; paragraphs: string[] };
   amplifiers: Amplifier[];
   constraints: Constraint[];
   emergentSystem: EmergentSystem;
   predictedCycle: PredictedCycle;
   executiveSummary: ExecutiveSummary;
+}
+
+export interface SynastryMatrixEntry {
+  aPoint: string;
+  bPoint: string;
+  aspect: string;
+  orb: number;
+  aPlacement: string;
+  bPlacement: string;
+  interpretation: string;
+  observableEffect: string;
+  recommendation: string;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -111,6 +125,60 @@ const FUNCTION_QUESTION: Partial<Record<PlanetKey, string>> = {
   venus: "What deserves investment?",
   saturn: "What ensures longevity?",
 };
+
+const POINT_LENS: Record<SynastryPointKey, string> = {
+  sun: "creative identity and core intent",
+  moon: "emotional attunement and instinct",
+  mercury: "thinking and communication",
+  venus: "value, attraction, and shared taste",
+  mars: "initiative, desire, and force",
+  jupiter: "growth, meaning, and scale",
+  saturn: "structure, responsibility, and endurance",
+  uranus: "freedom, disruption, and new possibilities",
+  neptune: "sensitivity, imagination, and ideals",
+  pluto: "depth, power, and transformation",
+  ascendant: "embodiment, presentation, and first response",
+};
+
+function pointName(key: SynastryPointKey): string {
+  return key === "ascendant" ? "Ascendant" : PLANET_META[key].name;
+}
+
+function pointLens(key: SynastryPointKey): string {
+  return POINT_LENS[key];
+}
+
+function pointMetaName(key: SynastryPointKey): string {
+  return pointName(key);
+}
+
+function pointLabel(name: string, key: SynastryPointKey): string {
+  return `${name}'s ${pointMetaName(key)}`;
+}
+
+function aspectRelationship(
+  aspect: CrossAspect | undefined,
+  aIdx: number,
+  bIdx: number,
+): Rel {
+  if (!aspect) return signRel(aIdx, bIdx);
+  const A = SIGNS[aIdx];
+  const B = SIGNS[bIdx];
+  const type = SYNASTRY_ASPECT_WORD[aspect.type];
+  const clauses: Record<string, string> = {
+    conjunction: "operate through the same channel, amplifying both the shared capacity and the need to differentiate it",
+    sextile: `form a sextile — ${A.element} and ${B.element} cooperate when given a deliberate opening`,
+    square: `form a square — ${A.modality} drives meet through different ${A.element} and ${B.element} strategies`,
+    trine: `form a trine through compatible ${A.element} energy, creating a natural current between them`,
+    opposition: "stand in opposition — complementary poles make each other visible and demand conscious balance",
+    quincunx: `form a quincunx — ${A.element} and ${B.element} require ongoing translation rather than automatic agreement`,
+  };
+  return {
+    clause: `${type} (orb ${aspect.orb}°); they ${clauses[aspect.type]}`,
+    easy: HARMONIOUS.includes(aspect.type),
+    type: type[0].toUpperCase() + type.slice(1),
+  };
+}
 
 // ─── Reaction states ──────────────────────────────────────────────────────────
 
@@ -314,7 +382,8 @@ function planetNote(
   cross: CrossAspect[],
   used: Set<string>
 ): { note: string; rel: Rel; hardContact: boolean } {
-  const rel = signRel(aIdx, bIdx);
+  const exact = cross.find((x) => x.a === key && x.b === key && !used.has(sig(x)));
+  const rel = aspectRelationship(exact, aIdx, bIdx);
   const aSign = SIGNS[aIdx].name;
   const bSign = SIGNS[bIdx].name;
 
@@ -323,23 +392,104 @@ function planetNote(
   );
   const hard = involving.filter((x) => CHALLENGING.includes(x.type)).sort((m, n) => m.orb - n.orb)[0];
   const soft = involving.filter((x) => HARMONIOUS.includes(x.type)).sort((m, n) => m.orb - n.orb)[0];
-  const chosen = hard ?? soft;
+  const chosen = exact ?? hard ?? soft;
 
   let crossClause = "";
   let hardContact = false;
   if (chosen) {
     used.add(sig(chosen));
     hardContact = CHALLENGING.includes(chosen.type);
-    crossClause = `, further colored by ${nameA}'s ${PLANET_META[chosen.a].name} ${ASPECT_WORD[chosen.type]} ${nameB}'s ${PLANET_META[chosen.b].name} (orb ${chosen.orb}°)`;
+    crossClause = exact
+      ? ` The exact cross-chart contact is ${pointLabel(nameA, chosen.a)} ${SYNASTRY_ASPECT_WORD[chosen.type]} ${pointLabel(nameB, chosen.b)} at ${chosen.orb}° orb.`
+      : ` A supporting contact is ${pointLabel(nameA, chosen.a)} ${SYNASTRY_ASPECT_WORD[chosen.type]} ${pointLabel(nameB, chosen.b)} at ${chosen.orb}° orb.`;
   }
 
   const isHard = hardContact || !rel.easy;
   const flavor = FLAVOR[key]?.[isHard ? "hard" : "easy"] ?? "";
 
   const planetName = PLANET_META[key].name;
-  const note = `Regarding ${PAIR_LENS[key]}: ${nameA}'s ${planetName} and ${nameB}'s ${planetName} ${rel.clause}${crossClause}. ${nameA}'s ${planetName} is in ${aSign} and ${nameB}'s is in ${bSign}. In practice, ${flavor}`;
+  const note = `Regarding ${PAIR_LENS[key]}: ${nameA}'s ${planetName} and ${nameB}'s ${planetName} ${rel.clause}.${crossClause} ${nameA}'s ${planetName} is in ${aSign} and ${nameB}'s is in ${bSign}. In practice, ${flavor}`;
 
   return { note, rel, hardContact };
+}
+
+function matrixPointPosition(
+  reading: Reading,
+  key: SynastryPointKey,
+): { signIndex: number; degree: number; minute: number } {
+  if (key === "ascendant") return reading.chart.ascendant;
+  return reading.chart.positions[key];
+}
+
+function matrixPlacement(reading: Reading, key: SynastryPointKey): string {
+  const pos = matrixPointPosition(reading, key);
+  const signName = SIGNS[pos.signIndex].name;
+  return `${signName} ${pos.degree}°${String(pos.minute).padStart(2, "0")}′`;
+}
+
+function matrixInterpretation(
+  aspect: CrossAspect,
+  nameA: string,
+  nameB: string,
+): Pick<SynastryMatrixEntry, "interpretation" | "observableEffect" | "recommendation"> {
+  const aLens = pointLens(aspect.a);
+  const bLens = pointLens(aspect.b);
+  const aPoint = pointName(aspect.a);
+  const bPoint = pointName(aspect.b);
+  const subject = `${nameA}'s ${aPoint} and ${nameB}'s ${bPoint}`;
+
+  const templates: Record<string, { interpretation: string; observableEffect: string; recommendation: string }> = {
+    conjunction: {
+      interpretation: `${subject} operate through one channel: ${aLens} meets ${bLens} without much separation. The contact intensifies whatever it touches, so shared momentum is available but differentiation matters.`,
+      observableEffect: "The two functions become noticeable in the same moments. Decisions can accelerate, but the partnership may confuse agreement with fusion.",
+      recommendation: "Name what each person is contributing before deciding together; preserve distinct ownership inside the shared impulse.",
+    },
+    sextile: {
+      interpretation: `${subject} create a usable opening between the ${aLens} function and the ${bLens} function. The contact is supportive when you choose to activate it rather than waiting for harmony to do the work.`,
+      observableEffect: "A practical bridge appears between different instincts. Collaboration improves when one person deliberately invites the other's function into the process.",
+      recommendation: "Create a repeatable handoff where this contact can be used intentionally instead of relying on spontaneous compatibility.",
+    },
+    trine: {
+      interpretation: `${subject} move through a naturally compatible relationship between the ${aLens} function and the ${bLens} function. The ease is genuine, but anything effortless can remain unexamined.`,
+      observableEffect: "Coordination feels immediate and effort compounds. The hidden risk is allowing a shared assumption to pass without being tested.",
+      recommendation: "Use the ease to build something specific, then periodically question the assumption that makes the exchange feel obvious.",
+    },
+    square: {
+      interpretation: `${subject} generate friction between the ${aLens} function and the ${bLens} function. Neither function is defective; the partnership is being asked to give two strong operating principles a clear structure.`,
+      observableEffect: "The same decision point can produce competing impulses, repeated correction, or a contest over whose timing and method leads.",
+      recommendation: "Separate the contested functions into explicit roles, sequence, or decision rights before pressure turns into personal conflict.",
+    },
+    opposition: {
+      interpretation: `${subject} stand across from each other, making the difference between the ${aLens} function and the ${bLens} function impossible to ignore. This can become complementarity only when both sides remain visible.`,
+      observableEffect: "One person may experience the other as an external counterweight, mirror, or challenge. Balance is lost when either side tries to eliminate the difference.",
+      recommendation: "Let each function state what it sees before choosing a direction; build a third option from the tension rather than forcing one side to surrender.",
+    },
+    quincunx: {
+      interpretation: `${subject} require ongoing translation between the ${aLens} function and the ${bLens} function. The contact does not resolve through instinctive agreement; it asks for repeated adjustment.`,
+      observableEffect: "Small mismatches accumulate in timing, expectations, or language until someone makes the hidden difference explicit.",
+      recommendation: "Use short recalibration checkpoints and define the terms of the exchange before either person assumes the other has understood.",
+    },
+  };
+
+  return templates[aspect.type];
+}
+
+function buildSynastryMatrix(
+  cross: CrossAspect[],
+  a: Reading,
+  b: Reading,
+  nameA: string,
+  nameB: string,
+): SynastryMatrixEntry[] {
+  return cross.map((aspect) => ({
+    aPoint: pointLabel(nameA, aspect.a),
+    bPoint: pointLabel(nameB, aspect.b),
+    aspect: aspect.type === "opposition" ? "opposition" : SYNASTRY_ASPECT_WORD[aspect.type],
+    orb: aspect.orb,
+    aPlacement: matrixPlacement(a, aspect.a),
+    bPlacement: matrixPlacement(b, aspect.b),
+    ...matrixInterpretation(aspect, nameA, nameB),
+  }));
 }
 
 // ─── Amplifiers ───────────────────────────────────────────────────────────────
@@ -379,11 +529,11 @@ function buildAmplifier(
   nameA: string,
   nameB: string
 ): Amplifier {
-  const aName = PLANET_META[x.a].name;
-  const bName = PLANET_META[x.b].name;
-  const aLens = PAIR_LENS[x.a];
-  const bLens = PAIR_LENS[x.b];
-  const aspectWord = ASPECT_WORD[x.type];
+  const aName = pointMetaName(x.a);
+  const bName = pointMetaName(x.b);
+  const aLens = pointLens(x.a);
+  const bLens = pointLens(x.b);
+  const aspectWord = SYNASTRY_ASPECT_WORD[x.type];
 
   const effectDesc: Record<string, string> = {
     trine: "flows naturally and compounds without deliberate effort",
@@ -428,11 +578,11 @@ function buildConstraint(
   nameA: string,
   nameB: string
 ): Constraint {
-  const aName = PLANET_META[x.a].name;
-  const bName = PLANET_META[x.b].name;
-  const aLens = PAIR_LENS[x.a];
-  const bLens = PAIR_LENS[x.b];
-  const aspectWord = ASPECT_WORD[x.type];
+  const aName = pointMetaName(x.a);
+  const bName = pointMetaName(x.b);
+  const aLens = pointLens(x.a);
+  const bLens = pointLens(x.b);
+  const aspectWord = SYNASTRY_ASPECT_WORD[x.type];
 
   const typeDesc: Record<string, string> = {
     square: "generates productive friction between",
@@ -441,8 +591,8 @@ function buildConstraint(
   const verb = typeDesc[x.type] ?? "creates operational friction between";
 
   const mitigation =
-    SOLUTION_BY_PLANET[x.a] ??
-    SOLUTION_BY_PLANET[x.b] ??
+    (x.a !== "ascendant" ? SOLUTION_BY_PLANET[x.a] : undefined) ??
+    (x.b !== "ascendant" ? SOLUTION_BY_PLANET[x.b] : undefined) ??
     `Create a clear handoff protocol between the ${aLens} function and the ${bLens} function to prevent cross-interference.`;
 
   return {
@@ -680,9 +830,15 @@ function buildExecutiveSummary(
 export function compareCharts(a: Reading, b: Reading): Comparison {
   const nameA = a.chart.input.name?.trim() || "Person A";
   const nameB = b.chart.input.name?.trim() || "Person B";
-  const cross = crossAspects(a.chart.positions, b.chart.positions);
+  const cross = crossAspects(
+    a.chart.positions,
+    b.chart.positions,
+    a.chart.ascendant,
+    b.chart.ascendant,
+  );
   const good = cross.filter((x) => HARMONIOUS.includes(x.type)).length;
   const hard = cross.filter((x) => CHALLENGING.includes(x.type)).length;
+  const synastryMatrix = buildSynastryMatrix(cross, a, b, nameA, nameB);
 
   const used = new Set<string>();
   const planetPairs: PlanetPairNote[] = CORE.map((key) => {
@@ -748,7 +904,7 @@ export function compareCharts(a: Reading, b: Reading): Comparison {
       : `The laboratory runs ${experimentalSummary.climate.toLowerCase()} — ${good} harmonious contacts against ${hard} difficult ones. This precise equilibrium tends to forge the most enduring collaborative bonds when structured deliberately.`;
 
   const summary = [
-    `Two distinct blueprints placed on the same workbench. Astral Forge maps ${nameA} and ${nameB} function by function — evaluating all seven creative functions alongside both primary Alchemist Archetypes — to reveal exactly how the work takes shape when you build together.`,
+    `Two distinct blueprints placed on the same workbench. Astral Forge maps ${nameA} and ${nameB} through the functional Lab layer and the complete sidereal synastry field — including both Ascendants, all ten planetary points, exact aspects, and orbs — to reveal how the relationship operates when you build together.`,
     climateDesc,
   ];
 
@@ -758,6 +914,7 @@ export function compareCharts(a: Reading, b: Reading): Comparison {
     summary,
     experimentalSummary,
     planetPairs,
+    synastryMatrix,
     archetype,
     amplifiers: ampFallback,
     constraints: constraintFallback,

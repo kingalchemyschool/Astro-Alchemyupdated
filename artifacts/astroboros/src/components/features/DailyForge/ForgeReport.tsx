@@ -29,6 +29,7 @@ interface Props {
   transitLocationLabel?: string;
   showMoon?: boolean;
   showCelestialField?: boolean;
+  showDailyApplication?: boolean;
   lifeArea?: string;
 }
 
@@ -40,6 +41,7 @@ export default function ForgeReport({
   transitLocationLabel,
   showMoon = true,
   showCelestialField = true,
+  showDailyApplication = true,
   lifeArea,
 }: Props) {
   const { primaryTransit: pt } = report;
@@ -247,7 +249,7 @@ export default function ForgeReport({
       </div>
 
       {/* ── Daily Application: DO / AVOID / PRACTICE ── */}
-      <DailyApplicationSection body={report.dailyApplication} />
+      {showDailyApplication && <DailyApplicationSection body={report.dailyApplication} />}
 
       {/* ── Closing Reflection ── */}
       {report.closingReflection && (

@@ -13,9 +13,9 @@ import type {
   TransitData,
 } from "@/lib/transits";
 import { HOUSE_DOMAIN, HOUSE_WORK, PLANET_META, SIGNS, SIGN_QUALITY } from "@/constants/astro";
+import { houseOf } from "@/lib/houses";
 import ForgeReportView from "@/components/features/DailyForge/ForgeReport";
 
-type YouSubpage = "daily" | "transit";
 type DetailAspect = TransitAspect | TransitAdditionalAspect | TransitAngleAspect;
 
 const ASPECT_LABEL: Record<string, string> = {
@@ -57,7 +57,6 @@ export default function DailyForgeYouView({
   transitLocationLabel,
   onToggleZodiac,
 }: Props) {
-  const [subpage, setSubpage] = useState<YouSubpage>("daily");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const natal = reading.chart;
 
@@ -68,77 +67,42 @@ export default function DailyForgeYouView({
 
   return (
     <div className="space-y-5">
-      <YouSubpageTabs
-        subpage={subpage}
-        onChange={(next) => {
-          setSubpage(next);
-          setExpandedId(null);
-        }}
+      <ForgeReportView
+        report={report}
+        cached={false}
+        zodiac={zodiac}
+        onToggleZodiac={onToggleZodiac}
+        transitLocationLabel={transitLocationLabel}
+        showMoon={false}
+        showCelestialField={false}
+        showDailyApplication={false}
       />
 
-      {subpage === "daily" ? (
-        <ForgeReportView
-          report={report}
-          cached={false}
-          zodiac={zodiac}
-          onToggleZodiac={onToggleZodiac}
-          transitLocationLabel={transitLocationLabel}
-          showMoon={false}
-          showCelestialField={false}
-        />
-      ) : (
-        <section className="space-y-3">
-          <div className="px-2">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B9EE8]">Today’s transit</p>
-            <p className="mt-1 text-sm text-[#6B7285]">
-              Every current non-Moon transit affecting your natal chart, in one place.
-            </p>
+      <section className="mx-auto max-w-2xl space-y-3">
+        <div className="rounded-2xl border border-[#8B9EE8]/25 bg-gradient-to-br from-[#0D1220] to-[#080B18] px-7 py-5 shadow-[0_0_30px_rgba(59,75,140,0.12)]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B9EE8]">Your daily transits</p>
+          <h2 className="mt-2 font-serif text-xl font-semibold text-[#E8E4D8]">The sky in contact with your blueprint</h2>
+          <p className="mt-2 text-[13px] leading-relaxed text-[#9AA3B8]">
+            Open any aspect to see the exact geometry, houses, degrees, decans, and a practical way to work with it today.
+          </p>
+        </div>
+        {entries.length > 0 ? entries.map((entry) => (
+          <TransitDetailCard
+            key={entry.id}
+            entry={entry}
+            expanded={expandedId === entry.id}
+            onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
+          />
+        )) : (
+          <div className="rounded-2xl border border-[#8B9EE8]/20 bg-[#080B18] px-5 py-4 text-sm text-[#6B7285]">
+            No current personal contacts are within the active orb.
           </div>
-          {entries.length > 0 ? entries.map((entry) => (
-            <TransitDetailCard
-              key={entry.id}
-              entry={entry}
-              expanded={expandedId === entry.id}
-              onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
-            />
-          )) : (
-            <div className="rounded-2xl border border-[#263152] bg-[#101113] px-5 py-4 text-sm text-[#6B7285]">
-              No current non-Moon contacts are within the active orb.
-            </div>
-          )}
-        </section>
-      )}
+        )}
+      </section>
 
       <p className="px-2 pb-2 text-center font-mono text-[10px] uppercase tracking-widest text-[#3A4460]">
-        {subpage === "daily" ? "Daily Forge" : "Today’s Transit"} · {zodiac === "sidereal" ? "Sidereal · Lahiri" : "Tropical"} · {transitLocationLabel}
+        Daily Forge · {zodiac === "sidereal" ? "Sidereal · Lahiri" : "Tropical"} · {transitLocationLabel}
       </p>
-    </div>
-  );
-}
-
-function YouSubpageTabs({ subpage, onChange }: { subpage: YouSubpage; onChange: (subpage: YouSubpage) => void }) {
-  return (
-    <div className="grid grid-cols-2 rounded-full border border-[#252d4b] bg-[#0a0d18] p-1">
-      {([
-        { key: "daily" as const, label: "Daily Forge" },
-        { key: "transit" as const, label: "Today’s Transit" },
-      ]).map(({ key, label }) => {
-        const active = key === subpage;
-        return (
-          <button
-            key={key}
-            type="button"
-            onClick={() => onChange(key)}
-            className={`rounded-full px-3 py-2.5 text-sm font-medium transition-all ${
-              active
-                ? "bg-[#545468] text-[#f0ead9] shadow-[0_0_18px_rgba(139,158,232,0.12)]"
-                : "text-[#6B7A99] hover:text-[#E8E4D8]"
-            }`}
-          >
-            {label}
-          </button>
-        );
-      })}
     </div>
   );
 }
@@ -152,6 +116,9 @@ interface TransitEntry {
   houseLabel: string;
   transitSign: string;
   natalPlacement: string;
+  transitDecan: string;
+  natalDecan: string;
+  aspectDetail: string;
   meaning: string;
   application: string;
   transitHouse: number;
@@ -171,7 +138,7 @@ function TransitDetailCard({
   compact?: boolean;
 }) {
   return (
-    <div className={`overflow-hidden rounded-2xl border transition-colors ${expanded ? "border-[#8B9EE8]/65 bg-[#12182A]" : "border-[#535B70] bg-[#101113] hover:border-[#8B9EE8]/55"}`}>
+    <div className={`overflow-hidden rounded-xl border transition-colors ${expanded ? "border-[#8B9EE8]/50 bg-[#0D1220]" : "border-[#8B9EE8]/25 bg-[#3B4B8C]/10 hover:border-[#8B9EE8]/55"}`}>
       <button
         type="button"
         aria-expanded={expanded}
@@ -179,24 +146,26 @@ function TransitDetailCard({
         className="w-full px-5 py-4 text-left"
       >
         <div className="flex items-start justify-between gap-3">
-          <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-[#F0EADB]">{entry.timing}</p>
-          <span className="font-serif text-xl tracking-wide text-[#F0EADB]">{entry.glyphs}</span>
+          <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-[#8B9EE8]">{entry.timing}</p>
+          <span className="font-serif text-xl tracking-wide text-[#E8E4D8]">{entry.glyphs}</span>
         </div>
         <div className="mt-3 flex items-center justify-between gap-3">
-          <h3 className={`${compact ? "text-[15px]" : "text-[18px]"} font-serif font-semibold text-[#F0EADB]`}>{entry.title}</h3>
+          <h3 className={`${compact ? "text-[15px]" : "text-[18px]"} font-serif font-semibold text-[#E8E4D8]`}>{entry.title}</h3>
           {expanded ? <ChevronUp className="h-4 w-4 shrink-0 text-[#8B9EE8]" /> : <ChevronDown className="h-4 w-4 shrink-0 text-[#8B9EE8]" />}
         </div>
         {!expanded && (
-          <p className="mt-2 text-[11px] uppercase tracking-widest text-[#6B7285]">
-            {entry.houseLabel} · Tap to learn more
+          <p className="mt-2 text-[11px] uppercase tracking-widest text-[#A8B4D4]">
+            {entry.transitSign} · {entry.houseLabel} · Tap to learn more
           </p>
         )}
       </button>
       {expanded && (
-        <div className="border-t border-[#263152] px-5 pb-5 pt-4">
+        <div className="border-t border-[#8B9EE8]/20 px-5 pb-5 pt-4">
           <div className="grid gap-3 sm:grid-cols-2">
-            <DetailBlock label="Transit placement" text={`${entry.transitSign} · ${entry.houseLabel} · ${entry.orb.toFixed(1)}° orb`} />
+            <DetailBlock label="Transit placement" text={`${entry.transitSign} · ${entry.houseLabel}`} />
             <DetailBlock label="Natal contact" text={entry.natalPlacement} />
+            <DetailBlock label="Decans" text={`Transit: ${entry.transitDecan} · Natal: ${entry.natalDecan}`} />
+            <DetailBlock label="Aspect geometry" text={entry.aspectDetail} />
             <DetailBlock label="Meaning" text={entry.meaning} />
             <DetailBlock label="Daily application" text={entry.application} accent />
           </div>
@@ -227,11 +196,7 @@ function buildTransitEntries(
   const seen = new Set<string>();
   return all
     .filter((entry) => {
-      const planet = entry.aspect.transitPlanet;
-      const long = ["jupiter", "saturn", "uranus", "neptune", "pluto"].includes(planet);
-      const angle = "natalAngle" in entry.aspect;
-      const keep = entry.aspect.transitPlanet !== "moon";
-      if (!keep || seen.has(entry.id)) return false;
+      if (entry.aspect.transitPlanet === "moon" || seen.has(entry.id)) return false;
       seen.add(entry.id);
       return true;
     })
@@ -239,17 +204,17 @@ function buildTransitEntries(
       const aLong = ["jupiter", "saturn", "uranus", "neptune", "pluto"].includes(a.aspect.transitPlanet) || "natalAngle" in a.aspect;
       const bLong = ["jupiter", "saturn", "uranus", "neptune", "pluto"].includes(b.aspect.transitPlanet) || "natalAngle" in b.aspect;
       return Number(aLong) - Number(bLong);
-    })
-    .slice(0, 14);
+    });
 }
 
 function makeEntry(aspect: DetailAspect, transitData: TransitData, natal: NatalChart): TransitEntry {
   const transit = transitData.positions[aspect.transitPlanet];
   const transitMeta = PLANET_META[aspect.transitPlanet];
-  const transitSign = `${transitMeta.name} in ${SIGNS[transit.signIndex].name} at ${transit.degree}°${String(transit.minute).padStart(2, "0")}′`;
+  const transitSign = `${transitMeta.name} in ${SIGNS[transit.signIndex].name} at ${degreeLabel(transit.degree, transit.minute)}${transit.retrograde ? " · retrograde" : ""}`;
   let title = "";
   let houseLabel = `${ordinal(transit.house)} house · ${HOUSE_SHORT[transit.house]}`;
   let natalPlacement = "";
+  let natalDecan = "Not applicable";
   let targetName = "";
   let targetSign = "";
   let targetHouse: number | undefined;
@@ -258,30 +223,36 @@ function makeEntry(aspect: DetailAspect, transitData: TransitData, natal: NatalC
     const natalPosition = natal.positions[aspect.natalPlanet];
     const natalMeta = PLANET_META[aspect.natalPlanet];
     targetName = natalMeta.name;
-    targetSign = `${SIGNS[natalPosition.signIndex].name} ${natalPosition.degree}°${String(natalPosition.minute).padStart(2, "0")}′`;
+    targetSign = `${SIGNS[natalPosition.signIndex].name} ${degreeLabel(natalPosition.degree, natalPosition.minute)}`;
     targetHouse = natalPosition.house;
     natalPlacement = `Natal ${natalMeta.name} · ${targetSign} · ${ordinal(natalPosition.house)} house`;
+    natalDecan = decanLabel(natalPosition.degree, SIGNS[natalPosition.signIndex].name);
     title = `${transitMeta.name} ${ASPECT_LABEL[aspect.type].toLowerCase()} your ${natalMeta.name}`;
   } else if ("natalPoint" in aspect) {
     targetName = additionalLabel(aspect.natalPoint);
     const point = natal.additionalPoints[aspect.natalPoint];
-    targetSign = `${SIGNS[point.signIndex].name} ${point.degree}°${String(point.minute).padStart(2, "0")}′`;
-    natalPlacement = `Natal ${targetName} · ${targetSign}`;
+    targetSign = `${SIGNS[point.signIndex].name} ${degreeLabel(point.degree, point.minute)}`;
+    targetHouse = houseOf(point.longitude, natal.cusps);
+    natalPlacement = `Natal ${targetName} · ${targetSign} · ${ordinal(targetHouse)} house`;
+    natalDecan = decanLabel(point.degree, SIGNS[point.signIndex].name);
     title = `${transitMeta.name} ${ASPECT_LABEL[aspect.type].toLowerCase()} your ${targetName}`;
-    houseLabel = "natal point · personal axis";
+    houseLabel = `${ordinal(targetHouse)} house · ${HOUSE_SHORT[targetHouse]}`;
   } else {
     targetName = angleLabel(aspect.natalAngle);
     const angle = natal.angles[aspect.natalAngle];
-    targetSign = `${SIGNS[angle.signIndex].name} ${angle.degree}°${String(angle.minute).padStart(2, "0")}′`;
+    targetSign = `${SIGNS[angle.signIndex].name} ${degreeLabel(angle.degree, angle.minute)}`;
+    targetHouse = { ascendant: 1, midheaven: 10, descendant: 7, imumCoeli: 4 }[aspect.natalAngle];
     natalPlacement = `Natal ${targetName} · ${targetSign}`;
+    natalDecan = decanLabel(angle.degree, SIGNS[angle.signIndex].name);
     title = `${transitMeta.name} ${ASPECT_LABEL[aspect.type].toLowerCase()} your ${targetName}`;
-    houseLabel = "chart angle · public axis";
+    houseLabel = `${ordinal(targetHouse)} house · ${HOUSE_SHORT[targetHouse]}`;
   }
 
   const domain = targetHouse ? HOUSE_DOMAIN[targetHouse - 1] : HOUSE_DOMAIN[transit.house - 1];
   const quality = SIGN_QUALITY[transit.signIndex];
   const meaning = `${transitMeta.name} brings ${transitMeta.fn.toLowerCase()} into ${domain}. The ${ASPECT_LABEL[aspect.type].toLowerCase()} contact makes that process more noticeable through ${targetName || targetSign}; in ${SIGNS[transit.signIndex].name}, the tone is ${quality}.`;
   const application = `${planetApplication(aspect.transitPlanet)} ${HOUSE_WORK[(targetHouse ?? transit.house) - 1] ? `Favor ${HOUSE_WORK[(targetHouse ?? transit.house) - 1]}.` : ""}`;
+  const aspectDetail = `${ASPECT_LABEL[aspect.type]} ${ASPECT_GLYPH[aspect.type]} · ${aspect.orb.toFixed(1)}° from exact`;
   const id = "natalPlanet" in aspect
     ? `${aspect.transitPlanet}-${aspect.natalPlanet}-${aspect.type}`
     : "natalPoint" in aspect
@@ -297,6 +268,9 @@ function makeEntry(aspect: DetailAspect, transitData: TransitData, natal: NatalC
     houseLabel,
     transitSign,
     natalPlacement,
+    transitDecan: decanLabel(transit.degree, SIGNS[transit.signIndex].name),
+    natalDecan,
+    aspectDetail,
     meaning,
     application,
     transitHouse: transit.house,
@@ -313,6 +287,15 @@ function timingFor(planet: PlanetKey) {
   if (planet === "uranus") return "210 days left";
   if (planet === "neptune") return "299 days left";
   return "Long term";
+}
+
+function degreeLabel(degree: number, minute: number) {
+  return `${degree}°${String(minute).padStart(2, "0")}′`;
+}
+
+function decanLabel(degree: number, sign: string) {
+  const decan = Math.min(3, Math.floor(degree / 10) + 1);
+  return `${decan}${decan === 1 ? "st" : decan === 2 ? "nd" : "rd"} decan of ${sign}`;
 }
 
 function targetGlyph(aspect: DetailAspect, natal: NatalChart) {

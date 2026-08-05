@@ -12,7 +12,6 @@ import {
   type TransitLocation,
 } from "@/lib/transits";
 import {
-  ADDITIONAL_KEYS,
   computeWorldSky,
   DAILY_KEYS,
   formatSkyDate,
@@ -286,20 +285,6 @@ function NatalView({ reading }: { reading: Reading }) {
         subtitle="The fixed blueprint: each planet’s sign, house, meaning, and the kind of daily practice it supports."
         mode="natal"
       />
-      <section className="rounded-2xl border border-[#1E2640]/80 bg-[#080B18] p-5">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-[#6B7A99]">Natal points</p>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {ADDITIONAL_KEYS.map((key) => {
-            const point = reading.chart.additionalPoints[key];
-            return (
-              <div key={key} className="flex items-center justify-between rounded-xl border border-[#1E2640]/60 bg-[#060810] px-4 py-3">
-                <span className="text-sm text-[#C4CADC]">{additionalLabel(key)}</span>
-                <span className="font-mono text-[10px] text-[#9AA3B8]">{SIGNS[point.signIndex].glyph} {SIGNS[point.signIndex].name} {point.degree}°{String(point.minute).padStart(2, "0")}′</span>
-              </div>
-            );
-          })}
-        </div>
-      </section>
     </div>
   );
 }

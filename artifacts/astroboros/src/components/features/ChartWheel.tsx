@@ -151,7 +151,7 @@ export default function ChartWheel({
         </span>
       </div>
 
-      <div className="grid items-center gap-5 sm:grid-cols-[minmax(0,1fr)_155px]">
+      <div className="grid items-start gap-5 sm:grid-cols-[minmax(0,1fr)_220px]">
         <div className="mx-auto w-full max-w-[460px]">
           <svg viewBox={`0 0 ${size} ${size}`} className="h-auto w-full" role="img" aria-label={`${title} wheel`}>
             <defs>
@@ -256,6 +256,20 @@ export default function ChartWheel({
         </div>
 
         <div className="space-y-2">
+          <LegendGroup title="Planets">
+            {PLANET_KEYS.map((key) => {
+              const planet = chart.positions[key];
+              return (
+                <LegendRow
+                  key={key}
+                  glyph={PLANET_META[key].glyph}
+                  label={PLANET_META[key].name}
+                  value={`${planet.degree}°${String(planet.minute).padStart(2, "0")}′ ${SIGNS[planet.signIndex].name}`}
+                  color="#e8e4d8"
+                />
+              );
+            })}
+          </LegendGroup>
           <LegendGroup title="Angles">
             {ANGLE_META.map((angle) => (
               <LegendRow key={angle.key} glyph={angle.glyph} label={angle.label} value={`${chart.angles[angle.key].degree}°${String(chart.angles[angle.key].minute).padStart(2, "0")}′ ${SIGNS[chart.angles[angle.key].signIndex].name}`} color={angle.color} />
@@ -275,20 +289,18 @@ export default function ChartWheel({
 
 function LegendGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-[#1E2640]/70 bg-[#060810] p-3">
-      <p className="mb-2 font-mono text-[9px] uppercase tracking-widest text-[#6B7A99]">{title}</p>
-      <div className="space-y-1.5">{children}</div>
+    <div className="overflow-hidden rounded-xl border border-[#1E2640]/70 bg-[#060810]">
+      <p className="border-b border-[#1E2640]/70 px-3 py-2 font-mono text-[9px] uppercase tracking-widest text-[#6B7A99]">{title}</p>
+      <div className="space-y-1.5 p-3">{children}</div>
     </div>
   );
 }
 
 function LegendRow({ glyph, label, value, color }: { glyph: string; label: string; value: string; color: string }) {
   return (
-    <div className="flex items-center justify-between gap-2 text-[10px]">
-      <span className="flex min-w-0 items-center gap-1.5 text-[#A8B4D4]">
-        <span style={{ color }} className="w-4 text-center text-sm">{glyph}</span>
-        <span className="truncate">{label}</span>
-      </span>
+    <div className="grid grid-cols-[20px_minmax(0,1fr)_auto] items-center gap-1.5 text-[10px]">
+      <span style={{ color }} className="text-center text-sm">{glyph}</span>
+      <span className="min-w-0 truncate text-[#A8B4D4]">{label}</span>
       <span className="shrink-0 font-mono text-[9px] text-[#6B7A99]">{value}</span>
     </div>
   );

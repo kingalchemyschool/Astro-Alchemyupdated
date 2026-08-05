@@ -1,5 +1,5 @@
 import type { NatalChart, PlanetKey, PlanetPosition } from "@/types/astro";
-import { HOUSE_DOMAIN, HOUSE_WORK, PLANET_META, SIGNS, SIGN_QUALITY } from "@/constants/astro";
+import { HOUSE_DOMAIN, PLANET_META, SIGNS, SIGN_QUALITY } from "@/constants/astro";
 
 const PLANET_KEYS: PlanetKey[] = [
   "sun", "moon", "mercury", "venus", "mars",
@@ -14,19 +14,6 @@ interface Props {
   subtitle: string;
   mode?: "personal" | "world" | "natal";
 }
-
-const PLANET_APPLICATIONS: Record<PlanetKey, string> = {
-  sun: "Choose one visible priority and give it your clearest attention.",
-  moon: "Notice what your body and mood are asking for before you commit your energy.",
-  mercury: "Write the message, ask the question, or make the small connection that moves the work forward.",
-  venus: "Put care into the exchange: refine the offer, relationship, space, or resource in front of you.",
-  mars: "Take one direct, bounded action instead of scattering effort across several fronts.",
-  jupiter: "Make room for growth by teaching, sharing, researching, or taking the wider view.",
-  saturn: "Strengthen the container: define the limit, schedule the work, or finish the responsibility.",
-  uranus: "Try the unexpected route and leave enough flexibility for a useful interruption.",
-  neptune: "Protect quiet and discernment; let imagination inform the work without letting it blur the next step.",
-  pluto: "Name what is ready to change, then remove one outdated layer rather than forcing a total overhaul.",
-};
 
 function ordinal(house: number) {
   const suffix = house === 1 ? "st" : house === 2 ? "nd" : house === 3 ? "rd" : "th";
@@ -81,12 +68,6 @@ export default function PlanetTransitCards({ chart, title, subtitle, mode = "per
                 <div>
                   <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[#6B7A99]">Meaning</p>
                   <p className="mt-1 text-sm leading-relaxed text-[#B5BDD2]">{meaningFor(key, position, mode)}</p>
-                </div>
-                <div className="rounded-lg border border-[#3B4B8C]/35 bg-[#0b1020] p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[#8B9EE8]">Daily application</p>
-                  <p className="mt-1 text-sm leading-relaxed text-[#E8E4D8]">
-                    {PLANET_APPLICATIONS[key]} {HOUSE_WORK[position.house - 1] ? `Favor ${HOUSE_WORK[position.house - 1]}.` : ""}
-                  </p>
                 </div>
               </div>
             </article>

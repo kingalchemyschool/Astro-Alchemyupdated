@@ -4,6 +4,9 @@ import type {
   PlanetKey,
   PlanetPosition,
   Ascendant,
+  AdditionalPointKey,
+  ChartPointPosition,
+  ChartAngles,
 } from "@/types/astro";
 import { SIGNS } from "@/constants/astro";
 import { computeAspects } from "@/lib/aspects";
@@ -143,6 +146,41 @@ const ALL_KEYS: PlanetKey[] = [
   "jupiter", "saturn", "uranus", "neptune", "pluto",
 ];
 
+const ADDITIONAL_KEYS: AdditionalPointKey[] = [
+  "chiron", "lilith", "northNode", "southNode",
+];
+
+function anglePosition(key: AdditionalPointKey, longitude: number): ChartPointPosition {
+  const lon = rev(longitude);
+  const signIndex = Math.floor(lon / 30);
+  const within = lon - signIndex * 30;
+  return {
+    key,
+    longitude: lon,
+    signIndex,
+    degree: Math.floor(within),
+    minute: Math.floor((within - Math.floor(within)) * 60),
+  };
+}
+
+/**
+ * Stable mean points used by the chart surface. The lunar nodes and Lilith are
+ * intentionally mean points so the daily and natal views do not jump between
+ * definitions. Chiron uses a slow mean longitude approximation; it is a
+ * sign-level reference, not a substitute for a high-precision ephemeris.
+ */
+function additionalLongitudes(d: number): Record<AdditionalPointKey, number> {
+  const northNode = rev(125.044555 - 0.05295377 * d);
+  const lilith = rev(83.353246 + 0.11140353 * d);
+  const chiron = rev(209.5 + 0.0197 * d);
+  return {
+    chiron,
+    lilith,
+    northNode,
+    southNode: rev(northNode + 180),
+  };
+}
+
 export function computeChart(input: BirthInput): NatalChart {
   const [y, m, day] = input.date.split("-").map(Number);
   const [hh, mm] = input.time.split(":").map(Number);
@@ -215,12 +253,44 @@ export function computeChart(input: BirthInput): NatalChart {
     minute: Math.floor((ascWithin - Math.floor(ascWithin)) * 60),
   };
 
+  // The meridian is the ecliptic point whose right ascension equals RAMC.
+  // Deriving the four angles from one frame keeps them coherent in both
+  // tropical and sidereal displays.
+  const mcLonTrop = rev(atan2d(sind(ramc), cosd(ramc) * cosd(eps)));
+  const mcLon = rev(mcLonTrop - ayan);
+  const midheaven: Ascendant = {
+    longitude: mcLon,
+    signIndex: Math.floor(mcLon / 30),
+    degree: Math.floor(mcLon % 30),
+    minute: Math.floor(((mcLon % 30) % 1) * 60),
+  };
+  const descendant: Ascendant = {
+    longitude: rev(ascLon + 180),
+    signIndex: Math.floor(rev(ascLon + 180) / 30),
+    degree: Math.floor(rev(ascLon + 180) % 30),
+    minute: Math.floor((rev(ascLon + 180) % 1) * 60),
+  };
+  const icLon = rev(mcLon + 180);
+  const imumCoeli: Ascendant = {
+    longitude: icLon,
+    signIndex: Math.floor(icLon / 30),
+    degree: Math.floor(icLon % 30),
+    minute: Math.floor((icLon % 1) * 60),
+  };
+  const angles: ChartAngles = { ascendant, midheaven, descendant, imumCoeli };
+  const additionalTropical = additionalLongitudes(d);
+  const additionalPoints = Object.fromEntries(
+    ADDITIONAL_KEYS.map((key) => [key, anglePosition(key, additionalTropical[key] - ayan)]),
+  ) as Record<AdditionalPointKey, ChartPointPosition>;
+
   const cusps = cuspsTrop.map((c) => rev(c - ayan));
 
   return {
     input,
     positions,
     ascendant,
+    angles,
+    additionalPoints,
     aspects: computeAspects(positions),
     cusps,
     zodiac,

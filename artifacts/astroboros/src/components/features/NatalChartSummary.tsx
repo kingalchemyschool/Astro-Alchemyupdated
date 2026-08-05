@@ -1,4 +1,4 @@
-import type { NatalChart } from "@/types/astro";
+import type { AdditionalPointKey, NatalChart } from "@/types/astro";
 import { SIGNS, SUMMARY_ORDER, PLANET_META, ORDINALS } from "@/constants/astro";
 import { formatDegree } from "@/lib/ephemeris";
 
@@ -78,6 +78,47 @@ export default function NatalChartSummary({ chart }: { chart: NatalChart }) {
             })}
           </tbody>
         </table>
+      </div>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-lg border border-primary/20 bg-primary/[0.04] p-3">
+          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-primary">Angles</p>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            {([
+              ["AC", chart.angles.ascendant],
+              ["MC", chart.angles.midheaven],
+              ["DC", chart.angles.descendant],
+              ["IC", chart.angles.imumCoeli],
+            ] as const).map(([label, point]) => (
+              <div key={label} className="flex items-center justify-between gap-2">
+                <span className="font-semibold text-foreground">{label}</span>
+                <span className="font-mono text-muted-foreground">
+                  {SIGNS[point.signIndex].glyph} {SIGNS[point.signIndex].name} {formatDegree(point)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-lg border border-accent/20 bg-accent/[0.04] p-3">
+          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-accent">Additional points</p>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            {([
+              ["chiron", "⚷ Chiron"],
+              ["lilith", "⚸ Black Moon Lilith"],
+              ["northNode", "☊ North Node"],
+              ["southNode", "☋ South Node"],
+            ] as [AdditionalPointKey, string][]).map(([key, label]) => {
+              const point = chart.additionalPoints[key];
+              return (
+                <div key={key} className="flex items-center justify-between gap-2">
+                  <span className="font-semibold text-foreground">{label}</span>
+                  <span className="font-mono text-muted-foreground">
+                    {SIGNS[point.signIndex].glyph} {SIGNS[point.signIndex].name} {formatDegree(point)}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

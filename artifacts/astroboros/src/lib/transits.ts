@@ -6,6 +6,9 @@ import type {
   PlanetPosition,
   BirthInput,
   AspectType,
+  AdditionalPointKey,
+  ChartPointPosition,
+  ChartAngles,
 } from "@/types/astro";
 
 export interface TransitAspect {
@@ -14,6 +17,24 @@ export interface TransitAspect {
   type: AspectType;
   orb: number;
   score: number; // higher = more significant
+}
+
+export interface TransitAdditionalAspect {
+  transitPlanet: PlanetKey;
+  natalPoint: AdditionalPointKey;
+  type: AspectType;
+  orb: number;
+  score: number;
+}
+
+export type AngleKey = "ascendant" | "midheaven" | "descendant" | "imumCoeli";
+
+export interface TransitAngleAspect {
+  transitPlanet: PlanetKey;
+  natalAngle: AngleKey;
+  type: AspectType;
+  orb: number;
+  score: number;
 }
 
 export interface TransitLocation {
@@ -28,7 +49,12 @@ export interface TransitData {
   date: string;
   zodiac: "tropical" | "sidereal";
   positions: Record<PlanetKey, PlanetPosition>;
+  additionalPoints: Record<AdditionalPointKey, ChartPointPosition>;
+  angles: ChartAngles;
+  cusps: number[];
   aspects: TransitAspect[];
+  additionalAspects: TransitAdditionalAspect[];
+  angleAspects: TransitAngleAspect[];
   location: TransitLocation;
 }
 
@@ -135,6 +161,8 @@ export function computeTransits(
 
   // Compute transit-to-natal aspects and score each for relevance
   const aspects: TransitAspect[] = [];
+  const additionalAspects: TransitAdditionalAspect[] = [];
+  const angleAspects: TransitAngleAspect[] = [];
   for (const tp of ALL_KEYS) {
     for (const np of ALL_KEYS) {
       const tLon = transitChart.positions[tp].longitude;
@@ -151,6 +179,50 @@ export function computeTransits(
           aspects.push({
             transitPlanet: tp,
             natalPlanet: np,
+            type: def.type,
+            orb: Math.round(orb * 10) / 10,
+            score: Math.round(score * 10) / 10,
+          });
+          break;
+        }
+      }
+    }
+  }
+
+  for (const tp of ALL_KEYS) {
+    for (const angle of ["ascendant", "midheaven", "descendant", "imumCoeli"] as AngleKey[]) {
+      const tLon = transitChart.positions[tp].longitude;
+      const nLon = natal.angles[angle].longitude;
+      const diff = separation(tLon, nLon);
+      for (const def of ASPECT_DEFS) {
+        const orb = Math.abs(diff - def.angle);
+        if (orb <= def.orb) {
+          const score = PLANET_PRIORITY[tp] * 3 + ASPECT_PRIORITY[def.type] * 2 + (def.orb - orb);
+          angleAspects.push({
+            transitPlanet: tp,
+            natalAngle: angle,
+            type: def.type,
+            orb: Math.round(orb * 10) / 10,
+            score: Math.round(score * 10) / 10,
+          });
+          break;
+        }
+      }
+    }
+  }
+
+  for (const tp of ALL_KEYS) {
+    for (const np of ["chiron", "lilith", "northNode", "southNode"] as AdditionalPointKey[]) {
+      const tLon = transitChart.positions[tp].longitude;
+      const nLon = natal.additionalPoints[np].longitude;
+      const diff = separation(tLon, nLon);
+      for (const def of ASPECT_DEFS) {
+        const orb = Math.abs(diff - def.angle);
+        if (orb <= def.orb) {
+          const score = PLANET_PRIORITY[tp] * 3 + ASPECT_PRIORITY[def.type] * 2 + (def.orb - orb);
+          additionalAspects.push({
+            transitPlanet: tp,
+            natalPoint: np,
             type: def.type,
             orb: Math.round(orb * 10) / 10,
             score: Math.round(score * 10) / 10,
@@ -179,7 +251,12 @@ export function computeTransits(
     date,
     zodiac,
     positions: transitChart.positions,
+    additionalPoints: transitChart.additionalPoints,
+    angles: transitChart.angles,
+    cusps: transitChart.cusps,
     aspects: balanced.slice(0, 24),
+    additionalAspects: additionalAspects.sort((a, b) => b.score - a.score).slice(0, 8),
+    angleAspects: angleAspects.sort((a, b) => b.score - a.score).slice(0, 8),
     location: transitLocation,
   };
 }

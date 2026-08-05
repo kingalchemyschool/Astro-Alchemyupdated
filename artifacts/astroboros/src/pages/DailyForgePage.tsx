@@ -5,6 +5,7 @@ import { computeTransits, todayDateString, type TransitLocation } from "@/lib/tr
 import ForgePaywall from "@/components/features/DailyForge/ForgePaywall";
 import ForgeReport from "@/components/features/DailyForge/ForgeReport";
 import ChartSwitcher from "@/components/features/DailyForge/ChartSwitcher";
+import DailyForgeSurface from "@/components/features/DailyForge/DailyForgeSurface";
 import type { ForgeReport as ForgeReportType } from "@/types/forge";
 import type { BirthInput } from "@/types/astro";
 import { getTimezoneOffset } from "@/lib/timezone";
@@ -390,25 +391,6 @@ export default function DailyForgePage() {
   if (report) {
     return (
       <PageShell>
-        {/* Page header */}
-        <div className="mb-4 flex items-center justify-between">
-          <p className="font-mono text-[10px] tracking-widest uppercase text-[#8B9EE8]">
-            Daily Forge
-          </p>
-          <button
-            onClick={handleRefresh}
-            title="Refresh report"
-            className="flex items-center gap-1.5 rounded-lg border border-[#3B4B8C]/40 bg-transparent px-3 py-1.5 text-xs text-[#6B7A99] transition-colors hover:text-[#8B9EE8] hover:border-[#8B9EE8]/40"
-          >
-            <RefreshCw className="h-3 w-3" />
-            Refresh
-          </button>
-        </div>
-
-        {/* Blueprint switcher — always visible above the report */}
-        <div className="mb-5">
-          <ChartSwitcher reading={reading} onSwitch={handleSwitchChart} />
-        </div>
         <div className="mb-5">
           <TransitLocationPicker
             mode={locationMode}
@@ -420,10 +402,25 @@ export default function DailyForgePage() {
           />
         </div>
 
-        <ForgeReport
+        <div className="mb-5 flex justify-end">
+          <button
+            onClick={handleRefresh}
+            title="Refresh report"
+            className="flex items-center gap-1.5 rounded-lg border border-[#3B4B8C]/40 bg-transparent px-3 py-1.5 text-xs text-[#6B7A99] transition-colors hover:border-[#8B9EE8]/40 hover:text-[#8B9EE8]"
+          >
+            <RefreshCw className="h-3 w-3" />
+            Refresh sky
+          </button>
+        </div>
+
+        <DailyForgeSurface
+          reading={reading}
           report={report}
           cached={cached}
           zodiac={activeZodiac}
+          today={today}
+          locationMode={locationMode}
+          currentLocation={currentLocation}
           onToggleZodiac={handleToggleZodiac}
           transitLocationLabel={locationMode === "current" ? "Current location" : reading.chart.input.place}
         />

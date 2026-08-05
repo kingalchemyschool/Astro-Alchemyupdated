@@ -8,3 +8,4 @@
 - [Wealth mechanics and Enneagram](wealth-mechanics-enneagram.md) — octave transformations are separate from Creative Functions; Enneagram points and pathways are interactive
 - [Report prose variation](report-prose-variation.md) — vary recurring explanations by context and remove exact sentence repeats within assembled reports
 - [Synastry geometry](astroboros-synastry-geometry.md) — use exact sidereal longitude aspects for the full matrix; sign distance is contextual prose only
+- [Chart points](astroboros-chart-points.md) — shared AC/DC/MC/IC, mean nodes/Lilith, and sign-level Chiron approximation

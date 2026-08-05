@@ -18,6 +18,7 @@ import WealthPage from "@/pages/WealthPage";
 import AdminPage from "@/pages/AdminPage";
 import DevUnlock from "@/pages/DevUnlock";
 import DailyForgePage from "@/pages/DailyForgePage";
+import DailyForgeCalendarPage from "@/pages/DailyForgeCalendarPage";
 
 // Error boundary that catches Clerk JS load failures (common in dev previews
 // where Clerk's CDN script can't be fetched through the Replit proxy).
@@ -45,6 +46,7 @@ class ClerkErrorBoundary extends Component<{ children: ReactNode }, ClerkErrorBo
               <Route path="/reports/wealth" component={WealthPage} />
               <Route path="/compare" component={Compare} />
               <Route path="/daily-forge" component={DailyForgePage} />
+              <Route path="/daily-forge/calendar" component={DailyForgeCalendarPage} />
               <Route path="/dev-unlock" component={DevUnlock} />
               <Route component={NotFound} />
             </Switch>
@@ -365,6 +367,7 @@ function AppRoutes() {
             <Route path="/sign-up/*?" component={SignUpPage} />
             <Route path="/admin/*?" component={AdminPage} />
             <Route path="/daily-forge" component={DailyForgePage} />
+            <Route path="/daily-forge/calendar" component={DailyForgeCalendarPage} />
             <Route path="/dev-unlock" component={DevUnlock} />
             <Route component={NotFound} />
           </Switch>

@@ -19,6 +19,25 @@ export type AspectType =
 
 export type ZodiacSystem = "tropical" | "sidereal";
 
+/** Common non-planetary points shown in modern astrology charts. */
+export type AdditionalPointKey = "chiron" | "lilith" | "northNode" | "southNode";
+
+export interface ChartPointPosition {
+  key: AdditionalPointKey;
+  longitude: number;
+  signIndex: number;
+  degree: number;
+  minute: number;
+  retrograde?: boolean;
+}
+
+export interface ChartAngles {
+  ascendant: Ascendant;
+  midheaven: Ascendant;
+  descendant: Ascendant;
+  imumCoeli: Ascendant;
+}
+
 export interface PlanetPosition {
   key: PlanetKey;
   longitude: number; // 0-360 ecliptic longitude (display zodiac)
@@ -67,6 +86,8 @@ export interface NatalChart {
   input: BirthInput;
   positions: Record<PlanetKey, PlanetPosition>;
   ascendant: Ascendant;
+  angles: ChartAngles;
+  additionalPoints: Record<AdditionalPointKey, ChartPointPosition>;
   aspects: Aspect[];
   cusps: number[]; // 12 house-cusp longitudes; house i begins at cusps[i-1]
   zodiac: ZodiacSystem;

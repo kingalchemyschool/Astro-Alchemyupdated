@@ -5,6 +5,7 @@ import type {
   NatalChart,
   PlanetKey,
   PlanetPosition,
+  AspectType,
 } from "@/types/astro";
 import { PLANET_META, SIGNS } from "@/constants/astro";
 
@@ -27,7 +28,21 @@ const ANGLE_META: Array<{ key: keyof ChartAngles; label: string; glyph: string; 
   { key: "imumCoeli", label: "Imum Coeli", glyph: "IC", color: "#e8e4d8" },
 ];
 
-type WheelChart = Pick<NatalChart, "positions" | "additionalPoints" | "angles" | "cusps" | "zodiac">;
+const SIGN_COLORS = [
+  "#e36d64", "#b6a15d", "#d8b86a", "#8bc6c8",
+  "#e36d64", "#a8bf8b", "#8b9ee8", "#d88aa4",
+  "#e36d64", "#a8bf8b", "#8b9ee8", "#8bc6c8",
+];
+
+const ASPECT_COLORS: Record<AspectType, string> = {
+  conjunction: "#d8b86a",
+  sextile: "#8bc6c8",
+  square: "#d95e68",
+  trine: "#8b9ee8",
+  opposition: "#d95e68",
+};
+
+type WheelChart = Pick<NatalChart, "positions" | "additionalPoints" | "angles" | "cusps" | "zodiac" | "aspects">;
 
 interface Props {
   chart: WheelChart;
@@ -48,6 +63,11 @@ function polar(longitude: number, radius: number, cx: number, cy: number) {
     x: cx + Math.cos(radians) * radius,
     y: cy + Math.sin(radians) * radius,
   };
+}
+
+function circularMidpoint(a: number, b: number) {
+  const delta = ((b - a + 540) % 360) - 180;
+  return (a + delta / 2 + 360) % 360;
 }
 
 function positionFor(
@@ -89,12 +109,13 @@ export default function ChartWheel({
   subtitle,
   compact = false,
 }: Props) {
-  const size = compact ? 300 : 360;
+  const size = compact ? 360 : 460;
   const cx = size / 2;
   const cy = size / 2;
   const outer = size * 0.43;
   const signRing = size * 0.36;
   const houseRing = size * 0.29;
+  const aspectRing = size * 0.18;
   const points = pointList(chart);
   const overlayPoints = overlay
     ? [
@@ -130,8 +151,8 @@ export default function ChartWheel({
         </span>
       </div>
 
-      <div className="grid items-center gap-4 sm:grid-cols-[minmax(0,1fr)_155px]">
-        <div className="mx-auto w-full max-w-[360px]">
+      <div className="grid items-center gap-5 sm:grid-cols-[minmax(0,1fr)_155px]">
+        <div className="mx-auto w-full max-w-[460px]">
           <svg viewBox={`0 0 ${size} ${size}`} className="h-auto w-full" role="img" aria-label={`${title} wheel`}>
             <defs>
               <radialGradient id="wheel-glow" cx="50%" cy="50%" r="60%">
@@ -140,9 +161,10 @@ export default function ChartWheel({
               </radialGradient>
             </defs>
             <circle cx={cx} cy={cy} r={outer + 16} fill="url(#wheel-glow)" />
-            <circle cx={cx} cy={cy} r={outer} fill="#070A14" stroke="#39466f" strokeWidth="1.2" />
-            <circle cx={cx} cy={cy} r={signRing} fill="#0b1020" stroke="#252f50" strokeWidth="1" />
-            <circle cx={cx} cy={cy} r={houseRing} fill="#080b18" stroke="#252f50" strokeWidth="1" />
+            <circle cx={cx} cy={cy} r={outer} fill="#070A14" stroke="#53618c" strokeWidth="1.4" />
+            <circle cx={cx} cy={cy} r={signRing} fill="#0b1020" stroke="#39466f" strokeWidth="1" />
+            <circle cx={cx} cy={cy} r={houseRing} fill="#080b18" stroke="#39466f" strokeWidth="1" />
+            <circle cx={cx} cy={cy} r={aspectRing} fill="#060810" stroke="#252f50" strokeWidth="0.8" />
 
             {Array.from({ length: 12 }, (_, i) => {
               const start = i * 30;
@@ -151,8 +173,8 @@ export default function ChartWheel({
               const label = polar(start + 15, (outer + signRing) / 2, cx, cy);
               return (
                 <g key={`sign-${i}`}>
-                  <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#303b60" strokeWidth="0.8" />
-                  <text x={label.x} y={label.y + 3} textAnchor="middle" fill="#9aa3b8" fontSize={size * 0.032}>
+                  <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#53618c" strokeWidth="0.9" />
+                  <text x={label.x} y={label.y + 3} textAnchor="middle" fill={SIGN_COLORS[i]} fontSize={size * 0.042} fontWeight="600">
                     {SIGNS[i].glyph}
                   </text>
                 </g>
@@ -167,14 +189,41 @@ export default function ChartWheel({
               );
             })}
 
+            {chart.cusps?.map((cusp, i) => {
+              const next = chart.cusps[(i + 1) % chart.cusps.length];
+              const midpoint = circularMidpoint(cusp, next);
+              const label = polar(midpoint, signRing - 15, cx, cy);
+              return (
+                <text key={`house-label-${i}`} x={label.x} y={label.y + 3} textAnchor="middle" fill="#9aa3b8" fontSize={size * 0.025}>
+                  {i + 1}
+                </text>
+              );
+            })}
+
+            {chart.aspects?.map((aspect) => {
+              const a = polar(chart.positions[aspect.a].longitude, aspectRing, cx, cy);
+              const b = polar(chart.positions[aspect.b].longitude, aspectRing, cx, cy);
+              return (
+                <line
+                  key={`aspect-${aspect.a}-${aspect.b}-${aspect.type}`}
+                  x1={a.x}
+                  y1={a.y}
+                  x2={b.x}
+                  y2={b.y}
+                  stroke={ASPECT_COLORS[aspect.type]}
+                  strokeOpacity="0.82"
+                  strokeWidth={aspect.type === "square" || aspect.type === "opposition" ? 1.3 : 0.9}
+                />
+              );
+            })}
+
             {points.map((point) => {
-              const p = polar(point.longitude, houseRing - 5, cx, cy);
-              const label = polar(point.longitude, houseRing - 22, cx, cy);
+              const p = polar(point.longitude, houseRing - 3, cx, cy);
+              const label = polar(point.longitude, houseRing - 24, cx, cy);
               return (
                 <g key={String(point.key)}>
-                  <line x1={cx} y1={cy} x2={p.x} y2={p.y} stroke={point.color} strokeOpacity="0.13" strokeWidth="0.7" />
-                  <circle cx={p.x} cy={p.y} r="2.2" fill={point.color} />
-                  <text x={label.x} y={label.y + 3} textAnchor="middle" fill={point.color} fontSize={size * 0.033} fontWeight="600">
+                  <circle cx={p.x} cy={p.y} r="2.6" fill={point.color} />
+                  <text x={label.x} y={label.y + 3} textAnchor="middle" fill={point.color} fontSize={size * 0.038} fontWeight="600">
                     {point.glyph}
                   </text>
                 </g>
@@ -182,11 +231,11 @@ export default function ChartWheel({
             })}
 
             {overlayPoints.map((point) => {
-              const p = polar(point.longitude, houseRing - 38, cx, cy);
+              const p = polar(point.longitude, houseRing - 42, cx, cy);
               return (
                 <g key={`overlay-${String(point.key)}`}>
-                  <circle cx={p.x} cy={p.y} r="3" fill={point.color} stroke="#07101e" strokeWidth="1" />
-                  <text x={p.x} y={p.y - 6} textAnchor="middle" fill={point.color} fontSize={size * 0.026}>
+                  <circle cx={p.x} cy={p.y} r="3.2" fill={point.color} stroke="#07101e" strokeWidth="1" />
+                  <text x={p.x} y={p.y - 7} textAnchor="middle" fill={point.color} fontSize={size * 0.03}>
                     {point.glyph}
                   </text>
                 </g>
@@ -197,12 +246,12 @@ export default function ChartWheel({
               const source = chart.angles[angle.key];
               const p = polar(source.longitude, outer + 7, cx, cy);
               return (
-                <text key={angle.key} x={p.x} y={p.y + 3} textAnchor="middle" fill={angle.color} fontSize={size * 0.029} fontWeight="700">
+                <text key={angle.key} x={p.x} y={p.y + 3} textAnchor="middle" fill={angle.color} fontSize={size * 0.034} fontWeight="700">
                   {angle.glyph}
                 </text>
               );
             })}
-            <circle cx={cx} cy={cy} r="2.5" fill="#d8b86a" />
+            <circle cx={cx} cy={cy} r="3" fill="#d8b86a" />
           </svg>
         </div>
 

@@ -3,6 +3,7 @@ import { CalendarDays, ChevronLeft, ChevronRight, Globe2, Moon, Orbit, Sparkles,
 import { Link } from "wouter";
 import ChartWheel from "@/components/features/ChartWheel";
 import ForgeReport from "@/components/features/DailyForge/ForgeReport";
+import PlanetTransitCards from "@/components/features/DailyForge/PlanetTransitCards";
 import type { Reading, AdditionalPointKey, PlanetKey } from "@/types/astro";
 import type { ForgeReport as ForgeReportType } from "@/types/forge";
 import {
@@ -88,6 +89,12 @@ export default function DailyForgeSurface({
             zodiac={zodiac}
             onToggleZodiac={onToggleZodiac}
             locationMode={locationMode}
+          />
+          <PlanetTransitCards
+            chart={transitData}
+            title="Every planet, in your day"
+            subtitle="Each moving planet has a house, a lived meaning, and one grounded way to work with it today."
+            mode="personal"
           />
           <ForgeReport
             report={report}
@@ -262,6 +269,12 @@ function WorldView({ world, zodiac, today }: { world: WorldSky; zodiac: "tropica
           {world.events.map((event) => <SkyEventCard key={event.id} event={event} />)}
         </div>
       </section>
+      <PlanetTransitCards
+        chart={world.chart}
+        title="Every planet, in the world"
+        subtitle="The collective sky translated into the arenas of the Greenwich world chart."
+        mode="world"
+      />
       <section className="rounded-2xl border border-[#1E2640]/80 bg-[#080B18] p-5">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -297,6 +310,12 @@ function NatalView({ reading }: { reading: Reading }) {
         title={`${reading.chart.input.name || "Your"} natal chart`}
         subtitle={`${reading.chart.input.place} · ${reading.chart.input.date} · the fixed blueprint beneath the moving sky`}
         compact
+      />
+      <PlanetTransitCards
+        chart={reading.chart}
+        title="Your natal planets"
+        subtitle="The fixed blueprint: each planet’s sign, house, meaning, and the kind of daily practice it supports."
+        mode="natal"
       />
       <section className="rounded-2xl border border-[#1E2640]/80 bg-[#080B18] p-5">
         <p className="font-mono text-[10px] uppercase tracking-widest text-[#6B7A99]">Natal points</p>
@@ -405,6 +424,12 @@ export function DailyForgeCalendar({ zodiac, name }: { zodiac: "tropical" | "sid
       </section>
       <section className="space-y-5">
         <ChartWheel chart={selected.chart} title={`${formatSkyDate(selectedDate, { month: "long", day: "numeric" })} · world chart`} subtitle="Select another day above to move the sky field" compact />
+        <PlanetTransitCards
+          chart={selected.chart}
+          title={`Planet transits · ${formatSkyDate(selectedDate, { month: "long", day: "numeric" })}`}
+          subtitle="Select a day above to see every planetary placement, house, meaning, and application."
+          mode="world"
+        />
         <div className="rounded-2xl border border-[#3B4B8C]/35 bg-[#080B18] p-5">
           <p className="font-mono text-[10px] uppercase tracking-widest text-[#8B9EE8]">Sky events</p>
           <div className="mt-3 space-y-2">{selected.events.map((event) => <SkyEventCard key={event.id} event={event} />)}</div>

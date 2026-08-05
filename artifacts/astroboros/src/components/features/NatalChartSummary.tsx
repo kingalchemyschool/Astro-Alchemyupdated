@@ -1,6 +1,7 @@
 import type { AdditionalPointKey, NatalChart } from "@/types/astro";
 import { SIGNS, SUMMARY_ORDER, PLANET_META, ORDINALS } from "@/constants/astro";
 import { formatDegree } from "@/lib/ephemeris";
+import ChartWheel from "@/components/features/ChartWheel";
 
 export default function NatalChartSummary({ chart }: { chart: NatalChart }) {
   const asc = chart.ascendant;
@@ -25,6 +26,14 @@ export default function NatalChartSummary({ chart }: { chart: NatalChart }) {
               : `UTC${(chart.input.tz ?? 0) >= 0 ? "+" : ""}${chart.input.tz ?? 0}`}
           </div>
         </div>
+      </div>
+      <div className="mb-5">
+        <ChartWheel
+          chart={chart}
+          title={`${chart.input.name || "Natal"} chart`}
+          subtitle={`${chart.input.place} · ${chart.input.date} · planets, houses, aspects, and chart angles`}
+          compact
+        />
       </div>
       <div className="overflow-hidden rounded-lg border border-border/60">
         <table className="w-full text-sm">

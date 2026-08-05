@@ -6,7 +6,6 @@ import {
   CircleDollarSign,
   Heart,
   Leaf,
-  Sparkles,
   UserRound,
   UsersRound,
 } from "lucide-react";
@@ -68,7 +67,6 @@ interface Props {
   report: ForgeReport;
   transitData: TransitData;
   zodiac: "tropical" | "sidereal";
-  locationMode: "birth" | "current";
   transitLocationLabel: string;
   onToggleZodiac: () => void;
 }
@@ -78,7 +76,6 @@ export default function DailyForgeYouView({
   report,
   transitData,
   zodiac,
-  locationMode,
   transitLocationLabel,
   onToggleZodiac,
 }: Props) {
@@ -87,15 +84,11 @@ export default function DailyForgeYouView({
   const natal = reading.chart;
   const categoryMeta = CATEGORY_META.find((item) => item.key === category) ?? CATEGORY_META[0];
 
-  const shortTerm = useMemo(
-    () => buildTransitEntries(transitData, natal, "short", categoryMeta.houses),
+  const entries = useMemo(
+    () => buildTransitEntries(transitData, natal, categoryMeta.houses),
     [transitData, natal, categoryMeta.houses],
   );
-  const longTerm = useMemo(
-    () => buildTransitEntries(transitData, natal, "long", categoryMeta.houses),
-    [transitData, natal, categoryMeta.houses],
-  );
-  const primary = shortTerm[0]?.aspect ?? longTerm[0]?.aspect;
+  const primary = entries[0]?.aspect;
   const categoryReport = useMemo(
     () => tailorReport(report, categoryMeta, primary, natal),
     [report, categoryMeta, primary, natal],
@@ -104,34 +97,6 @@ export default function DailyForgeYouView({
   return (
     <div className="space-y-5">
       <CategoryTabs category={category} onChange={(next) => { setCategory(next); setExpandedId(null); }} />
-
-      <DailySummaryCard
-        category={category}
-        report={report}
-        primary={primary}
-        natal={natal}
-        zodiac={zodiac}
-        locationMode={locationMode}
-        transitLocationLabel={transitLocationLabel}
-        onToggleZodiac={onToggleZodiac}
-        categoryDescription={categoryMeta.description}
-      />
-
-      <TransitGroup
-        label={`${categoryMeta.label} · short-term transits`}
-        entries={shortTerm}
-        expandedId={expandedId}
-        onExpand={setExpandedId}
-        emptyText={`No short-term contacts currently activate ${categoryMeta.description}.`}
-      />
-
-      <TransitGroup
-        label={`${categoryMeta.label} · long-term transits`}
-        entries={longTerm}
-        expandedId={expandedId}
-        onExpand={setExpandedId}
-        emptyText={`No long-term contacts currently activate ${categoryMeta.description}.`}
-      />
 
       <ForgeReportView
         report={categoryReport}
@@ -143,6 +108,27 @@ export default function DailyForgeYouView({
         showCelestialField={false}
         lifeArea={categoryMeta.label}
       />
+
+      <section className="space-y-3">
+        <div className="px-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B9EE8]">Transits affecting you</p>
+          <p className="mt-1 text-sm text-[#6B7A99]">
+            {categoryMeta.label} · {categoryMeta.description}
+          </p>
+        </div>
+        {entries.length > 0 ? entries.map((entry) => (
+          <TransitDetailCard
+            key={entry.id}
+            entry={entry}
+            expanded={expandedId === entry.id}
+            onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
+          />
+        )) : (
+          <div className="rounded-2xl border border-[#263152] bg-[#101113] px-5 py-4 text-sm text-[#6B7285]">
+            No current contacts activate {categoryMeta.description}.
+          </div>
+        )}
+      </section>
 
       <p className="px-2 pb-2 text-center font-mono text-[10px] uppercase tracking-widest text-[#3A4460]">
         {categoryMeta.label} view · {zodiac === "sidereal" ? "Sidereal · Lahiri" : "Tropical"} · {transitLocationLabel}
@@ -173,93 +159,6 @@ function CategoryTabs({ category, onChange }: { category: CategoryKey; onChange:
         );
       })}
     </div>
-  );
-}
-
-function DailySummaryCard({
-  category,
-  report,
-  primary,
-  natal,
-  zodiac,
-  locationMode,
-  transitLocationLabel,
-  onToggleZodiac,
-  categoryDescription,
-}: {
-  category: CategoryKey;
-  report: ForgeReport;
-  primary?: DetailAspect;
-  natal: NatalChart;
-  zodiac: "tropical" | "sidereal";
-  locationMode: "birth" | "current";
-  transitLocationLabel: string;
-  onToggleZodiac: () => void;
-  categoryDescription: string;
-}) {
-  const meta = CATEGORY_META.find((item) => item.key === category) ?? CATEGORY_META[0];
-  const title = summaryTitle(category, primary, natal);
-  const body = summaryBody(category, primary, natal, report, categoryDescription);
-  return (
-    <section className="relative overflow-hidden rounded-2xl border border-[#535B70] bg-[#101113] px-5 py-6 shadow-[0_12px_40px_rgba(0,0,0,0.16)] sm:px-6">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-5 bottom-0 h-20 opacity-60"
-        style={{ backgroundImage: "radial-gradient(#E8E4D8 0.8px, transparent 0.8px)", backgroundSize: "5px 5px", maskImage: "linear-gradient(to top, black, transparent)" }}
-      />
-      <div className="relative flex items-start justify-between gap-3">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-widest text-[#E8E4D8]">Your day · {meta.label}</p>
-          <h1 className="mt-7 max-w-[19rem] font-serif text-[29px] font-semibold leading-[1.05] text-[#F0EADB] sm:text-3xl">{title}</h1>
-        </div>
-        <div className="flex flex-col items-end gap-3">
-          <Sparkles className="h-10 w-10 text-[#F0EADB]" />
-          <button
-            type="button"
-            onClick={onToggleZodiac}
-            className="rounded-full border border-[#8B9EE8]/35 px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-[#8B9EE8]"
-          >
-            {zodiac === "sidereal" ? "Sidereal" : "Tropical"}
-          </button>
-        </div>
-      </div>
-      <p className="relative mt-5 max-w-[38rem] text-[16px] leading-[1.35] text-[#D0D2D8]">{body}</p>
-      <p className="relative mt-4 text-[10px] uppercase tracking-widest text-[#6B7285]">
-        Transit location · {locationMode === "current" ? "Current" : "Birth"} · {transitLocationLabel}
-      </p>
-    </section>
-  );
-}
-
-function TransitGroup({
-  label,
-  entries,
-  expandedId,
-  onExpand,
-  emptyText,
-}: {
-  label: string;
-  entries: TransitEntry[];
-  expandedId: string | null;
-  onExpand: (id: string | null) => void;
-  emptyText: string;
-}) {
-  return (
-    <section>
-      <p className="mb-3 px-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#C4CADC]">{label}</p>
-      <div className="space-y-3">
-        {entries.length > 0 ? entries.map((entry) => (
-          <TransitDetailCard
-            key={entry.id}
-            entry={entry}
-            expanded={expandedId === entry.id}
-            onClick={() => onExpand(expandedId === entry.id ? null : entry.id)}
-          />
-        )) : (
-          <div className="rounded-2xl border border-[#263152] bg-[#101113] px-5 py-4 text-sm text-[#6B7285]">{emptyText}</div>
-        )}
-      </div>
-    </section>
   );
 }
 
@@ -338,7 +237,6 @@ function DetailBlock({ label, text, accent = false }: { label: string; text: str
 function buildTransitEntries(
   transitData: TransitData,
   natal: NatalChart,
-  group: "short" | "long",
   focusHouses: number[],
 ): TransitEntry[] {
   const all: TransitEntry[] = [
@@ -354,13 +252,17 @@ function buildTransitEntries(
       const angle = "natalAngle" in entry.aspect;
       const relevant = focusHouses.includes(entry.transitHouse)
         || (entry.targetHouse !== undefined && focusHouses.includes(entry.targetHouse));
-      const keep = entry.aspect.transitPlanet !== "moon"
-        && (group === "long" ? long || angle : !long && !angle);
+      const keep = entry.aspect.transitPlanet !== "moon";
       if (!keep || !relevant || seen.has(entry.id)) return false;
       seen.add(entry.id);
       return true;
     })
-    .slice(0, group === "short" ? 6 : 8);
+    .sort((a, b) => {
+      const aLong = ["jupiter", "saturn", "uranus", "neptune", "pluto"].includes(a.aspect.transitPlanet) || "natalAngle" in a.aspect;
+      const bLong = ["jupiter", "saturn", "uranus", "neptune", "pluto"].includes(b.aspect.transitPlanet) || "natalAngle" in b.aspect;
+      return Number(aLong) - Number(bLong);
+    })
+    .slice(0, 14);
 }
 
 function makeEntry(aspect: DetailAspect, transitData: TransitData, natal: NatalChart): TransitEntry {
@@ -459,31 +361,6 @@ function planetApplication(key: PlanetKey) {
 function ordinal(house: number) {
   const suffix = house === 1 ? "st" : house === 2 ? "nd" : house === 3 ? "rd" : "th";
   return `${house}${suffix}`;
-}
-
-function summaryTitle(category: CategoryKey, primary: DetailAspect | undefined, natal: NatalChart) {
-  const targetHouse = primary && "natalPlanet" in primary ? natal.positions[primary.natalPlanet].house : natal.ascendant ? 1 : 1;
-  const area = HOUSE_SHORT[targetHouse].toLowerCase();
-  const planet = primary ? PLANET_META[primary.transitPlanet].name : "The sky";
-  const aspect = primary && "type" in primary ? ASPECT_LABEL[primary.type].toLowerCase() : "steady";
-  const categoryTitles: Record<CategoryKey, string> = {
-    self: `${planet} ${aspect} through your ${area} life`,
-    health: `A steadier rhythm for body and recovery`,
-    work: `A clearer ${area} move through structure`,
-    love: `Tender connection with a reality-check edge`,
-    money: `Clarity and control around what you value`,
-    family: `Emotional charge at home with a stabilizing undercurrent`,
-  };
-  return categoryTitles[category];
-}
-
-function summaryBody(category: CategoryKey, primary: DetailAspect | undefined, natal: NatalChart, report: ForgeReport, categoryDescription: string) {
-  const theme = report.todaysTheme || report.forge || "The sky is asking for a deliberate response.";
-  if (primary && "natalPlanet" in primary) {
-    const target = natal.positions[primary.natalPlanet];
-    return `Your inner and outer timing meet through ${PLANET_META[primary.transitPlanet].name} ${ASPECT_LABEL[primary.type].toLowerCase()} your natal ${PLANET_META[primary.natalPlanet].name} in the ${ordinal(target.house)} house. ${theme} Read the day through ${categoryDescription}, then make one specific adjustment.`;
-  }
-  return `${theme} The most useful ${category} move today is to notice the signal, name the arena it belongs to, and make one deliberate adjustment before adding more effort.`;
 }
 
 function tailorReport(

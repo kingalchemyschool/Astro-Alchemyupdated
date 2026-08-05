@@ -80,7 +80,6 @@ export default function DailyForgeSurface({
           report={report}
           transitData={transitData}
           zodiac={zodiac}
-          locationMode={locationMode}
           transitLocationLabel={transitLocationLabel}
           onToggleZodiac={onToggleZodiac}
         />

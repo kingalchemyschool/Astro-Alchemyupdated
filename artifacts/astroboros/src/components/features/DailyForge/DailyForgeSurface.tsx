@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight, Globe2, Moon, Orbit, Sparkles, UserRound } from "lucide-react";
 import { Link } from "wouter";
 import ChartWheel from "@/components/features/ChartWheel";
-import ForgeReport from "@/components/features/DailyForge/ForgeReport";
+import DailyForgeYouView from "@/components/features/DailyForge/DailyForgeYouView";
 import PlanetTransitCards from "@/components/features/DailyForge/PlanetTransitCards";
 import type { Reading, AdditionalPointKey, PlanetKey } from "@/types/astro";
 import type { ForgeReport as ForgeReportType } from "@/types/forge";
@@ -75,35 +75,15 @@ export default function DailyForgeSurface({
       />
 
       {view === "you" && (
-        <>
-          <ChartWheel
-            chart={reading.chart}
-            overlay={transitData}
-            title="Your transit chart"
-            subtitle={`Natal blueprint with today's sky layered over it · ${transitLocationLabel}`}
-            compact
-          />
-          <PersonalSkySummary
-            transitData={transitData}
-            reading={reading}
-            zodiac={zodiac}
-            onToggleZodiac={onToggleZodiac}
-            locationMode={locationMode}
-          />
-          <PlanetTransitCards
-            chart={transitData}
-            title="Every planet, in your day"
-            subtitle="Each moving planet has a house, a lived meaning, and one grounded way to work with it today."
-            mode="personal"
-          />
-          <ForgeReport
-            report={report}
-            cached={cached}
-            zodiac={zodiac}
-            onToggleZodiac={onToggleZodiac}
-            transitLocationLabel={transitLocationLabel}
-          />
-        </>
+        <DailyForgeYouView
+          reading={reading}
+          report={report}
+          transitData={transitData}
+          zodiac={zodiac}
+          locationMode={locationMode}
+          transitLocationLabel={transitLocationLabel}
+          onToggleZodiac={onToggleZodiac}
+        />
       )}
 
       {view === "world" && (

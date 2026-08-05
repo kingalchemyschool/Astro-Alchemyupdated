@@ -9,3 +9,4 @@
 - [Report prose variation](report-prose-variation.md) — vary recurring explanations by context and remove exact sentence repeats within assembled reports
 - [Synastry geometry](astroboros-synastry-geometry.md) — use exact sidereal longitude aspects for the full matrix; sign distance is contextual prose only
 - [Chart points](astroboros-chart-points.md) — shared AC/DC/MC/IC, mean nodes/Lilith, and sign-level Chiron approximation
+- [Daily Forge feed](astroboros-daily-forge-feed.md) — focused You feed with Moon section, grouped expandable transit cards, and no duplicate report stack

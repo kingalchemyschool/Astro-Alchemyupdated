@@ -1,13 +1,7 @@
 import { useMemo, useState } from "react";
 import {
-  BriefcaseBusiness,
   ChevronDown,
   ChevronUp,
-  CircleDollarSign,
-  Heart,
-  Leaf,
-  UserRound,
-  UsersRound,
 } from "lucide-react";
 import type { ForgeReport } from "@/types/forge";
 import type { AdditionalPointKey, NatalChart, PlanetKey } from "@/types/astro";
@@ -21,7 +15,7 @@ import type {
 import { HOUSE_DOMAIN, HOUSE_WORK, PLANET_META, SIGNS, SIGN_QUALITY } from "@/constants/astro";
 import ForgeReportView from "@/components/features/DailyForge/ForgeReport";
 
-type CategoryKey = "self" | "health" | "work" | "love" | "money" | "family";
+type YouSubpage = "daily" | "transit";
 type DetailAspect = TransitAspect | TransitAdditionalAspect | TransitAngleAspect;
 
 const ASPECT_LABEL: Record<string, string> = {
@@ -46,22 +40,6 @@ const HOUSE_SHORT: Record<number, string> = {
   9: "Expansion", 10: "Contribution", 11: "Networks", 12: "Integration",
 };
 
-const CATEGORY_META: Array<{
-  key: CategoryKey;
-  label: string;
-  icon: typeof UserRound;
-  color: string;
-  houses: number[];
-  description: string;
-}> = [
-  { key: "self", label: "Self", icon: UserRound, color: "#E8E4D8", houses: [1, 5, 9], description: "identity, confidence, and personal direction" },
-  { key: "health", label: "Health", icon: Leaf, color: "#9FC9A5", houses: [1, 6, 12], description: "body, rhythm, recovery, and sustainable effort" },
-  { key: "work", label: "Work", icon: BriefcaseBusiness, color: "#D8B86A", houses: [2, 6, 10, 11], description: "craft, contribution, visibility, and useful alliances" },
-  { key: "love", label: "Love", icon: Heart, color: "#D88AA4", houses: [5, 7, 8], description: "desire, partnership, intimacy, and creative exchange" },
-  { key: "money", label: "Money", icon: CircleDollarSign, color: "#D8B86A", houses: [2, 8, 10, 11], description: "resources, value, shared power, and long-term security" },
-  { key: "family", label: "Family", icon: UsersRound, color: "#8BC6C8", houses: [3, 4, 7], description: "home, roots, communication, and relational care" },
-];
-
 interface Props {
   reading: { chart: NatalChart };
   report: ForgeReport;
@@ -79,81 +57,84 @@ export default function DailyForgeYouView({
   transitLocationLabel,
   onToggleZodiac,
 }: Props) {
-  const [category, setCategory] = useState<CategoryKey>("self");
+  const [subpage, setSubpage] = useState<YouSubpage>("daily");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const natal = reading.chart;
-  const categoryMeta = CATEGORY_META.find((item) => item.key === category) ?? CATEGORY_META[0];
 
   const entries = useMemo(
-    () => buildTransitEntries(transitData, natal, categoryMeta.houses),
-    [transitData, natal, categoryMeta.houses],
-  );
-  const primary = entries[0]?.aspect;
-  const categoryReport = useMemo(
-    () => tailorReport(report, categoryMeta, primary, natal),
-    [report, categoryMeta, primary, natal],
+    () => buildTransitEntries(transitData, natal),
+    [transitData, natal],
   );
 
   return (
     <div className="space-y-5">
-      <CategoryTabs category={category} onChange={(next) => { setCategory(next); setExpandedId(null); }} />
-
-      <ForgeReportView
-        report={categoryReport}
-        cached={false}
-        zodiac={zodiac}
-        onToggleZodiac={onToggleZodiac}
-        transitLocationLabel={transitLocationLabel}
-        showMoon={false}
-        showCelestialField={false}
-        lifeArea={categoryMeta.label}
+      <YouSubpageTabs
+        subpage={subpage}
+        onChange={(next) => {
+          setSubpage(next);
+          setExpandedId(null);
+        }}
       />
 
-      <section className="space-y-3">
-        <div className="px-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B9EE8]">Transits affecting you</p>
-          <p className="mt-1 text-sm text-[#6B7A99]">
-            {categoryMeta.label} · {categoryMeta.description}
-          </p>
-        </div>
-        {entries.length > 0 ? entries.map((entry) => (
-          <TransitDetailCard
-            key={entry.id}
-            entry={entry}
-            expanded={expandedId === entry.id}
-            onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
-          />
-        )) : (
-          <div className="rounded-2xl border border-[#263152] bg-[#101113] px-5 py-4 text-sm text-[#6B7285]">
-            No current contacts activate {categoryMeta.description}.
+      {subpage === "daily" ? (
+        <ForgeReportView
+          report={report}
+          cached={false}
+          zodiac={zodiac}
+          onToggleZodiac={onToggleZodiac}
+          transitLocationLabel={transitLocationLabel}
+          showMoon={false}
+          showCelestialField={false}
+        />
+      ) : (
+        <section className="space-y-3">
+          <div className="px-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#8B9EE8]">Today’s transit</p>
+            <p className="mt-1 text-sm text-[#6B7285]">
+              Every current non-Moon transit affecting your natal chart, in one place.
+            </p>
           </div>
-        )}
-      </section>
+          {entries.length > 0 ? entries.map((entry) => (
+            <TransitDetailCard
+              key={entry.id}
+              entry={entry}
+              expanded={expandedId === entry.id}
+              onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
+            />
+          )) : (
+            <div className="rounded-2xl border border-[#263152] bg-[#101113] px-5 py-4 text-sm text-[#6B7285]">
+              No current non-Moon contacts are within the active orb.
+            </div>
+          )}
+        </section>
+      )}
 
       <p className="px-2 pb-2 text-center font-mono text-[10px] uppercase tracking-widest text-[#3A4460]">
-        {categoryMeta.label} view · {zodiac === "sidereal" ? "Sidereal · Lahiri" : "Tropical"} · {transitLocationLabel}
+        {subpage === "daily" ? "Daily Forge" : "Today’s Transit"} · {zodiac === "sidereal" ? "Sidereal · Lahiri" : "Tropical"} · {transitLocationLabel}
       </p>
     </div>
   );
 }
 
-function CategoryTabs({ category, onChange }: { category: CategoryKey; onChange: (category: CategoryKey) => void }) {
+function YouSubpageTabs({ subpage, onChange }: { subpage: YouSubpage; onChange: (subpage: YouSubpage) => void }) {
   return (
-    <div className="flex gap-2 overflow-x-auto px-0.5 pb-1 scrollbar-none">
-      {CATEGORY_META.map(({ key, label, icon: Icon, color }) => {
-        const active = key === category;
+    <div className="grid grid-cols-2 rounded-full border border-[#252d4b] bg-[#0a0d18] p-1">
+      {([
+        { key: "daily" as const, label: "Daily Forge" },
+        { key: "transit" as const, label: "Today’s Transit" },
+      ]).map(({ key, label }) => {
+        const active = key === subpage;
         return (
           <button
             key={key}
             type="button"
             onClick={() => onChange(key)}
-            className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-all ${
+            className={`rounded-full px-3 py-2.5 text-sm font-medium transition-all ${
               active
-                ? "border-[#E8E4D8] bg-[#E8E4D8] text-[#11131D]"
-                : "border-[#3C4355] bg-[#10131D] text-[#C4CADC] hover:border-[#8B9EE8]/60"
+                ? "bg-[#545468] text-[#f0ead9] shadow-[0_0_18px_rgba(139,158,232,0.12)]"
+                : "text-[#6B7A99] hover:text-[#E8E4D8]"
             }`}
           >
-            <Icon className="h-4 w-4" style={{ color: active ? "#11131D" : color }} />
             {label}
           </button>
         );
@@ -237,7 +218,6 @@ function DetailBlock({ label, text, accent = false }: { label: string; text: str
 function buildTransitEntries(
   transitData: TransitData,
   natal: NatalChart,
-  focusHouses: number[],
 ): TransitEntry[] {
   const all: TransitEntry[] = [
     ...transitData.aspects.map((aspect) => makeEntry(aspect, transitData, natal)),
@@ -250,10 +230,8 @@ function buildTransitEntries(
       const planet = entry.aspect.transitPlanet;
       const long = ["jupiter", "saturn", "uranus", "neptune", "pluto"].includes(planet);
       const angle = "natalAngle" in entry.aspect;
-      const relevant = focusHouses.includes(entry.transitHouse)
-        || (entry.targetHouse !== undefined && focusHouses.includes(entry.targetHouse));
       const keep = entry.aspect.transitPlanet !== "moon";
-      if (!keep || !relevant || seen.has(entry.id)) return false;
+      if (!keep || seen.has(entry.id)) return false;
       seen.add(entry.id);
       return true;
     })
@@ -361,32 +339,6 @@ function planetApplication(key: PlanetKey) {
 function ordinal(house: number) {
   const suffix = house === 1 ? "st" : house === 2 ? "nd" : house === 3 ? "rd" : "th";
   return `${house}${suffix}`;
-}
-
-function tailorReport(
-  report: ForgeReport,
-  category: (typeof CATEGORY_META)[number],
-  primary: DetailAspect | undefined,
-  natal: NatalChart,
-): ForgeReport {
-  const house = primary && "natalPlanet" in primary ? natal.positions[primary.natalPlanet].house : category.houses[0];
-  const area = category.description;
-  const planet = primary ? PLANET_META[primary.transitPlanet].name : "The current sky";
-  return {
-    ...report,
-    dominantArena: {
-      house,
-      label: category.label,
-      description: `This reading is filtered through ${area}. ${planet} gives the focus a specific timing signal rather than a general forecast.`,
-    },
-    todaysTheme: `${category.label}: ${report.todaysTheme || `work with ${area}`}`,
-    forge: `For ${category.label.toLowerCase()}, ${report.forge || report.celestialState || `stay attentive to ${area}`}`,
-    whatIsBeingRefined: report.whatIsBeingRefined || report.alchemicalProcess || `Your relationship with ${area}.`,
-    forgePrinciple: `${category.label}: ${report.forgePrinciple}`,
-    journalPrompt: `${report.journalPrompt} How does this change when you look specifically at ${area}?`,
-    dailyApplication: `${report.dailyApplication}\n\nPRACTICE: Apply this to ${area} before extending the lesson to anything else.`,
-    closingReflection: `${report.closingReflection} Return to ${area} as the place where the reading becomes real.`,
-  };
 }
 
 function additionalLabel(key: AdditionalPointKey) {
